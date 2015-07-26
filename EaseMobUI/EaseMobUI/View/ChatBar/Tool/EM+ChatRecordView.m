@@ -83,14 +83,14 @@ typedef NS_ENUM(NSUInteger,RECORD_STATE) {
         
         cancelButton = [[UIButton alloc]init];
         cancelButton.backgroundColor = [UIColor whiteColor];
-        [cancelButton setTitle:@"取消" forState:UIControlStateNormal];
+        [cancelButton setTitle:EM_ChatString(@"common.cancel") forState:UIControlStateNormal];
         [cancelButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         [cancelButton addTarget:self action:@selector(recordCancel:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:cancelButton];
         
         sendButton = [[UIButton alloc]init];
         sendButton.backgroundColor = [UIColor whiteColor];
-        [sendButton setTitle:@"发送" forState:UIControlStateNormal];
+        [sendButton setTitle:EM_ChatString(@"common.send") forState:UIControlStateNormal];
         [sendButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         [sendButton addTarget:self action:@selector(recordSend:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:sendButton];
@@ -128,7 +128,7 @@ typedef NS_ENUM(NSUInteger,RECORD_STATE) {
             break;
         case RECORD_STATE_WILL_CANCEL:{
             recordLabel.tag = 1;
-            recordLabel.text = @"松开取消发送";
+            recordLabel.text = EM_ChatString(@"record.will_cancel");
             
             recordView.image = [UIImage imageNamed:RES_IMAGE_TOOL(@"tool_volume")];
             recordView.backgroundColor = [UIColor colorWithHEX:RECORD_HIGHLIGHTED_BACKGROUND_COLOR alpha:1.0];
@@ -148,7 +148,7 @@ typedef NS_ENUM(NSUInteger,RECORD_STATE) {
             break;
         case RECORD_STATE_WILL_PLAY:{
             recordLabel.tag = 1;
-            recordLabel.text = @"松开试听";
+            recordLabel.text = EM_ChatString(@"record.will_audition");
             
             recordView.image = [UIImage imageNamed:RES_IMAGE_TOOL(@"tool_volume")];
             recordView.backgroundColor = [UIColor colorWithHEX:RECORD_HIGHLIGHTED_BACKGROUND_COLOR alpha:1.0];
@@ -219,7 +219,7 @@ typedef NS_ENUM(NSUInteger,RECORD_STATE) {
             break;
         default:{
             recordLabel.tag = 0;
-            recordLabel.text = @"按住说话";
+            recordLabel.text = EM_ChatString(@"record.normal_record");
             
             recordView.image = [UIImage imageNamed:RES_IMAGE_TOOL(@"tool_volume")];
             recordView.backgroundColor = [UIColor colorWithHEX:RECORD_NORMAL_BACKGROUND_COLOR alpha:1.0];
@@ -398,7 +398,7 @@ typedef NS_ENUM(NSUInteger,RECORD_STATE) {
 
 #pragma mark - EM_ChatRecordArcViewDelegate
 - (void)willRecordStart{
-    recordLabel.text = @"准备中";
+    recordLabel.text = EM_ChatString(@"record.will_record");
 }
 - (void)didRecordStart:(NSString *)recordName{
     _recordName = recordName;

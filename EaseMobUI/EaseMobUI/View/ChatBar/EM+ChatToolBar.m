@@ -47,6 +47,9 @@
     _chatTableView = chatTableView;
     if (_chatTableView) {
         _chatTableView.tapDelegate = self;
+        UIEdgeInsets contentInset = _chatTableView.contentInset;
+        contentInset.bottom = HEIGHT_INPUT_OF_DEFAULT;
+        _chatTableView.contentInset = contentInset;
     }
 }
 

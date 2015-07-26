@@ -7,6 +7,7 @@
 //
 
 #import "EM+ChatUIConfig.h"
+#import "EM+Common.h"
 
 @interface EM_ChatUIConfig()
 
@@ -77,7 +78,7 @@ NSString * const kActionNameFile = @"kActionNameFile";
     
     
     //图片
-    [config setActionName:kActionNameImage attributeName:kAttributeTitle attribute:@"图片"];
+    [config setActionName:kActionNameImage attributeName:kAttributeTitle attribute:EM_ChatString(@"common.image")];
     [config setActionName:kActionNameImage attributeName:kAttributeNormalImage attribute:[UIImage imageNamed:RES_IMAGE_ACTION(@"action_image")]];
     [config setActionName:kActionNameImage attributeName:kAttributeHighlightImage attribute:[UIImage imageNamed:RES_IMAGE_ACTION(@"action_image")]];
     [config setActionName:kActionNameImage attributeName:kAttributeBackgroundColor attribute:[UIColor clearColor]];
@@ -86,7 +87,7 @@ NSString * const kActionNameFile = @"kActionNameFile";
     [config setActionName:kActionNameImage attributeName:kAttributeCornerRadius attribute:@(0)];
     
     //相机
-    [config setActionName:kActionNameCamera attributeName:kAttributeTitle attribute:@"相机"];
+    [config setActionName:kActionNameCamera attributeName:kAttributeTitle attribute:EM_ChatString(@"common.camera")];
     [config setActionName:kActionNameCamera attributeName:kAttributeNormalImage attribute:[UIImage imageNamed:RES_IMAGE_ACTION(@"action_camera")]];
     [config setActionName:kActionNameCamera attributeName:kAttributeHighlightImage attribute:[UIImage imageNamed:RES_IMAGE_ACTION(@"action_camera")]];
     [config setActionName:kActionNameCamera attributeName:kAttributeBackgroundColor attribute:[UIColor clearColor]];
@@ -95,7 +96,7 @@ NSString * const kActionNameFile = @"kActionNameFile";
     [config setActionName:kActionNameCamera attributeName:kAttributeCornerRadius attribute:@(0)];
     
     //语音
-    [config setActionName:kActionNameVoice attributeName:kAttributeTitle attribute:@"语音"];
+    [config setActionName:kActionNameVoice attributeName:kAttributeTitle attribute:EM_ChatString(@"common.voice")];
     [config setActionName:kActionNameVoice attributeName:kAttributeNormalImage attribute:[UIImage imageNamed:RES_IMAGE_ACTION(@"action_phone")]];
     [config setActionName:kActionNameVoice attributeName:kAttributeHighlightImage attribute:[UIImage imageNamed:RES_IMAGE_ACTION(@"action_phone")]];
     [config setActionName:kActionNameVoice attributeName:kAttributeBackgroundColor attribute:[UIColor clearColor]];
@@ -105,7 +106,7 @@ NSString * const kActionNameFile = @"kActionNameFile";
     
     
     //视频
-    [config setActionName:kActionNameVideo attributeName:kAttributeTitle attribute:@"视频"];
+    [config setActionName:kActionNameVideo attributeName:kAttributeTitle attribute:EM_ChatString(@"common.video")];
     [config setActionName:kActionNameVideo attributeName:kAttributeNormalImage attribute:[UIImage imageNamed:RES_IMAGE_ACTION(@"action_video")]];
     [config setActionName:kActionNameVideo attributeName:kAttributeHighlightImage attribute:[UIImage imageNamed:RES_IMAGE_ACTION(@"action_video")]];
     [config setActionName:kActionNameVideo attributeName:kAttributeBackgroundColor attribute:[UIColor clearColor]];
@@ -114,7 +115,7 @@ NSString * const kActionNameFile = @"kActionNameFile";
     [config setActionName:kActionNameVideo attributeName:kAttributeCornerRadius attribute:@(0)];
     
     //位置
-    [config setActionName:kActionNameLocation attributeName:kAttributeTitle attribute:@"位置"];
+    [config setActionName:kActionNameLocation attributeName:kAttributeTitle attribute:EM_ChatString(@"common.location")];
     [config setActionName:kActionNameLocation attributeName:kAttributeNormalImage attribute:[UIImage imageNamed:RES_IMAGE_ACTION(@"action_location")]];
     [config setActionName:kActionNameLocation attributeName:kAttributeHighlightImage attribute:[UIImage imageNamed:RES_IMAGE_ACTION(@"action_location")]];
     [config setActionName:kActionNameLocation attributeName:kAttributeBackgroundColor attribute:[UIColor clearColor]];
@@ -123,7 +124,7 @@ NSString * const kActionNameFile = @"kActionNameFile";
     [config setActionName:kActionNameLocation attributeName:kAttributeCornerRadius attribute:@(0)];
     
     //文件
-    [config setActionName:kActionNameFile attributeName:kAttributeTitle attribute:@"文件"];
+    [config setActionName:kActionNameFile attributeName:kAttributeTitle attribute:EM_ChatString(@"common.file")];
     [config setActionName:kActionNameFile attributeName:kAttributeNormalImage attribute:[UIImage imageNamed:RES_IMAGE_ACTION(@"action_file")]];
     [config setActionName:kActionNameFile attributeName:kAttributeHighlightImage attribute:[UIImage imageNamed:RES_IMAGE_ACTION(@"action_file")]];
     [config setActionName:kActionNameFile attributeName:kAttributeBackgroundColor attribute:[UIColor clearColor]];

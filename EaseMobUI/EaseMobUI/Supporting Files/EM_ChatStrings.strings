@@ -1,0 +1,43 @@
+/* 
+  EM_ChatStrings.strings
+  EaseMobUI
+
+  Created by 周玉震 on 15/7/24.
+  Copyright (c) 2015年 周玉震. All rights reserved.
+*/
+
+
+common.cancel = "取消";
+common.enter = "确定";
+common.open = "打开";
+common.send = "发送";
+common.lately = "最近";
+common.call = "呼叫";
+
+common.image = "图片";
+common.camera = "相机";
+common.voice = "语音";
+common.video = "视频";
+common.location = "位置";
+common.file = "文件";
+
+common.copy = "复制";
+common.collect_face = "添加到表情";
+common.download = "下载";
+common.collect = "收藏";
+common.forward = "转发";
+common.revocation = "撤回";
+common.delete = "删除";
+
+record.will_cancel = "松开取消发送";
+record.will_audition = "松开试听";
+record.normal_record = "按住说话";
+record.will_record = "准备中...";
+
+hint.may_phone = "[%@]这可能是一个电话号码，你可以";
+hint.may_link = "[%@]这可能是一个网址，你可以";
+
+error.device.not_support_photo_library = "设备不支持图片库";
+error.device.not_support_camera = "设备不支持相机";
+error.record.too_short = "录音时间太短";
+error.record.failure = "录音失败";

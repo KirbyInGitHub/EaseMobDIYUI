@@ -38,6 +38,8 @@ extern NSString * const REUSE_IDENTIFIER_UNKNOWN;
 @property (nonatomic,strong) NSIndexPath *indexPath;
 @property (nonatomic,weak) id<EM_ChatMessageCellDelegate> delegate;
 
+@property (nonatomic,strong,readonly) EM_ChatMessageBaseBubble *bubbleView;
+
 + (NSString *)cellIdFormMessageBodyType:(MessageBodyType)type;
 
 + (CGFloat)heightForCellWithMessage:(EM_ChatMessageModel *)message maxWidth:(CGFloat)max indexPath:(NSIndexPath *)indexPath;

@@ -14,6 +14,12 @@
 
 #define IS_PAD (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
 
+#define BACK(block) dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), block)
+#define MAIN(block) dispatch_async(dispatch_get_main_queue(),block)
+
+#define kDocumentFolder [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0]
+#define kCacheFolder    [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0]
+
 #define COMMON_PADDING (IS_PAD ? 8 : 5)
 #define LEFT_PADDING (IS_PAD ? 20 : 15)
 #define RIGHT_PADDING (LEFT_PADDING)
@@ -27,5 +33,7 @@
 #define LINE_COLOR (@"#CCCCCC")
 #define TEXT_NORMAL_COLOR (@"#C2C2C2")
 #define TEXT_SELECT_COLOR   (@"#9370DB")
+
+#define EM_ChatString(name) (NSLocalizedStringFromTable(name, @"EM_ChatStrings", @""))
 
 #endif

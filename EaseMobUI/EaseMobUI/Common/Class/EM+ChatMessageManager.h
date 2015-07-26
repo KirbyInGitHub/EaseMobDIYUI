@@ -8,12 +8,12 @@
 
 #import <Foundation/Foundation.h>
 
+@protocol EM_ChatMessageManagerDelegate;
+
 @interface EM_ChatMessageManager : NSObject
 
-@property (nonatomic,strong,readonly) id currentImageMessage;
-@property (nonatomic,strong,readonly) id currentVideoMessage;
-@property (nonatomic,strong,readonly) id currentVoiceMessage;
 @property (nonatomic,assign,readonly) BOOL isPlaying;
+@property (nonatomic,weak) id<EM_ChatMessageManagerDelegate> delegate;
 
 + (instancetype)defaultManager;
 - (void)showBrowserWithImagesMessage:(NSArray *)imageMessageArray index:(NSInteger)index;
@@ -21,5 +21,12 @@
 
 - (void)playVoice:(NSArray *)voiceMessageArray index:(NSInteger)index;
 - (void)stopVoice;
+
+@end
+
+@protocol EM_ChatMessageManagerDelegate <NSObject>
+
+- (void)playStartWithMessage:(id)startMessage;
+- (void)playCompletionWithMessage:(id)completionMessage nextMessage:(id)nextMessage;
 
 @end

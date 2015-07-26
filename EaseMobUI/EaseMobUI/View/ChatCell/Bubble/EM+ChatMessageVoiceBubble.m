@@ -30,6 +30,7 @@
     if (self) {
         animationView = [[UIImageView alloc]init];
         animationView.backgroundColor = [UIColor clearColor];
+        animationView.animationDuration = 1;
         [self addSubview:animationView];
         
         timeLabel = [[UILabel alloc]init];
@@ -87,7 +88,7 @@
                                             ]];
         animationView.image = [UIImage imageNamed:RES_IMAGE_CELL(@"voice_right_3")];
     }
-    if (self.message.playing && !animationView.isAnimating) {
+    if (self.message.messageDetailsState.checking && !animationView.isAnimating) {
         [animationView startAnimating];
     }else{
         [animationView stopAnimating];

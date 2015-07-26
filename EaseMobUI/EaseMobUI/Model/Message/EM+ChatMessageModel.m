@@ -13,9 +13,10 @@
 - (instancetype)initWithMessage:(EMMessage *)message{
     self = [super init];
     if (self) {
-        [self setMessage:message];
         _bubbleSize = CGSizeZero;
         _showTime = YES;
+        _messageDetailsState = [[EM_ChatMessageState alloc]init];
+        [self setMessage:message];
     }
     return self;
 }
@@ -47,6 +48,10 @@
 - (void)setMessage:(EMMessage *)message{
     _message = message;
     _nickName = _message.from;
+    
+    _messageDetailsState.messageId = _message.messageId;
+    _messageDetailsState.messageBodyType = self.bodyType;
+    _messageDetailsState.messageType = self.messageType;
 }
 
 - (BOOL)isEqual:(id)object{

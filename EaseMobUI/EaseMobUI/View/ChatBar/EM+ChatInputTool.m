@@ -8,6 +8,7 @@
 
 #import "EM+ChatInputTool.h"
 #import "EM+Common.h"
+#import "EM+ChatInputView.h"
 
 #define PADDING (5)
 
@@ -18,7 +19,7 @@
 @end
 
 @implementation EM_ChatInputTool{
-    UITextView *inputView;
+    EM_ChatInputView *inputView;
     UIButton *recordButton;
     UIButton *emojiButton;
     UIButton *actionButton;
@@ -161,24 +162,8 @@
             }
         }
         
-        inputView = [[UITextView alloc]init];
-        inputView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-        inputView.scrollEnabled = YES;
-        inputView.scrollsToTop = NO;
-        inputView.dataDetectorTypes = UIDataDetectorTypeAll;
-        inputView.enablesReturnKeyAutomatically = YES;
-        inputView.userInteractionEnabled = YES;
-        inputView.font = [UIFont systemFontOfSize:16.0f];
-        inputView.textColor = [UIColor blackColor];
-        inputView.backgroundColor = [UIColor whiteColor];
-        inputView.keyboardAppearance = UIKeyboardAppearanceDefault;
-        inputView.returnKeyType = UIReturnKeySend;
-        inputView.textAlignment = NSTextAlignmentLeft;
+        inputView = [[EM_ChatInputView alloc]init];
         inputView.delegate = self;
-        inputView.layer.masksToBounds = YES;
-        inputView.layer.cornerRadius = 6;
-        inputView.layer.borderWidth = 0.5;
-        inputView.layer.borderColor = [UIColor colorWithHexRGB:0xe5e5e5].CGColor;
         [self addSubview:inputView];
         
         contentInsets = inputView.contentInset;
@@ -193,6 +178,18 @@
         [self addSubview:moreStateButton];
     }
     return self;
+}
+
+- (void)setOverrideNextResponder:(UIResponder *)overrideNextResponder{
+    inputView.overrideNextResponder = overrideNextResponder;
+}
+
+- (NSString *)editor{
+    return inputView.text;
+}
+
+- (void)setEditor:(NSString *)editor{
+    inputView.text = editor;
 }
 
 - (void)layoutSubviews{

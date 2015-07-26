@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "EaseMob.h"
+#import "EM+ChatMessageState.h"
 
 @interface EM_ChatMessageModel : NSObject
 
@@ -24,7 +25,7 @@
 
 @property (nonatomic,assign) CGSize bubbleSize;
 @property (nonatomic,assign) BOOL showTime;
-@property (nonatomic,assign) BOOL playing;
+@property (nonatomic,strong,readonly) EM_ChatMessageState *messageDetailsState;
 
 - (instancetype)initWithMessage:(EMMessage *)message;
 

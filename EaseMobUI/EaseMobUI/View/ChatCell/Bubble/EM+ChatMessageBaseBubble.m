@@ -79,18 +79,22 @@ NSString * const HANDLE_ACTION_UNKNOWN = @"HANDLE_ACTION_UNKNOWN";
     }
 }
 
-- (void)bubbleTap:(id)sender{
+- (void)bubbleTap:(UITapGestureRecognizer *)recognizer{
     if(_delegate){
         NSDictionary *userInfo = @{kHandleActionName:self.handleAction,kHandleActionMessage:self.message};
         [_delegate bubbleTapWithUserInfo:userInfo];
     }
 }
 
-- (void)bubbleLongPress:(id)sender{
-    if (_delegate) {
+- (void)bubbleLongPress:(UILongPressGestureRecognizer *)recognizer{
+    if (recognizer.state == UIGestureRecognizerStateBegan && _delegate) {
         NSDictionary *userInfo = @{kHandleActionName:self.handleAction,kHandleActionMessage:self.message};
         [_delegate bubbleLongPressWithUserInfo:userInfo];
     }
+}
+
+- (BOOL)canBecomeFirstResponder{
+    return YES;
 }
 
 @end

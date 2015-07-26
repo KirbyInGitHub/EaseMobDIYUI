@@ -15,7 +15,6 @@
 @property (nonatomic,strong) UILabel *nameLabel;
 @property (nonatomic,strong) UIButton *avatarView;
 @property (nonatomic,strong) UILabel *timeLabel;
-@property (nonatomic,strong) EM_ChatMessageBaseBubble *bubbleView;
 @property (nonatomic,strong) UIActivityIndicatorView *indicatorView;
 @property (nonatomic,strong) UIButton *retryButton;
 @property (nonatomic,strong) UILabel *stateLabel;
@@ -178,7 +177,6 @@ NSString * const REUSE_IDENTIFIER_UNKNOWN = @"REUSE_IDENTIFIER_UNKNOWN";
         [self.contentView addSubview:_indicatorView];
         
         _retryButton = [[UIButton alloc]init];
-        _retryButton.backgroundColor = [UIColor blueColor];
         [_retryButton addTarget:self action:@selector(retryClicked:) forControlEvents:UIControlEventTouchUpInside];
         [self.contentView addSubview:_retryButton];
         

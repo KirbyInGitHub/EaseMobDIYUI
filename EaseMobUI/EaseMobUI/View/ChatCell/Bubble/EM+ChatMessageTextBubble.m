@@ -35,20 +35,14 @@
         systemVersion = [[[UIDevice currentDevice] systemVersion] floatValue];
     });
     
-    if (systemVersion >= 7.0) {
-        NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-        [paragraphStyle setLineSpacing:TEXT_LINE_SPACING];//调整行间距
-        size = [textBody.text boundingRectWithSize:maxSize options:NSStringDrawingUsesLineFragmentOrigin
-                                         attributes:@{
-                                                      NSFontAttributeName:[UIFont systemFontOfSize:TEXT_FONT_SIZE],
-                                                      NSParagraphStyleAttributeName:paragraphStyle
-                                                      }
-                                            context:nil].size;
-    }else{
-        size = [textBody.text sizeWithFont:[UIFont systemFontOfSize:TEXT_FONT_SIZE]
-                          constrainedToSize:maxSize
-                              lineBreakMode:NSLineBreakByWordWrapping];
-    }
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    [paragraphStyle setLineSpacing:TEXT_LINE_SPACING];//调整行间距
+    size = [textBody.text boundingRectWithSize:maxSize options:NSStringDrawingUsesLineFragmentOrigin
+                                    attributes:@{
+                                                 NSFontAttributeName:[UIFont systemFontOfSize:TEXT_FONT_SIZE],
+                                                 NSParagraphStyleAttributeName:paragraphStyle
+                                                 }
+                                       context:nil].size;
     
     superSize.height += (size.height + TEXT_PADDING * 2);
     superSize.width += (size.width + TEXT_PADDING * 2);
@@ -67,7 +61,6 @@
         textLabel.numberOfLines = 0;
         textLabel.lineSpacing = TEXT_LINE_SPACING;
         textLabel.lineBreakMode = NSLineBreakByWordWrapping;
-        textLabel.textAlignment = NSTextAlignmentCenter;
         textLabel.textColor = [UIColor blackColor];
         textLabel.font = [UIFont systemFontOfSize:TEXT_FONT_SIZE];
         [self addSubview:textLabel];

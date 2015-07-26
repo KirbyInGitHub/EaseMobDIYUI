@@ -12,9 +12,15 @@
 #import "EM+Common.h"
 #import "EM+ChatUIConfig.h"
 #import "UIColor+Hex.h"
+#import "EM+ChatDBM.h"
 
 #define HORIZONTAL_COUNT (8)
 #define VERTICAL_COUNT  (3)
+
+typedef NS_ENUM(NSInteger, Emoji_Type) {
+    Emoji_Lately = -1,
+    Emoji_Emoticons = 0
+};
 
 @interface EM_ChatEmojiView()<UIScrollViewDelegate>
 
@@ -35,8 +41,6 @@
 - (instancetype)init{
     self = [super init];
     if (self) {
-        emojiArray = [EmojiEmoticons allEmoticons];
-        
         scroll = [[UIScrollView alloc]init];
         scroll.showsHorizontalScrollIndicator = NO;
         scroll.showsVerticalScrollIndicator = NO;
@@ -44,50 +48,13 @@
         scroll.delegate = self;
         [self addSubview:scroll];
         
-        NSInteger pageEmojiCount = HORIZONTAL_COUNT * VERTICAL_COUNT - 1;
-        for (int i = 0; i < emojiArray.count; i++) {
-            UIButton *emoji = [[UIButton alloc]init];
-            [emoji setTitle:emojiArray[i] forState:UIControlStateNormal];
-            [emoji addTarget:self action:@selector(emojiClicked:) forControlEvents:UIControlEventTouchUpInside];
-            [scroll addSubview:emoji];
-            
-            if (i % pageEmojiCount == pageEmojiCount - 1 || i == emojiArray.count - 1) {
-                UIButton *deleteButton = [[UIButton alloc]init];
-                [deleteButton setImage:[UIImage imageNamed:RES_IMAGE_TOOL(@"tool_delete")] forState:UIControlStateNormal];
-                [deleteButton addTarget:self action:@selector(emojiDeleteClicked:) forControlEvents:UIControlEventTouchUpInside];
-                [scroll addSubview:deleteButton];
-            }
-        }
-        
-        NSInteger count = emojiArray.count / (HORIZONTAL_COUNT * VERTICAL_COUNT - 1);
-        if (emojiArray.count % (HORIZONTAL_COUNT * VERTICAL_COUNT - 1) > 0) {
-            count += 1;
-        }
-        
-        if (count > 1) {
-            indicatorArray = [[NSMutableArray alloc]init];
-            for (int i = 0; i < count; i++) {
-                UIButton *indicatorItem = [[UIButton alloc]init];
-                indicatorItem.tag = i;
-                [indicatorItem addTarget:self action:@selector(indicatorClicked:) forControlEvents:UIControlEventTouchUpInside];
-                if (i == 0) {
-                    indicatorItem.backgroundColor = [UIColor grayColor];
-                }else{
-                    indicatorItem.backgroundColor = [UIColor whiteColor];
-                }
-                
-                [indicatorArray addObject:indicatorItem];
-                [self addSubview:indicatorItem];
-            }
-        }
-        
         lineView = [[UIView alloc]init];
         lineView.backgroundColor = [UIColor colorWithHEX:LINE_COLOR alpha:1.0];
         [self addSubview:lineView];
         
         latelyButton = [[UIButton alloc]init];
         latelyButton.backgroundColor = self.backgroundColor;
-        [latelyButton setTitle:@"最近" forState:UIControlStateNormal];
+        [latelyButton setTitle:EM_ChatString(@"common.lately") forState:UIControlStateNormal];
         [latelyButton setTitleColor:[UIColor colorWithHEX:TEXT_NORMAL_COLOR alpha:1.0] forState:UIControlStateNormal];
         [latelyButton setTitleColor:[UIColor colorWithHEX:TEXT_SELECT_COLOR alpha:1.0] forState:UIControlStateSelected];
         [latelyButton addTarget:self action:@selector(emojiLatelyClicked:) forControlEvents:UIControlEventTouchUpInside];
@@ -105,13 +72,84 @@
         sendButton = [[UIButton alloc]init];
         sendButton.backgroundColor = [UIColor colorWithHEX:@"#A4D3EE" alpha:1.0];
         sendButton.selected = YES;
-        [sendButton setTitle:@"发送" forState:UIControlStateNormal];
+        [sendButton setTitle:EM_ChatString(@"common.send") forState:UIControlStateNormal];
         [sendButton setTitleColor:[UIColor colorWithHEX:TEXT_NORMAL_COLOR alpha:1.0] forState:UIControlStateNormal];
         [sendButton setTitleColor:[UIColor colorWithHEX:TEXT_SELECT_COLOR alpha:1.0] forState:UIControlStateSelected];
         [sendButton addTarget:self action:@selector(emojiSendClicked:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:sendButton];
+        
+        [self initEmoji:Emoji_Emoticons];
     }
     return self;
+}
+
+- (void)initEmoji:(Emoji_Type)type{
+    switch (type) {
+        case Emoji_Emoticons:{
+            emojiArray = [EmojiEmoticons allEmoticons];
+        }
+            break;
+        case Emoji_Lately:{
+            emojiArray = [EM_ChatDBM queryEmoji];
+        }
+            break;
+    }
+    
+    for(UIView * view in scroll.subviews){
+        [view removeFromSuperview];
+    }
+    
+    NSInteger pageEmojiCount = HORIZONTAL_COUNT * VERTICAL_COUNT - 1;
+    for (int i = 0; i < emojiArray.count; i++) {
+        UIButton *emoji = [[UIButton alloc]init];
+        if (type == Emoji_Lately) {
+            EM_ChatLatelyEmoji *latelyEmoji = emojiArray[i];
+            [emoji setTitle:latelyEmoji.emoji forState:UIControlStateNormal];
+        }else{
+            [emoji setTitle:emojiArray[i] forState:UIControlStateNormal];
+        }
+        
+        [emoji addTarget:self action:@selector(emojiClicked:) forControlEvents:UIControlEventTouchUpInside];
+        [scroll addSubview:emoji];
+        
+        if (i % pageEmojiCount == pageEmojiCount - 1 || i == emojiArray.count - 1) {
+            UIButton *deleteButton = [[UIButton alloc]init];
+            [deleteButton setImage:[UIImage imageNamed:RES_IMAGE_TOOL(@"tool_delete")] forState:UIControlStateNormal];
+            [deleteButton addTarget:self action:@selector(emojiDeleteClicked:) forControlEvents:UIControlEventTouchUpInside];
+            [scroll addSubview:deleteButton];
+        }
+    }
+    
+    NSInteger count = emojiArray.count / (HORIZONTAL_COUNT * VERTICAL_COUNT - 1);
+    if (emojiArray.count % (HORIZONTAL_COUNT * VERTICAL_COUNT - 1) > 0) {
+        count += 1;
+    }
+    
+    if (indicatorArray && indicatorArray.count > 0) {
+        for (int i = 0; i < indicatorArray.count; i++) {
+            UIView *view = indicatorArray[i];
+            [view removeFromSuperview];
+        }
+    }
+    
+    if (count > 1) {
+        indicatorArray = [[NSMutableArray alloc]init];
+        for (int i = 0; i < count; i++) {
+            UIButton *indicatorItem = [[UIButton alloc]init];
+            indicatorItem.tag = i;
+            [indicatorItem addTarget:self action:@selector(indicatorClicked:) forControlEvents:UIControlEventTouchUpInside];
+            if (i == 0) {
+                indicatorItem.backgroundColor = [UIColor grayColor];
+            }else{
+                indicatorItem.backgroundColor = [UIColor whiteColor];
+            }
+            
+            [indicatorArray addObject:indicatorItem];
+            [self addSubview:indicatorItem];
+        }
+    }
+    [self setNeedsDisplay];
+    
 }
 
 - (void)layoutSubviews{
@@ -169,11 +207,12 @@
 }
 
 - (void)emojiLatelyClicked:(UIButton *)sender{
+    [self initEmoji:Emoji_Lately];
     
 }
 
 - (void)emojiActionClicked:(UIButton *)sender{
-    
+    [self initEmoji:Emoji_Emoticons];
 }
 
 - (void)emojiSendClicked:(UIButton *)sender{
