@@ -199,14 +199,35 @@
 + (NSArray *)queryEmoji{
     __block NSMutableArray *ret = [[NSMutableArray alloc]init];
     
+    NSString *order = [NSString stringWithFormat:@"%@ %@",EMOJI_COLUMN_USE_TIME,@"DESC"];
+    
     [[EM_ChatDB shared] inTransaction:^(FMDatabase *db, BOOL *rollback) {
-        FMResultSet *result = [EM_DBOPHelper query:[EM_ChatLatelyEmoji tableName] Projects:nil Selection:nil SelArgs:nil Order:nil UseDB:db];
+        FMResultSet *result = [EM_DBOPHelper query:[EM_ChatLatelyEmoji tableName] Projects:nil Selection:nil SelArgs:nil Order:order LimitSize:46 Offset:0 UseDB:db];
         while ([result next]) {
             EM_ChatLatelyEmoji *emoji = [[EM_ChatLatelyEmoji alloc]init];
             [emoji getFromResultSet:result.resultDictionary];
             [ret addObject:emoji];
         }
         [result close];
+    }];
+    
+    return ret;
+}
+
++ (BOOL)updateEmoji:(EM_ChatLatelyEmoji *)emoji{
+    __block BOOL ret = NO;
+    
+    [[EM_ChatDB shared] inTransaction:^(FMDatabase *db, BOOL *rollback) {
+        NSDictionary *content = @{EMOJI_COLUMN_CALCULATE:@(emoji.calculate),EMOJI_COLUMN_USE_TIME:@(emoji.useTime)};
+        
+        NSMutableString *selection = [[NSMutableString alloc]init];
+        [selection appendString:EMOJI_COLUMN_EMOJI];
+        [selection appendString:@" = ?"];
+        
+        NSArray *args = @[emoji.emoji];
+        
+        ret = [EM_DBOPHelper update:[EM_ChatLatelyEmoji tableName] WithContent:content Selection:selection SelArgs:args UseDB:db];
+        
     }];
     
     return ret;

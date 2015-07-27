@@ -52,6 +52,23 @@
     return createSql;
 }
 
+- (instancetype)initWithEmoji:(NSString *)emoji{
+    self = [self init];
+    if (self) {
+        _emoji = emoji;
+    }
+    return self;
+}
+
+- (instancetype)init{
+    self = [super init];
+    if (self) {
+        _calculate = 1;
+        _useTime = [NSDate date].timeIntervalSince1970;
+    }
+    return self;
+}
+
 - (NSMutableDictionary *)getContentValues{
     NSMutableDictionary *values = [super getContentValues];
     
@@ -82,6 +99,17 @@
     if (useTime && ![useTime isMemberOfClass:[NSNull class]]) {
         self.useTime = [useTime doubleValue];
     }
+}
+
+- (BOOL)isEqual:(id)object{
+    BOOL isEqual = [super isEqual:object];
+    if (!isEqual) {
+        EM_ChatLatelyEmoji *emoji = object;
+        if (emoji.emoji && self.emoji) {
+            return [emoji.emoji isEqualToString:self.emoji];
+        }
+    }
+    return isEqual;
 }
 
 @end

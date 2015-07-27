@@ -19,4 +19,6 @@
 @property (nonatomic,assign) NSInteger calculate;
 @property (nonatomic,assign) double useTime;
 
+- (instancetype)initWithEmoji:(NSString *)emoji;
+
 @end

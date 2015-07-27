@@ -28,6 +28,8 @@ typedef NS_ENUM(NSInteger, Emoji_Type) {
 
 @implementation EM_ChatEmojiView{
     NSArray *emojiArray;
+    NSMutableArray *latelyArray;
+    NSMutableArray *tempArray;
     
     UIScrollView *scroll;
     NSMutableArray *indicatorArray;
@@ -41,6 +43,7 @@ typedef NS_ENUM(NSInteger, Emoji_Type) {
 - (instancetype)init{
     self = [super init];
     if (self) {
+        
         scroll = [[UIScrollView alloc]init];
         scroll.showsHorizontalScrollIndicator = NO;
         scroll.showsVerticalScrollIndicator = NO;
@@ -78,19 +81,32 @@ typedef NS_ENUM(NSInteger, Emoji_Type) {
         [sendButton addTarget:self action:@selector(emojiSendClicked:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:sendButton];
         
+        latelyArray = [[NSMutableArray alloc]initWithArray:[EM_ChatDBM queryEmoji]];
+        emojiArray = [EmojiEmoticons allEmoticons];
+        tempArray = [[NSMutableArray alloc]init];
+        
         [self initEmoji:Emoji_Emoticons];
     }
     return self;
 }
 
+- (void)dealloc{
+//    for (int i = 0; i < latelyArray.count; i++) {
+//        EM_ChatLatelyEmoji *emoji = latelyArray[i];
+//        [EM_ChatDBM updateEmoji:emoji];
+//    }
+}
+
 - (void)initEmoji:(Emoji_Type)type{
+    
+    NSArray *array;
     switch (type) {
         case Emoji_Emoticons:{
-            emojiArray = [EmojiEmoticons allEmoticons];
+            array = emojiArray;
         }
             break;
         case Emoji_Lately:{
-            emojiArray = [EM_ChatDBM queryEmoji];
+            array = latelyArray;
         }
             break;
     }
@@ -100,19 +116,19 @@ typedef NS_ENUM(NSInteger, Emoji_Type) {
     }
     
     NSInteger pageEmojiCount = HORIZONTAL_COUNT * VERTICAL_COUNT - 1;
-    for (int i = 0; i < emojiArray.count; i++) {
+    for (int i = 0; i < array.count; i++) {
         UIButton *emoji = [[UIButton alloc]init];
         if (type == Emoji_Lately) {
-            EM_ChatLatelyEmoji *latelyEmoji = emojiArray[i];
+            EM_ChatLatelyEmoji *latelyEmoji = array[i];
             [emoji setTitle:latelyEmoji.emoji forState:UIControlStateNormal];
         }else{
-            [emoji setTitle:emojiArray[i] forState:UIControlStateNormal];
+            [emoji setTitle:array[i] forState:UIControlStateNormal];
         }
         
         [emoji addTarget:self action:@selector(emojiClicked:) forControlEvents:UIControlEventTouchUpInside];
         [scroll addSubview:emoji];
         
-        if (i % pageEmojiCount == pageEmojiCount - 1 || i == emojiArray.count - 1) {
+        if (i % pageEmojiCount == pageEmojiCount - 1 || i == array.count - 1) {
             UIButton *deleteButton = [[UIButton alloc]init];
             [deleteButton setImage:[UIImage imageNamed:RES_IMAGE_TOOL(@"tool_delete")] forState:UIControlStateNormal];
             [deleteButton addTarget:self action:@selector(emojiDeleteClicked:) forControlEvents:UIControlEventTouchUpInside];
@@ -120,8 +136,8 @@ typedef NS_ENUM(NSInteger, Emoji_Type) {
         }
     }
     
-    NSInteger count = emojiArray.count / (HORIZONTAL_COUNT * VERTICAL_COUNT - 1);
-    if (emojiArray.count % (HORIZONTAL_COUNT * VERTICAL_COUNT - 1) > 0) {
+    NSInteger count = array.count / (HORIZONTAL_COUNT * VERTICAL_COUNT - 1);
+    if (array.count % (HORIZONTAL_COUNT * VERTICAL_COUNT - 1) > 0) {
         count += 1;
     }
     
@@ -147,9 +163,29 @@ typedef NS_ENUM(NSInteger, Emoji_Type) {
             [indicatorArray addObject:indicatorItem];
             [self addSubview:indicatorItem];
         }
+    }else{
+        indicatorArray = nil;
     }
     [self setNeedsDisplay];
     
+}
+
+- (void)updateLatelyEmojiArray{
+    for (EM_ChatLatelyEmoji *tempEmoji in tempArray) {
+        NSInteger index = [latelyArray indexOfObject:tempEmoji];
+        if (index >= 0 && index < latelyArray.count) {
+            EM_ChatLatelyEmoji *emoji = latelyArray[index];
+            emoji.calculate += tempEmoji.calculate;
+            emoji.useTime = tempEmoji.useTime;
+            [EM_ChatDBM updateEmoji:emoji];
+        }else{
+            [latelyArray insertObject:tempEmoji atIndex:0];
+            [EM_ChatDBM insertEmoji:tempEmoji];
+            if (latelyArray.count > 46) {
+                [latelyArray removeLastObject];
+            }
+        }
+    }
 }
 
 - (void)layoutSubviews{
@@ -185,6 +221,8 @@ typedef NS_ENUM(NSInteger, Emoji_Type) {
             subview.frame = CGRectMake(x + (HEIGHT_INDICATOR_OF_DEFAULT + COMMON_PADDING) * i, scroll.frame.size.height + HEIGHT_INDICATOR_OF_DEFAULT / 2, HEIGHT_INDICATOR_OF_DEFAULT, HEIGHT_INDICATOR_OF_DEFAULT);
             subview.layer.cornerRadius = HEIGHT_INDICATOR_OF_DEFAULT / 2;
         }
+    }else{
+        scroll.contentSize = CGSizeMake(scroll.frame.size.width, scroll.frame.size.height);
     }
     
     CGFloat toolHeight = (size.width - LEFT_PADDING - RIGHT_PADDING) / HORIZONTAL_COUNT;
@@ -195,27 +233,39 @@ typedef NS_ENUM(NSInteger, Emoji_Type) {
 }
 
 - (void)emojiClicked:(UIButton *)sender{
+    EM_ChatLatelyEmoji *tempEmoji = [[EM_ChatLatelyEmoji alloc]initWithEmoji:sender.titleLabel.text];
+    [tempArray addObject:tempEmoji];
     if (_delegate) {
         [_delegate didEmojiClicked:sender.titleLabel.text];
     }
 }
 
 - (void)emojiDeleteClicked:(UIButton *)sender{
+    EM_ChatLatelyEmoji *tempEmoji = [[EM_ChatLatelyEmoji alloc]initWithEmoji:sender.titleLabel.text];
+    [tempArray removeObject:tempEmoji];
     if (_delegate) {
         [_delegate didEmojiDeleteClicked];
     }
 }
 
 - (void)emojiLatelyClicked:(UIButton *)sender{
+    emojiButton.selected = NO;
+    emojiButton.backgroundColor = self.backgroundColor;
+    sender.selected = YES;
+    sender.backgroundColor = [UIColor colorWithHEX:LINE_COLOR alpha:1.0];
     [self initEmoji:Emoji_Lately];
-    
 }
 
 - (void)emojiActionClicked:(UIButton *)sender{
+    latelyButton.selected = NO;
+    latelyButton.backgroundColor = self.backgroundColor;
+    sender.selected = YES;
+    sender.backgroundColor = [UIColor colorWithHEX:LINE_COLOR alpha:1.0];
     [self initEmoji:Emoji_Emoticons];
 }
 
 - (void)emojiSendClicked:(UIButton *)sender{
+    [self updateLatelyEmojiArray];
     if (_delegate) {
         [_delegate didEmojiSendClicked];
     }

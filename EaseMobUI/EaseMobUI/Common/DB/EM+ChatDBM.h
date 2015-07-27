@@ -29,5 +29,6 @@
 + (BOOL)insertEmoji:(EM_ChatLatelyEmoji *)emoji;
 + (BOOL)deleteEmoji:(EM_ChatLatelyEmoji *)emoji;
 + (NSArray *)queryEmoji;
++ (BOOL)updateEmoji:(EM_ChatLatelyEmoji *)emoji;
 
 @end
