@@ -402,6 +402,7 @@
 				B98CC2501B57D106002558D2 /* EM+ChatMessageCell.h */,
 				B98CC2511B57D106002558D2 /* EM+ChatMessageCell.m */,
 				B928ACE01B58E1AA00F618BE /* Bubble */,
+				B990E1891B69D515009939F5 /* Extend */,
 			);
 			path = ChatCell;
 			sourceTree = "<group>";
@@ -484,6 +485,13 @@
 				B9D1BFB11B5DE8E800C0A3D4 /* EM+ChatMessageModel.m */,
 			);
 			path = Message;
+			sourceTree = "<group>";
+		};
+		B990E1891B69D515009939F5 /* Extend */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Extend;
 			sourceTree = "<group>";
 		};
 		B9BF0DEE1B42889F0003FF67 = {

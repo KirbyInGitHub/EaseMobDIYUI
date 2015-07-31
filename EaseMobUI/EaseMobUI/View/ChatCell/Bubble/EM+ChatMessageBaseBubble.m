@@ -7,6 +7,8 @@
 //
 
 #import "EM+ChatMessageBaseBubble.h"
+#import "UIColor+Hex.h"
+#import "EM+Common.h"
 
 @implementation EM_ChatMessageBaseBubble{
     UITapGestureRecognizer *tap;
@@ -31,10 +33,6 @@ NSString * const HANDLE_ACTION_UNKNOWN = @"HANDLE_ACTION_UNKNOWN";
     return CGSizeMake(CELL_BUBBLE_LEFT_PADDING + CELL_BUBBLE_RIGHT_PADDING, CELL_BUBBLE_TOP_PADDING + CELL_BUBBLE_BOTTOM_PADDING);
 }
 
-- (void)setMessage:(EM_ChatMessageModel *)message{
-    _message = message;
-}
-
 - (instancetype)init{
     self = [super init];
     if (self) {
@@ -42,6 +40,13 @@ NSString * const HANDLE_ACTION_UNKNOWN = @"HANDLE_ACTION_UNKNOWN";
         self.needLongPress = YES;
     }
     return self;
+}
+
+- (void)layoutSubviews{
+    [super layoutSubviews];
+    if (self.extendView) {
+        self.extendView.bounds = CGRectMake(0, 0, self.message.extendSize.width, self.message.extendSize.height);
+    }
 }
 
 - (NSString *)handleAction{
@@ -80,6 +85,13 @@ NSString * const HANDLE_ACTION_UNKNOWN = @"HANDLE_ACTION_UNKNOWN";
 }
 
 - (void)bubbleTap:(UITapGestureRecognizer *)recognizer{
+    if (self.extendView) {
+        CGPoint point = [recognizer locationInView:self];
+        if (CGRectContainsPoint(self.extendView.frame, point)) {
+            return;
+        }
+    }
+    
     if(_delegate){
         NSDictionary *userInfo = @{kHandleActionName:self.handleAction,kHandleActionMessage:self.message};
         [_delegate bubbleTapWithUserInfo:userInfo];
@@ -87,6 +99,13 @@ NSString * const HANDLE_ACTION_UNKNOWN = @"HANDLE_ACTION_UNKNOWN";
 }
 
 - (void)bubbleLongPress:(UILongPressGestureRecognizer *)recognizer{
+    if (self.extendView) {
+        CGPoint point = [recognizer locationInView:self];
+        if (CGRectContainsPoint(self.extendView.frame, point)) {
+            return;
+        }
+    }
+    
     if (recognizer.state == UIGestureRecognizerStateBegan && _delegate) {
         NSDictionary *userInfo = @{kHandleActionName:self.handleAction,kHandleActionMessage:self.message};
         [_delegate bubbleLongPressWithUserInfo:userInfo];
@@ -95,6 +114,35 @@ NSString * const HANDLE_ACTION_UNKNOWN = @"HANDLE_ACTION_UNKNOWN";
 
 - (BOOL)canBecomeFirstResponder{
     return YES;
+}
+
+- (void)setExtendView:(UIView *)extendView{
+    if (_extendView == extendView) {
+        return;
+    }else{
+        if (_extendView) {
+            [_extendView removeFromSuperview];
+        }
+        _extendView = extendView;
+        if (_extendView){
+            [self addSubview:_extendView];
+            if(_extendLine){
+                [_extendLine removeFromSuperview];
+            }else{
+                _extendLine = [[UIView alloc]init];
+                _extendLine.backgroundColor = [UIColor colorWithHEX:LINE_COLOR alpha:1.0];
+            }
+            [self addSubview:_extendLine];
+        }else{
+            if(_extendLine){
+                [_extendLine removeFromSuperview];
+            }
+        }
+    }
+}
+
+- (void)setMessage:(EM_ChatMessageModel *)message{
+    _message = message;
 }
 
 @end
