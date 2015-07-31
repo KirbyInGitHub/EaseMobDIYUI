@@ -41,3 +41,5 @@ error.device.not_support_photo_library = "设备不支持图片库";
 error.device.not_support_camera = "设备不支持相机";
 error.record.too_short = "录音时间太短";
 error.record.failure = "录音失败";
+
+error.hint.function_null = "功能未实现";

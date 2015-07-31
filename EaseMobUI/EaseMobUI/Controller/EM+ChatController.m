@@ -49,7 +49,6 @@ EM_ChatMessageCellDelegate,
 EM_LocationControllerDelegate,
 EM_ChatMessageManagerDelegate,
 EMChatManagerDelegate,
-EMCallManagerDelegate,
 EMDeviceManagerDelegate>
 
 @property (nonatomic, strong) EMConversation *conversation;
@@ -366,9 +365,9 @@ EMDeviceManagerDelegate>
             [self showHint:EM_ChatString(@"error.device.not_support_camera")];
         }
     }else if ([action isEqualToString:kActionNameVoice]){
-        [[EaseMob sharedInstance].callManager asyncMakeVoiceCall:_chatter timeout:60 error:nil];
+        [self showHint:EM_ChatString(@"error.hint.function_null")];
     }else if ([action isEqualToString:kActionNameVideo]){
-        [[EaseMob sharedInstance].callManager asyncMakeVideoCall:_chatter timeout:60 error:nil];
+        [self showHint:EM_ChatString(@"error.hint.function_null")];
     }else if ([action isEqualToString:kActionNameLocation]){
         
         EM_LocationController *locationController = [[EM_LocationController alloc]init];
@@ -820,11 +819,6 @@ EMDeviceManagerDelegate>
     }
     
     return height;
-}
-
-#pragma mark - EMCallManagerDelegate
-- (void)callSessionStatusChanged:(EMCallSession *)callSession changeReason:(EMCallStatusChangedReason)reason error:(EMError *)error{
-    
 }
 
 #pragma mark - EMChatManagerChatDelegate
