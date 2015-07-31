@@ -34,7 +34,7 @@
         [selection appendString:MESSAGE_DETAILS_COLUMN_BODY_TYPE];
         [selection appendString:@" = ? AND "];
         [selection appendString:MESSAGE_DETAILS_COLUMN_TYPE];
-        [selection appendString:@" = ? AND "];
+        [selection appendString:@" = ?"];
         
         NSArray *args = @[state.messageId,@(state.messageBodyType),@(state.messageType)];
         
@@ -58,7 +58,7 @@
         [selection appendString:MESSAGE_DETAILS_COLUMN_BODY_TYPE];
         [selection appendString:@" = ? AND "];
         [selection appendString:MESSAGE_DETAILS_COLUMN_TYPE];
-        [selection appendString:@" = ? AND "];
+        [selection appendString:@" = ?"];
         
         NSArray *args = @[state.messageId,@(state.messageBodyType),@(state.messageType)];
         
@@ -86,7 +86,7 @@
         [selection appendString:MESSAGE_DETAILS_COLUMN_BODY_TYPE];
         [selection appendString:@" = ? AND "];
         [selection appendString:MESSAGE_DETAILS_COLUMN_TYPE];
-        [selection appendString:@" = ? AND "];
+        [selection appendString:@" = ?"];
         
         NSArray *args = @[state.messageId,@(state.messageBodyType),@(state.messageType)];
         

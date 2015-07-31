@@ -132,9 +132,6 @@ EMDeviceManagerDelegate>
     [[EaseMob sharedInstance].chatManager removeDelegate:self];
     [[EaseMob sharedInstance].chatManager addDelegate:self delegateQueue:nil];
     
-    [[EaseMob sharedInstance].callManager removeDelegate:self];
-    [[EaseMob sharedInstance].callManager addDelegate:self delegateQueue:nil];
-    
     _messageQueue = dispatch_queue_create("EaseMob", NULL);
     
     [self loadMoreMessage:YES animated:NO];
@@ -585,7 +582,8 @@ EMDeviceManagerDelegate>
 }
 
 - (void)copyMessage:(id)sender{
-    
+    UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+    pasteboard.string = nil;
 }
 
 - (void)collectMessageFace:(id)sender{
