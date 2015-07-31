@@ -11,6 +11,8 @@
 
 @implementation EM_ChatInputView
 
+@synthesize overrideNextResponder;
+
 - (instancetype)init{
     self = [super init];
     if (self) {
@@ -35,17 +37,18 @@
 }
 
 - (UIResponder *)nextResponder {
-    if (self.overrideNextResponder != nil)
-        return self.overrideNextResponder;
+    if (overrideNextResponder != nil)
+        return overrideNextResponder;
     else
         return [super nextResponder];
 }
 
 - (BOOL)canPerformAction:(SEL)action withSender:(id)sender {
-    if (self.overrideNextResponder != nil)
+    if (overrideNextResponder != nil){
         return NO;
-    else
+    }else{
         return [super canPerformAction:action withSender:sender];
+    }
 }
 
 @end

@@ -7,17 +7,10 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "EM+ChatMessageState.h"
 #import "EM+ChatConversation.h"
 #import "EM+ChatLatelyEmoji.h"
 
 @interface EM_ChatDBM : NSObject
-
-#pragma mark - MessageDetails
-+ (BOOL)insertMessageDetails:(EM_ChatMessageState *)state;
-+ (BOOL)deleteMessageDetails:(EM_ChatMessageState *)state;
-+ (BOOL)queryMessageDetails:(EM_ChatMessageState *)state;
-+ (BOOL)updateMessageDetails:(EM_ChatMessageState *)state;
 
 #pragma mark - Conversation
 + (BOOL)insertConversation:(EM_ChatConversation *)conversation;

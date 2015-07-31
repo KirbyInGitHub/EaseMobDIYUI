@@ -63,6 +63,10 @@
     }
 }
 
+- (BOOL)inputEditing{
+    return _inputToolView.inputEditing;
+}
+
 - (void)pullUpShow{
     if (_inputToolView.stateRecord) {
         [self showMoreTool];

@@ -68,4 +68,6 @@ extern NSString * const REUSE_IDENTIFIER_UNKNOWN;
 
 - (void)chatMessageCell:(EM_ChatMessageCell *)cell didLongPressMessageWithUserInfo:(NSDictionary *)userInfo indexPath:(NSIndexPath *)indexPath;
 
+- (void)chatMessageCell:(EM_ChatMessageCell *)cell didMenuSelectedWithAction:(EM_MENU_ACTION)action message:(EM_ChatMessageModel *)message indexPath:(NSIndexPath *)indexPath;
+
 @end

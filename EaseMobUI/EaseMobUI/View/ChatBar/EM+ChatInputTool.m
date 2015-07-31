@@ -192,6 +192,10 @@
     inputView.text = editor;
 }
 
+- (BOOL)inputEditing{
+    return inputView.isFirstResponder;
+}
+
 - (void)layoutSubviews{
     [super layoutSubviews];
     

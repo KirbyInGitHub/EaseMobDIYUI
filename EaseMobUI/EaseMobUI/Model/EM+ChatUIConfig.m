@@ -194,6 +194,7 @@ NSString * const kActionNameFile = @"kActionNameFile";
 - (void)removeActionWithName:(NSString *)name{
     if (name && name.length > 0) {
         [_actionDictionary removeObjectForKey:name];
+        [_keyArray removeObject:name];
     }
 }
 

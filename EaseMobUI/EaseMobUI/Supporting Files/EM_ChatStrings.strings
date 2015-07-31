@@ -25,9 +25,13 @@ common.copy = "复制";
 common.collect_face = "添加到表情";
 common.download = "下载";
 common.collect = "收藏";
+common.collect_cancel = "取消收藏";
 common.forward = "转发";
 common.revocation = "撤回";
 common.delete = "删除";
+
+common.hint.delete.failure = "删除失败";
+common.hint.collect.failure = "收藏失败";
 
 record.will_cancel = "松开取消发送";
 record.will_audition = "松开试听";

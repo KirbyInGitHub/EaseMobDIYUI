@@ -53,6 +53,52 @@ NSString * const HANDLE_ACTION_UNKNOWN = @"HANDLE_ACTION_UNKNOWN";
     return HANDLE_ACTION_UNKNOWN;
 }
 
+- (NSMutableArray *)bubbleMenuItems{
+    NSMutableArray *menuItems = [[NSMutableArray alloc]init];
+    
+    if (self.message.bodyType == eMessageBodyType_Text) {
+        //复制
+        UIMenuItem *copyItme = [[UIMenuItem alloc]initWithTitle:EM_ChatString(@"common.copy") action:@selector(copyEMMessage:)];
+        [menuItems addObject:copyItme];
+    }else if (self.message.bodyType == eMessageBodyType_Image){
+        //收藏到表情
+        UIMenuItem *collectFaceItem = [[UIMenuItem alloc]initWithTitle:EM_ChatString(@"common.collect_face") action:@selector(collectEMMessageFace:)];
+        [menuItems addObject:collectFaceItem];
+    }else if (self.message.bodyType == eMessageBodyType_File){
+        //下载,如果未下载
+        EMFileMessageBody *messageBody = (EMFileMessageBody *)self.message.messageBody;
+        if (messageBody.attachmentDownloadStatus == EMAttachmentNotStarted) {
+            UIMenuItem *downloadItem = [[UIMenuItem alloc]initWithTitle:EM_ChatString(@"common.download") action:@selector(downloadEMMessageFile:)];
+            [menuItems addObject:downloadItem];
+        }
+    }
+    
+    if (self.message.bodyType != eMessageBodyType_Video) {
+        //收藏
+        NSString *conllect = EM_ChatString(@"common.collect");
+        if (self.message.messageData.collected) {
+            conllect = EM_ChatString(@"common.collect_cancel");
+        }
+        UIMenuItem *collectItem = [[UIMenuItem alloc]initWithTitle:conllect action:@selector(collectEMMessage:)];
+        [menuItems addObject:collectItem];
+    }
+    
+    if (self.message.bodyType != eMessageBodyType_Voice) {
+        //转发
+        
+        UIMenuItem *forwardItem = [[UIMenuItem alloc]initWithTitle:EM_ChatString(@"common.forward") action:@selector(forwardEMMessage:)];
+        [menuItems addObject:forwardItem];
+        
+        //转发多条
+    }
+    
+    //删除
+    UIMenuItem *deleteItem = [[UIMenuItem alloc]initWithTitle:EM_ChatString(@"common.delete") action:@selector(deleteEMMessage:)];
+    [menuItems addObject:deleteItem];
+    
+    return menuItems;
+}
+
 - (void)setNeedTap:(BOOL)needTap{
     _needTap = needTap;
     if (tap) {
@@ -112,8 +158,85 @@ NSString * const HANDLE_ACTION_UNKNOWN = @"HANDLE_ACTION_UNKNOWN";
     }
 }
 
+//复制
+- (void)copyEMMessage:(id)sender{
+    if (_delegate) {
+        [_delegate bubbleMenuAction:EM_MENU_ACTION_COPY];
+    }
+}
+
+//添加到表情
+- (void)collectEMMessageFace:(id)sender{
+    if (_delegate) {
+        [_delegate bubbleMenuAction:EM_MENU_ACTION_FACE];
+    }
+}
+
+//下载
+- (void)downloadEMMessageFile:(id)sender{
+    if (_delegate) {
+        [_delegate bubbleMenuAction:EM_MENU_ACTION_DOWNLOAD];
+    }
+}
+
+//收藏
+- (void)collectEMMessage:(id)sender{
+    if (_delegate) {
+        [_delegate bubbleMenuAction:EM_MENU_ACTION_COLLECT];
+    }
+}
+
+//转发
+- (void)forwardEMMessage:(id)sender{
+    if (_delegate) {
+        [_delegate bubbleMenuAction:EM_MENU_ACTION_FORWARD];
+    }
+}
+
+//删除
+- (void)deleteEMMessage:(id)sender{
+    if (_delegate) {
+        [_delegate bubbleMenuAction:EM_MENU_ACTION_DELETE];
+    }
+}
+
 - (BOOL)canBecomeFirstResponder{
     return YES;
+}
+
+- (BOOL)canPerformAction:(SEL)action withSender:(id)sender{
+    
+    if (!self.message) {
+        return NO;
+    }
+    
+    if (action == @selector(deleteEMMessage:)) {
+        return YES;
+    }
+    
+    if (action == @selector(collectEMMessage:)) {
+        return YES;
+    }
+    
+    if (self.message.bodyType == eMessageBodyType_Text && action == @selector(copyEMMessage:)) {
+        return YES;
+    }
+    
+    if (self.message.bodyType == eMessageBodyType_Image && action == @selector(collectEMMessageFace:)){
+        return YES;
+    }
+    if (self.message.bodyType == eMessageBodyType_File && action == @selector(downloadEMMessageFile:)){
+        return YES;
+    }
+    
+    if (self.message.bodyType != eMessageBodyType_Video && action == @selector(collectEMMessage:)) {
+        return YES;
+    }
+    
+    if (self.message.bodyType != eMessageBodyType_Voice && action == @selector(forwardEMMessage:)) {
+        return YES;
+    }
+    return NO;
 }
 
 - (void)setExtendView:(UIView *)extendView{

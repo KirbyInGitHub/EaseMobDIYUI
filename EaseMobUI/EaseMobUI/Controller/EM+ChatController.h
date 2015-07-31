@@ -31,7 +31,7 @@
 
 @property (nonatomic,weak) id<EM_ChatControllerDelegate> delegate;
 
-- (instancetype)initWithChatter:(NSString *)chatter conversationType:(EMConversationType)conversationType;
+- (instancetype)initWithChatter:(NSString *)chatter conversationType:(EMConversationType)conversationType config:(EM_ChatUIConfig *)config;
 
 - (void)sendMessageBody:(id<IEMMessageBody>)messageBody;
 

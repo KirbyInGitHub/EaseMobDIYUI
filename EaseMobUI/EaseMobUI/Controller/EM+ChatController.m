@@ -55,6 +55,7 @@ EMDeviceManagerDelegate>
 @property (nonatomic, strong) NSMutableArray *dataSource;
 @property (nonatomic, strong) NSMutableArray *imageDataArray;
 @property (nonatomic, strong) NSMutableArray *voiceDataArray;
+@property (nonatomic, strong) EM_ChatUIConfig *config;
 
 @property (nonatomic, strong) UIImagePickerController *imagePicker;
 @property (nonatomic, strong) UIMenuController *menuController;
@@ -63,12 +64,12 @@ EMDeviceManagerDelegate>
 
 @implementation EM_ChatController{
     dispatch_queue_t _messageQueue;
-    NSIndexPath *longPressIndexPath;
 }
 
-- (instancetype)initWithChatter:(NSString *)chatter conversationType:(EMConversationType)conversationType{
+- (instancetype)initWithChatter:(NSString *)chatter conversationType:(EMConversationType)conversationType config:(EM_ChatUIConfig *)config{
     self = [super init];
     if (self) {
+        _config = config;
         _chatter = chatter;
         _conversationType = conversationType;
         _conversation = [[EaseMob sharedInstance].chatManager conversationForChatter:_chatter conversationType:_conversationType];
@@ -123,7 +124,7 @@ EMDeviceManagerDelegate>
     [footer setTitle:@"" forState:MJRefreshStateNoMoreData];
     _chatTableView.footer = footer;
     
-    _chatToolBarView = [[EM_ChatToolBar alloc]initWithConfig:[EM_ChatUIConfig defaultConfig]];
+    _chatToolBarView = [[EM_ChatToolBar alloc]initWithConfig:self.config];
     _chatToolBarView.frame = CGRectMake(0, self.view.frame.size.height - HEIGHT_INPUT_OF_DEFAULT, self.view.frame.size.width, HEIGHT_INPUT_OF_DEFAULT + HEIGHT_MORE_TOOL_OF_DEFAULT);
     _chatToolBarView.chatTableView = _chatTableView;
     _chatToolBarView.delegate = self;
@@ -229,8 +230,11 @@ EMDeviceManagerDelegate>
 
 - (void)addMessage:(EMMessage *)message{
     EM_ChatMessageModel *messageModel = [self formatMessage:message];
+    if (_dataSource.count > 0) {
+        EM_ChatMessageModel *preMessage = _dataSource[_dataSource.count - 1];
+        messageModel.showTime = preMessage.timestamp - messageModel.timestamp >= 1000 * 60 * 5;
+    }
     [self continuousMessage:messageModel];
-    [self signMessage:messageModel];
     
     [_dataSource addObject:messageModel];
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:(_dataSource.count - 1) inSection:0];
@@ -249,14 +253,6 @@ EMDeviceManagerDelegate>
     }else if (message.bodyType == eMessageBodyType_Voice){
         [_voiceDataArray addObject:message];
     }
-}
-
-//标记图片是否被查看、语音是否听过、视频是否看过
-- (void)signMessage:(EM_ChatMessageModel *)message{
-    if (message.sender){
-        return;
-    }
-    message.messageDetailsState.details = [EM_ChatDBM queryMessageDetails:message.messageDetailsState];
 }
 
 - (void)reloadMessage:(EMMessage *)message{
@@ -288,8 +284,20 @@ EMDeviceManagerDelegate>
         if (messages.count > 0) {
             for (NSInteger i = messages.count - 1; i >= 0; i--) {
                 EM_ChatMessageModel *messageModel = [self formatMessage:messages[i]];
+                
+                if (i == messages.count - 1) {
+                    if (_dataSource.count > 0) {
+                        EM_ChatMessageModel *nextMessage = _dataSource[0];
+                        messageModel.showTime = nextMessage.timestamp - messageModel.timestamp >= 1000 * 60 * 5;
+                    }else{
+                        messageModel.showTime = [NSDate date].timeIntervalSince1970 * 1000 - messageModel.timestamp >= 1000 * 60 * 5;
+                    }
+                }else{
+                    EM_ChatMessageModel *nextMessage = messages[i + 1];
+                    messageModel.showTime = nextMessage.timestamp - messageModel.timestamp >= 1000 * 60 * 5;
+                }
+                
                 [self continuousMessage:messageModel];
-                [self signMessage:messageModel];
                 
                 [_dataSource insertObject:messageModel atIndex:0];
             }
@@ -456,8 +464,8 @@ EMDeviceManagerDelegate>
         }
     }else if ([handleAction isEqualToString:HANDLE_ACTION_VOICE]){
         [EM_ChatMessageManager defaultManager].delegate = self;
-        if (messageModel.messageDetailsState.checking) {
-            messageModel.messageDetailsState.checking = NO;
+        if (messageModel.messageData.checking) {
+            messageModel.messageData.checking = NO;
             [[EM_ChatMessageManager defaultManager] stopVoice];
             [_chatTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
         }else{
@@ -481,12 +489,12 @@ EMDeviceManagerDelegate>
     }
     
     if (!messageModel.sender
-        && !messageModel.messageDetailsState.details
+        && !messageModel.messageData.details
         && ![handleAction isEqualToString:HANDLE_ACTION_URL]
         && ![handleAction isEqualToString:HANDLE_ACTION_PHONE]
         && ![handleAction isEqualToString:HANDLE_ACTION_TEXT]){
-        messageModel.messageDetailsState.details = YES;
-        [EM_ChatDBM updateMessageDetails:messageModel.messageDetailsState];
+        messageModel.messageData.details = YES;
+        [messageModel updateExt];
     }
 }
 
@@ -504,9 +512,54 @@ EMDeviceManagerDelegate>
         sheet.tag = ALERT_ACTION_PRESS_PHONE;
         [sheet showInView:self.view];
     }else{
-        longPressIndexPath = indexPath;
         EM_ChatMessageModel *messageModel = _dataSource[indexPath.row];
         [self showMenuViewControllerAtIndexPath:indexPath withMessage:messageModel];
+    }
+}
+
+- (void)chatMessageCell:(EM_ChatMessageCell *)cell didMenuSelectedWithAction:(EM_MENU_ACTION)action message:(EM_ChatMessageModel *)message indexPath:(NSIndexPath *)indexPath{
+    if (!message) {
+        return;
+    }
+    
+    switch (action) {
+        case EM_MENU_ACTION_DELETE:{
+            BOOL delete = [self.conversation removeMessage:message.message];
+            if (delete) {
+                [_dataSource removeObject:message];
+                
+                [self.chatTableView beginUpdates];
+                [self.chatTableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+                [self.chatTableView endUpdates];
+                
+            }else{
+                [self showHint:EM_ChatString(@"common.hint.delete.failure")];
+            }
+        }
+            break;
+        case EM_MENU_ACTION_COPY:{
+            EMTextMessageBody *textBody = (EMTextMessageBody *)message.messageBody;
+            UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+            pasteboard.string = textBody.text;
+        }
+            break;
+        case EM_MENU_ACTION_FACE:{
+            [self showHint:EM_ChatString(@"error.hint.function_null")];
+        }
+            break;
+        case EM_MENU_ACTION_DOWNLOAD:{
+            [self showHint:EM_ChatString(@"error.hint.function_null")];
+        }
+            break;
+        case EM_MENU_ACTION_COLLECT:{
+            message.messageData.collected = !message.messageData.collected;
+            [message updateExt];
+        }
+            break;
+        case EM_MENU_ACTION_FORWARD:{
+            [self showHint:EM_ChatString(@"error.hint.function_null")];
+        }
+            break;
     }
 }
 
@@ -516,56 +569,12 @@ EMDeviceManagerDelegate>
     if (!_menuController) {
         _menuController = [UIMenuController sharedMenuController];
     }
-    
-    NSMutableArray *menuItems = [[NSMutableArray alloc]init];
-    if (message.bodyType == eMessageBodyType_Text) {
-        //复制
-        UIMenuItem *copyItme = [[UIMenuItem alloc]initWithTitle:EM_ChatString(@"common.copy") action:@selector(copyMessage:)];
-        [menuItems addObject:copyItme];
-    }else if (message.bodyType == eMessageBodyType_Image){
-        //收藏到表情
-        UIMenuItem *collectFaceItem = [[UIMenuItem alloc]initWithTitle:EM_ChatString(@"common.collect_face") action:@selector(collectMessageFace:)];
-        [menuItems addObject:collectFaceItem];
-    }else if (message.bodyType == eMessageBodyType_File){
-        //下载,如果未下载
-        EMFileMessageBody *messageBody = (EMFileMessageBody *)message.messageBody;
-        if (messageBody.attachmentDownloadStatus == EMAttachmentNotStarted) {
-            UIMenuItem *downloadItem = [[UIMenuItem alloc]initWithTitle:EM_ChatString(@"common.download") action:@selector(downloadMessageFile:)];
-            [menuItems addObject:downloadItem];
-        }
-    }
-    
-    if (message.bodyType != eMessageBodyType_Video) {
-        //收藏
-        UIMenuItem *collectItem = [[UIMenuItem alloc]initWithTitle:EM_ChatString(@"common.collect") action:@selector(collectMessage:)];
-        [menuItems addObject:collectItem];
-    }
-    
-    if (message.bodyType != eMessageBodyType_Voice) {
-        //转发
-        
-        UIMenuItem *forwardItem = [[UIMenuItem alloc]initWithTitle:EM_ChatString(@"common.forward") action:@selector(forwardMessage:)];
-        [menuItems addObject:forwardItem];
-        
-        //转发多条
-    }
 
-    //撤回
-    if (message.sender) {
-        UIMenuItem *revocationItem = [[UIMenuItem alloc]initWithTitle:EM_ChatString(@"common.revocation") action:@selector(revocationMessage:)];
-        [menuItems addObject:revocationItem];
-    }
-    
-    //删除
-    UIMenuItem *deleteItem = [[UIMenuItem alloc]initWithTitle:EM_ChatString(@"common.delete") action:@selector(deleteMessage:)];
-    [menuItems addObject:deleteItem];
-    
-    [_menuController setMenuItems:menuItems];
-    
     EM_ChatMessageCell *cell = (EM_ChatMessageCell *)[_chatTableView cellForRowAtIndexPath:indexPath];
+    [_menuController setMenuItems:[cell.bubbleView bubbleMenuItems]];
     UIView *targetView = cell.bubbleView;
     
-    if (_chatToolBarView.keyboardVisible) {
+    if (_chatToolBarView.inputEditing) {
         _chatToolBarView.inputToolView.overrideNextResponder = targetView;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(menuDidHide:) name:UIMenuControllerDidHideMenuNotification object:nil];
     }else{
@@ -579,35 +588,6 @@ EMDeviceManagerDelegate>
 - (void)menuDidHide:(NSNotification*)notification {
     _chatToolBarView.inputToolView.overrideNextResponder = nil;
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIMenuControllerDidHideMenuNotification object:nil];
-}
-
-- (void)copyMessage:(id)sender{
-    UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
-    pasteboard.string = nil;
-}
-
-- (void)collectMessageFace:(id)sender{
-    
-}
-
-- (void)downloadMessageFile:(id)sender{
-    
-}
-
-- (void)collectMessage:(id)sender{
-    
-}
-
-- (void)forwardMessage:(id)sender{
-    
-}
-
-- (void)revocationMessage:(id)sender{
-    
-}
-
-- (void)deleteMessage:(id)sender{
-    
 }
 
 #pragma mark - EM_ChatMessageManagerDelegate
@@ -636,8 +616,8 @@ EMDeviceManagerDelegate>
         [_chatTableView reloadRowsAtIndexPaths:reloadArray withRowAnimation:UITableViewRowAnimationNone];
         EM_ChatMessageModel *messageModel = completionMessage;
         if (!messageModel.sender) {
-            messageModel.messageDetailsState.details = YES;
-            [EM_ChatDBM updateMessageDetails:messageModel.messageDetailsState];
+            messageModel.messageData.details = YES;
+            [messageModel updateExt];
         }
     }
 }

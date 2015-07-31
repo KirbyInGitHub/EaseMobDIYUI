@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "EaseMob.h"
-#import "EM+ChatMessageState.h"
+#import "EM+ChatMessageData.h"
 
 extern NSString * const kExtendUserInfo;
 extern NSString * const kExtendMessageData;
@@ -25,16 +25,17 @@ extern NSString * const kExtendMessageData;
 
 @property (nonatomic,strong) EMMessage *message;
 @property (nonatomic,strong,readonly) id<IEMMessageBody> messageBody;
-@property (nonatomic, strong, readonly) NSDictionary *messageData;
 @property (nonatomic, strong, readonly) NSDictionary *extend;
+@property (nonatomic,strong,readonly) EM_ChatMessageData *messageData;
 
 //额外的字段
 @property (nonatomic,assign) CGSize bubbleSize;
 @property (nonatomic,assign) BOOL showTime;
 @property (nonatomic, assign) CGSize extendSize;
 @property (nonatomic, assign) BOOL extendShow;
-@property (nonatomic,strong,readonly) EM_ChatMessageState *messageDetailsState;
+
 
 - (instancetype)initWithMessage:(EMMessage *)message;
+- (BOOL)updateExt;
 
 @end

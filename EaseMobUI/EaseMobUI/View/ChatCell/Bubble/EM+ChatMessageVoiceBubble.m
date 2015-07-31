@@ -97,7 +97,7 @@
                                             ]];
         animationView.image = [UIImage imageNamed:RES_IMAGE_CELL(@"voice_right_3")];
     }
-    if (self.message.messageDetailsState.checking && !animationView.isAnimating) {
+    if (self.message.messageData.checking && !animationView.isAnimating) {
         [animationView startAnimating];
     }else{
         [animationView stopAnimating];

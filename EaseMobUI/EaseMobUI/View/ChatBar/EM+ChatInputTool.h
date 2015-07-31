@@ -22,6 +22,7 @@
 @property (nonatomic,assign) BOOL stateMore;
 @property (nonatomic,assign,readonly) CGSize contentSize;
 @property (nonatomic,copy) NSString *editor;
+@property (nonatomic, assign, readonly) BOOL inputEditing;
 
 @property (nonatomic, weak) id<EM_ChatInputToolDelegate> delegate;
 

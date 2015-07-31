@@ -10,7 +10,6 @@
 #import "EM+DBOPHelper.h"
 #import "EM+ChatVersion.h"
 #import "EM+ChatConversation.h"
-#import "EM+ChatMessageState.h"
 #import "EM+ChatLatelyEmoji.h"
 
 #define EM_DB_NAME (@"EM_Chat_UI.db")

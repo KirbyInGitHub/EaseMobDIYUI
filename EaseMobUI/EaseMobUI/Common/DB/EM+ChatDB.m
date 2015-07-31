@@ -51,7 +51,7 @@
 #endif
         [self onCreate:db];
         
-        NSArray *versionArray = @[[EM_ChatVersion currentVersion],[EM_ChatConversation currentVersion],[EM_ChatMessageState currentVersion],[EM_ChatLatelyEmoji currentVersion]];
+        NSArray *versionArray = @[[EM_ChatVersion currentVersion],[EM_ChatConversation currentVersion],[EM_ChatLatelyEmoji currentVersion]];
         [self checkVersionWithDB:db version:versionArray Roolback:rollback];
         if ([db hadError]) {
             ret = NO;
@@ -73,14 +73,10 @@
     create = [db executeUpdate:sql];
     NSLog(@"Create %@ : %@ %@",[EM_ChatConversation tableName],create ? @"Success":@"Failure",[EM_ChatConversation createSql]);
     
-    sql = [EM_ChatMessageState createSql];
-    NSLog(@"Create MessageState SQL - %@",sql);
-    create = [db executeUpdate:sql];
-    NSLog(@"Create %@ : %@ %@",[EM_ChatMessageState tableName],create ? @"Success":@"Failure",[EM_ChatMessageState createSql]);
-    
     sql = [EM_ChatLatelyEmoji createSql];
     create = [db executeUpdate:sql];
-    NSLog(@"Create %@ Table : %@ %@",[EM_ChatLatelyEmoji tableName],create ? @"Success":@"Failure",[EM_ChatMessageState createSql]);
+    NSLog(@"Create %@ Table : %@ %@",[EM_ChatLatelyEmoji tableName],create ? @"Success":@"Failure",[EM_ChatLatelyEmoji createSql]);
+    
 }
 
 - (void)checkVersionWithDB:(FMDatabase *)db version:(NSArray *)versionArray Roolback:(BOOL *)rollback{

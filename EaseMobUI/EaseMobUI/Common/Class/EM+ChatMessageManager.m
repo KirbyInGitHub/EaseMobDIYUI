@@ -135,7 +135,7 @@ static EM_ChatMessageManager *detailInstance = nil;
     if (playIndex >= 0 && playIndex < _voiceArray.count) {
         for (int i = 0; i < _voiceArray.count; i++) {
             EM_ChatMessageModel *messageModel = _voiceArray[i];
-            messageModel.messageDetailsState.checking = i == playIndex;
+            messageModel.messageData.checking = i == playIndex;
         }
         
         __block EM_ChatMessageModel *messageModel = _voiceArray[playIndex];
@@ -143,7 +143,7 @@ static EM_ChatMessageManager *detailInstance = nil;
         
         [[EMCDDeviceManager sharedInstance] asyncPlayingWithPath:messageBody.localPath completion:^(NSError *error) {
             
-            messageModel.messageDetailsState.checking = NO;
+            messageModel.messageData.checking = NO;
             playIndex ++;
             EM_ChatMessageModel *nextMessageModel;
             
@@ -157,7 +157,7 @@ static EM_ChatMessageManager *detailInstance = nil;
                         nextMessageModel = nil;
                     }
                 }
-                if (nextMessageModel && !nextMessageModel.messageDetailsState.details) {
+                if (nextMessageModel && !nextMessageModel.messageData.details) {
                     [self playNextVoice];
                 }
             }

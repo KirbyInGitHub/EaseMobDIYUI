@@ -17,8 +17,8 @@ NSString * const kExtendMessageData = @"kExtendMessageData";
     self = [super init];
     if (self) {
         _bubbleSize = CGSizeZero;
-        _showTime = YES;
-        _messageDetailsState = [[EM_ChatMessageState alloc]init];
+        _showTime = NO;
+        _messageData = [[EM_ChatMessageData alloc]init];
         [self setMessage:message];
     }
     return self;
@@ -48,14 +48,6 @@ NSString * const kExtendMessageData = @"kExtendMessageData";
     return [self.message.messageBodies firstObject];
 }
 
-- (NSDictionary *)messageData{
-    NSDictionary *ext = self.message.ext;
-    if (ext) {
-        return ext[kExtendMessageData];
-    }
-    return nil;
-}
-
 - (NSDictionary *)extend{
     NSDictionary *ext = self.message.ext;
     if (ext) {
@@ -68,9 +60,19 @@ NSString * const kExtendMessageData = @"kExtendMessageData";
     _message = message;
     _nickName = _message.from;
     
-    _messageDetailsState.messageId = _message.messageId;
-    _messageDetailsState.messageBodyType = self.bodyType;
-    _messageDetailsState.messageType = self.messageType;
+    _messageData = [[EM_ChatMessageData alloc]init];
+    if (_message.ext && _message.ext[kExtendMessageData]) {
+        [_messageData getFromResultSet:_message.ext[kExtendMessageData]];
+    }
+}
+
+- (BOOL)updateExt{
+    if (self.extend) {
+        self.message.ext = @{kExtendUserInfo:self.extend,kExtendMessageData:[self.messageData getContentValues]};
+    }else{
+        self.message.ext = @{kExtendMessageData:[self.messageData getContentValues]};
+    }
+    return [self.message updateMessageExtToDB];
 }
 
 - (BOOL)isEqual:(id)object{

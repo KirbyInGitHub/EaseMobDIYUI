@@ -291,4 +291,10 @@ NSString * const REUSE_IDENTIFIER_UNKNOWN = @"REUSE_IDENTIFIER_UNKNOWN";
     }
 }
 
+- (void)bubbleMenuAction:(EM_MENU_ACTION)action{
+    if (_delegate && [_delegate respondsToSelector:@selector(chatMessageCell:didMenuSelectedWithAction:message:indexPath:)]) {
+        [_delegate chatMessageCell:self didMenuSelectedWithAction:action message:self.message indexPath:self.indexPath];
+    }
+}
+
 @end
