@@ -16,6 +16,8 @@
 
 #import "UIViewController+HUD.h"
 
+@protocol EM_ChatControllerDelegate;
+
 @interface EM_ChatController : UIViewController
 
 @property (nonatomic,strong,readonly) NSString *chatter;
@@ -27,9 +29,24 @@
 @property (nonatomic,strong,readonly) EM_ChatTableView *chatTableView;
 @property (nonatomic,strong,readonly) EM_ChatToolBar *chatToolBarView;
 
+@property (nonatomic,weak) id<EM_ChatControllerDelegate> delegate;
+
 - (instancetype)initWithChatter:(NSString *)chatter conversationType:(EMConversationType)conversationType;
 
-- (void)sendMessage:(EMMessage *)message;
 - (void)sendMessageBody:(id<IEMMessageBody>)messageBody;
+
+@end
+
+@protocol EM_ChatControllerDelegate <NSObject>
+
+@required
+
+@optional
+
+- (NSDictionary *)extendForMessageBody:(id<IEMMessageBody>)messageBody;
+- (BOOL)showForExtendMessage:(NSDictionary *)ext;
+- (NSString *)reuseIdentifierForExtendMessage:(NSDictionary *)ext;
+- (CGSize)sizeForExtendMessage:(NSDictionary *)ext maxWidth:(CGFloat)max;
+- (UIView *)viewForExtendMessage:(NSDictionary *)ext reuseView:(UIView *)view;
 
 @end

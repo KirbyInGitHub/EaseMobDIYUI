@@ -10,6 +10,9 @@
 
 @implementation EM_ChatMessageModel
 
+NSString * const kExtendUserInfo = @"kExtendUserInfo";
+NSString * const kExtendMessageData = @"kExtendMessageData";
+
 - (instancetype)initWithMessage:(EMMessage *)message{
     self = [super init];
     if (self) {
@@ -43,6 +46,22 @@
 
 - (id<IEMMessageBody>)messageBody{
     return [self.message.messageBodies firstObject];
+}
+
+- (NSDictionary *)messageData{
+    NSDictionary *ext = self.message.ext;
+    if (ext) {
+        return ext[kExtendMessageData];
+    }
+    return nil;
+}
+
+- (NSDictionary *)extend{
+    NSDictionary *ext = self.message.ext;
+    if (ext) {
+        return ext[kExtendUserInfo];
+    }
+    return nil;
 }
 
 - (void)setMessage:(EMMessage *)message{

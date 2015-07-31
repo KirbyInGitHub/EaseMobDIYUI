@@ -41,9 +41,16 @@
     [super layoutSubviews];
     
     CGSize size = self.frame.size;
-    fileView.frame = CGRectMake(CELL_BUBBLE_RIGHT_PADDING, CELL_BUBBLE_TOP_PADDING, size.width - CELL_BUBBLE_RIGHT_PADDING - CELL_BUBBLE_LEFT_PADDING, size.height - CELL_BUBBLE_TOP_PADDING - CELL_BUBBLE_BOTTOM_PADDING);
+    fileView.frame = CGRectMake(CELL_BUBBLE_RIGHT_PADDING, CELL_BUBBLE_TOP_PADDING, size.width - CELL_BUBBLE_RIGHT_PADDING - CELL_BUBBLE_LEFT_PADDING, size.height - CELL_BUBBLE_TOP_PADDING - CELL_BUBBLE_BOTTOM_PADDING - self.message.extendSize.height - CELL_BUBBLE_EXTEND_PADDING);
     
-    nameLabel.frame = CGRectMake(CELL_BUBBLE_RIGHT_PADDING, size.height - CELL_BUBBLE_BOTTOM_PADDING - 30, size.width - CELL_BUBBLE_RIGHT_PADDING - CELL_BUBBLE_LEFT_PADDING, 30);
+    nameLabel.frame = CGRectMake(CELL_BUBBLE_RIGHT_PADDING, fileView.frame.origin.y + (fileView.frame.size.height - 30), fileView.frame.size.width, 30);
+    
+    if (self.extendView) {
+        self.extendView.center = CGPointMake(size.width / 2, size.height - CELL_BUBBLE_BOTTOM_PADDING - self.message.extendSize.height / 2);
+    }
+    if (self.extendLine) {
+        self.extendLine.frame = CGRectMake(0, self.extendView.frame.origin.y + CELL_BUBBLE_EXTEND_PADDING, size.width, CELL_BUBBLE_EXTEND_PADDING);
+    }
 }
 
 - (NSString *)handleAction{

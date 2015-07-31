@@ -14,6 +14,7 @@
 #define CELL_BUBBLE_RIGHT_PADDING (12)
 #define CELL_BUBBLE_TOP_PADDING (8)
 #define CELL_BUBBLE_BOTTOM_PADDING (8)
+#define CELL_BUBBLE_EXTEND_PADDING  (1)
 
 extern NSString * const kHandleActionName;
 extern NSString * const kHandleActionMessage;
@@ -38,6 +39,9 @@ extern NSString * const HANDLE_ACTION_UNKNOWN;
 @property (nonatomic,assign) BOOL needLongPress;
 @property (nonatomic,weak)   id<EM_ChatMessageBubbleDelegate> delegate;
 @property (nonatomic,copy)   NSString *handleAction;
+
+@property (nonatomic, strong) UIView *extendView;
+@property (nonatomic, strong, readonly) UIView *extendLine;
 
 + (CGSize)sizeForBubbleWithMessage:(id)messageBody maxWithd:(CGFloat)max;
 

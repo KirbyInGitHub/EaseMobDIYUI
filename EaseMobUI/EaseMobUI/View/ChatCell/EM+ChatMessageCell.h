@@ -20,6 +20,7 @@
 #define CELL_TIME_HEIGHT (20)
 #define CELL_NAME_HEIGHT (20)
 #define CELL_INDICATOR_SIZE (10)
+#define CELL_BUBBLE_TAIL_WIDTH  (12)
 
 extern NSString * const REUSE_IDENTIFIER_TEXT;
 extern NSString * const REUSE_IDENTIFIER_IMAGE;
@@ -39,6 +40,9 @@ extern NSString * const REUSE_IDENTIFIER_UNKNOWN;
 @property (nonatomic,weak) id<EM_ChatMessageCellDelegate> delegate;
 
 @property (nonatomic,strong,readonly) EM_ChatMessageBaseBubble *bubbleView;
+@property (nonatomic, strong) UIView *extendView;
+
++ (CGFloat)cellBubbleMaxWidth:(CGFloat)cellMaxWidth;
 
 + (NSString *)cellIdFormMessageBodyType:(MessageBodyType)type;
 

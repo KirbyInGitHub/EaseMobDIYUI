@@ -38,9 +38,16 @@
     [super layoutSubviews];
     CGSize size = self.frame.size;
     
-    mapView.frame = CGRectMake(0, 0, size.width, size.height);
+    mapView.frame = CGRectMake(0, 0, size.width, size.height - self.message.extendSize.height - CELL_BUBBLE_EXTEND_PADDING);
     
-    addressLabel.frame = CGRectMake(0, size.height - 50, size.width , 50 );
+    addressLabel.frame = CGRectMake(mapView.frame.origin.x, mapView.frame.origin.y + (mapView.frame.size.height - 44), mapView.frame.size.width , 44);
+    
+    if (self.extendView) {
+        self.extendView.center = CGPointMake(size.width / 2, size.height - self.message.extendSize.height / 2);
+    }
+    if (self.extendLine) {
+        self.extendLine.frame = CGRectMake(0, self.extendView.frame.origin.y + CELL_BUBBLE_EXTEND_PADDING, size.width, CELL_BUBBLE_EXTEND_PADDING);
+    }
 }
 
 - (NSString *)handleAction{

@@ -200,8 +200,27 @@ EMDeviceManagerDelegate>
 }
 
 - (void)sendMessageBody:(id<IEMMessageBody>)messageBody{
+    [self sendMessageBody:messageBody messageData:nil];
+}
+
+- (void)sendMessageBody:(id<IEMMessageBody>)messageBody messageData:(NSDictionary *)messageData{
+    NSDictionary *userInfo = nil;
+    if (_delegate && [_delegate respondsToSelector:@selector(extendForMessageBody:)]) {
+        userInfo = [_delegate extendForMessageBody:messageBody];
+    }
+    
+    NSMutableDictionary *extend = [[NSMutableDictionary alloc]init];
+    if (userInfo) {
+        [extend setObject:userInfo forKey:kExtendUserInfo];
+    }
+    if (messageData) {
+        [extend setObject:messageData forKey:kExtendMessageData];
+    }
+    
     EMMessage *retureMsg = [[EMMessage alloc]initWithReceiver:_conversation.chatter bodies:[NSArray arrayWithObject:messageBody]];
     retureMsg.messageType = _messageType;
+    retureMsg.ext = extend;
+    
     [self sendMessage:retureMsg];
 }
 
@@ -751,14 +770,31 @@ EMDeviceManagerDelegate>
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     EM_ChatMessageModel *message = _dataSource[indexPath.row];
+    NSDictionary *extend = message.extend;
+    
+    NSString *extendId = nil;
+    if (message.extendShow && _delegate && [_delegate respondsToSelector:@selector(reuseIdentifierForExtendMessage:)]) {
+        extendId = [_delegate reuseIdentifierForExtendMessage:extend];
+    }
     NSString *cellId = [EM_ChatMessageCell cellIdFormMessageBodyType:message.bodyType];
     
-    EM_ChatMessageCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];
+    NSMutableString *identifier = [[NSMutableString alloc]initWithString:cellId];
+    if (extendId) {
+        [identifier appendString:@"_"];
+        [identifier appendString:extendId];
+    }
+    
+    EM_ChatMessageCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
     if (!cell) {
-        cell = [EM_ChatMessageCell cellFromMessageBodyType:message.bodyType reuseIdentifier:cellId];
+        cell = [EM_ChatMessageCell cellFromMessageBodyType:message.bodyType reuseIdentifier:identifier];
         cell.backgroundColor = [UIColor clearColor];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
+    
+    if (message.extendShow && _delegate && [_delegate respondsToSelector:@selector(viewForExtendMessage:reuseView:)]) {
+        cell.extendView = [_delegate viewForExtendMessage:extend reuseView:cell.extendView];
+    }
+    
     cell.message = message;
     cell.indexPath = indexPath;
     cell.delegate = self;
@@ -769,7 +805,21 @@ EMDeviceManagerDelegate>
 #pragma mark - UITableViewDelegate
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     EM_ChatMessageModel *message = _dataSource[indexPath.row];
-    return [EM_ChatMessageCell heightForCellWithMessage:message maxWidth:tableView.bounds.size.width indexPath:indexPath];
+    NSDictionary *extend = message.extend;
+    CGFloat max = tableView.bounds.size.width;
+    
+    CGFloat height = [EM_ChatMessageCell heightForCellWithMessage:message maxWidth:max indexPath:indexPath];
+    
+    if (extend && _delegate && [_delegate respondsToSelector:@selector(showForExtendMessage:)]) {
+        message.extendShow = [_delegate showForExtendMessage:extend];
+    }
+    
+    if (message.extendShow && _delegate && [_delegate respondsToSelector:@selector(sizeForExtendMessage:maxWidth:)]) {
+        message.extendSize = [_delegate sizeForExtendMessage:message.extend maxWidth:[EM_ChatMessageCell cellBubbleMaxWidth:max]];
+        height += (message.extendSize.height + CELL_BUBBLE_EXTEND_PADDING);
+    }
+    
+    return height;
 }
 
 #pragma mark - EMCallManagerDelegate

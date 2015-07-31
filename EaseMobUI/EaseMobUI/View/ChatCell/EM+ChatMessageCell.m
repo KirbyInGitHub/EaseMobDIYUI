@@ -32,6 +32,11 @@ NSString * const REUSE_IDENTIFIER_IFILE = @"REUSE_IDENTIFIER_IFILE";
 NSString * const REUSE_IDENTIFIER_COMMAND = @"REUSE_IDENTIFIER_COMMAND";
 NSString * const REUSE_IDENTIFIER_UNKNOWN = @"REUSE_IDENTIFIER_UNKNOWN";
 
++ (CGFloat)cellBubbleMaxWidth:(CGFloat)cellMaxWidth{
+    CGFloat maxBubbleWidth = cellMaxWidth - CELL_PADDING * 2 - CELL_AVATAR_SIZE * 2 - CELL_BUBBLE_TAIL_WIDTH;
+    return maxBubbleWidth;
+}
+
 + (NSString *)cellIdFormMessageBodyType:(MessageBodyType)type{
     NSString *cellId = REUSE_IDENTIFIER_UNKNOWN;
     switch (type) {
@@ -74,7 +79,7 @@ NSString * const REUSE_IDENTIFIER_UNKNOWN = @"REUSE_IDENTIFIER_UNKNOWN";
     if (message.showTime) {
         contentHeight += CELL_TIME_HEIGHT;
     }
-    CGFloat maxBubbleWidth = max - CELL_PADDING * 2 - CELL_AVATAR_SIZE * 2;
+    CGFloat maxBubbleWidth = [EM_ChatMessageCell cellBubbleMaxWidth:max];
     
     switch (message.bodyType) {
         case eMessageBodyType_Text:{
@@ -209,14 +214,23 @@ NSString * const REUSE_IDENTIFIER_UNKNOWN = @"REUSE_IDENTIFIER_UNKNOWN";
     CGFloat _indicatorViewPadding = (CELL_AVATAR_SIZE + CELL_PADDING - CELL_INDICATOR_SIZE) / 2;
     CGFloat _indicatorViewOriginY = _bubbleView.frame.origin.y + (_bubbleView.frame.size.height - CELL_INDICATOR_SIZE) / 2;
     
+    
+    CGSize bubbleSize = _message.bubbleSize;
+    if (_message.extendShow) {
+        if (_message.extendSize.width > bubbleSize.width) {
+            bubbleSize.width = _message.extendSize.width;
+        }
+        bubbleSize.height += (_message.extendSize.height + CELL_BUBBLE_EXTEND_PADDING);
+    }
+    
     if(_message.sender){
         _avatarView.frame = CGRectMake(size.width - CELL_AVATAR_SIZE - CELL_PADDING, _originY, CELL_AVATAR_SIZE, CELL_AVATAR_SIZE);
-        _bubbleView.frame = CGRectMake(_avatarView.frame.origin.x - _message.bubbleSize.width, _bubbleViewOriginY, _message.bubbleSize.width, _message.bubbleSize.height);
+        _bubbleView.frame = CGRectMake(_avatarView.frame.origin.x - bubbleSize.width - CELL_BUBBLE_TAIL_WIDTH, _bubbleViewOriginY, bubbleSize.width, bubbleSize.height);
         
         _indicatorView.frame = CGRectMake(_bubbleView.frame.origin.x - _indicatorViewPadding - CELL_INDICATOR_SIZE, _indicatorViewOriginY, CELL_INDICATOR_SIZE, CELL_INDICATOR_SIZE);
     }else{
         _avatarView.frame = CGRectMake(CELL_PADDING, _originY, CELL_AVATAR_SIZE, CELL_AVATAR_SIZE);
-        _bubbleView.frame = CGRectMake(_avatarView.frame.origin.x + _avatarView.frame.size.width, _bubbleViewOriginY, _message.bubbleSize.width, _message.bubbleSize.height);
+        _bubbleView.frame = CGRectMake(_avatarView.frame.origin.x + _avatarView.frame.size.width + CELL_BUBBLE_TAIL_WIDTH, _bubbleViewOriginY, bubbleSize.width, bubbleSize.height);
         
         _indicatorView.frame = CGRectMake(_bubbleView.frame.origin.x + _bubbleView.frame.size.width + _indicatorViewPadding, _indicatorViewOriginY, CELL_INDICATOR_SIZE, CELL_INDICATOR_SIZE);
     }
@@ -254,6 +268,14 @@ NSString * const REUSE_IDENTIFIER_UNKNOWN = @"REUSE_IDENTIFIER_UNKNOWN";
     _timeLabel.hidden = !_message.showTime;
     
     _bubbleView.message = _message;
+}
+
+- (void)setExtendView:(UIView *)extendView{
+    _bubbleView.extendView = extendView;
+}
+
+- (UIView *)extendView{
+    return _bubbleView.extendView;
 }
 
 #pragma mark - EM_ChatMessageBubbleDelegate

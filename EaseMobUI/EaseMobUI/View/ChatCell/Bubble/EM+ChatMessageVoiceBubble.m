@@ -47,12 +47,21 @@
     CGSize size = self.frame.size;
     
     CGSize timeSize = [timeLabel.text sizeWithAttributes:@{NSFontAttributeName:timeLabel.font}];
+    timeSize.height = size.height - self.message.extendSize.height - CELL_BUBBLE_EXTEND_PADDING;
+    
     if (self.message.sender) {
-        timeLabel.frame = CGRectMake(0, 0, timeSize.width, size.height);
-        animationView.frame = CGRectMake(size.width - size.height, 0, size.height, size.height);
+        timeLabel.frame = CGRectMake(0, 0, timeSize.width, timeSize.height);
+        animationView.frame = CGRectMake(size.width - timeSize.height, 0, timeSize.height, timeSize.height);
     }else{
-        timeLabel.frame = CGRectMake(size.width - size.height, 0, timeSize.width, size.height);
-        animationView.frame = CGRectMake(0, 0, size.height, size.height);
+        timeLabel.frame = CGRectMake(size.width - timeSize.width, 0, timeSize.width, timeSize.height);
+        animationView.frame = CGRectMake(0, 0, timeSize.height, timeSize.height);
+    }
+    
+    if (self.extendView) {
+        self.extendView.center = CGPointMake(size.width / 2, size.height - self.message.extendSize.height / 2);
+    }
+    if (self.extendLine) {
+        self.extendLine.frame = CGRectMake(0, self.extendView.frame.origin.y + CELL_BUBBLE_EXTEND_PADDING, size.width, CELL_BUBBLE_EXTEND_PADDING);
     }
 }
 
