@@ -8,6 +8,6 @@
 
 #import "EM+ChatController.h"
 
-@interface MainController : EM_ChatController
+@interface UStylistChatController : EM_ChatController
 
 @end

@@ -8,7 +8,7 @@
 
 #import "AppDelegate.h"
 #import "EaseMob.h"
-#import "MainController.h"
+#import "UStylistChatController.h"
 #import "EM+Common.h"
 #import "EM+ChatDB.h"
 
@@ -61,7 +61,7 @@
     [config removeActionWithName:kActionNameVoice];
     [config removeActionWithName:kActionNameVideo];
     [config removeActionWithName:kActionNameFile];
-    UIViewController *rootController = [[MainController alloc]initWithChatter:chatter conversationType:eConversationTypeChat config:config];
+    UIViewController *rootController = [[UStylistChatController alloc]initWithChatter:chatter conversationType:eConversationTypeChat config:config];
     self.window.rootViewController = [[UINavigationController alloc]initWithRootViewController:rootController];
     [self.window makeKeyAndVisible];
 

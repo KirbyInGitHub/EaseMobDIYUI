@@ -6,14 +6,14 @@
 //  Copyright (c) 2015年 周玉震. All rights reserved.
 //
 
-#import "MainController.h"
+#import "UStylistChatController.h"
 #import "EaseMobLoginController.h"
 
-@interface MainController ()<EM_ChatControllerDelegate>
+@interface UStylistChatController ()<EM_ChatControllerDelegate>
 
 @end
 
-@implementation MainController
+@implementation UStylistChatController
 
 - (void)viewDidLoad {
     self.delegate = self;

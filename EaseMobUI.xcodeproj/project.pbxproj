@@ -26,7 +26,7 @@
 		B965FD9D1B535FD000B5B23B /* EmojiMapSymbols.m in Sources */ = {isa = PBXBuildFile; fileRef = B965FD951B535FD000B5B23B /* EmojiMapSymbols.m */; };
 		B965FD9E1B535FD000B5B23B /* EmojiPictographs.m in Sources */ = {isa = PBXBuildFile; fileRef = B965FD971B535FD000B5B23B /* EmojiPictographs.m */; };
 		B965FD9F1B535FD000B5B23B /* EmojiTransport.m in Sources */ = {isa = PBXBuildFile; fileRef = B965FD991B535FD000B5B23B /* EmojiTransport.m */; };
-		B97829F31B43DEE200D602F0 /* MainController.m in Sources */ = {isa = PBXBuildFile; fileRef = B97829F21B43DEE200D602F0 /* MainController.m */; };
+		B97829F31B43DEE200D602F0 /* UStylistChatController.m in Sources */ = {isa = PBXBuildFile; fileRef = B97829F21B43DEE200D602F0 /* UStylistChatController.m */; };
 		B9782A051B43F05F00D602F0 /* UIColor+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = B9782A041B43F05F00D602F0 /* UIColor+Hex.m */; };
 		B9782A0C1B43F31F00D602F0 /* EM+ChatController.m in Sources */ = {isa = PBXBuildFile; fileRef = B9782A0B1B43F31F00D602F0 /* EM+ChatController.m */; };
 		B9782A0F1B44E91C00D602F0 /* EM+ChatToolBar.m in Sources */ = {isa = PBXBuildFile; fileRef = B9782A0E1B44E91C00D602F0 /* EM+ChatToolBar.m */; };
@@ -119,8 +119,8 @@
 		B965FD971B535FD000B5B23B /* EmojiPictographs.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EmojiPictographs.m; sourceTree = "<group>"; };
 		B965FD981B535FD000B5B23B /* EmojiTransport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmojiTransport.h; sourceTree = "<group>"; };
 		B965FD991B535FD000B5B23B /* EmojiTransport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EmojiTransport.m; sourceTree = "<group>"; };
-		B97829F11B43DEE200D602F0 /* MainController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainController.h; sourceTree = "<group>"; };
-		B97829F21B43DEE200D602F0 /* MainController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainController.m; sourceTree = "<group>"; };
+		B97829F11B43DEE200D602F0 /* UStylistChatController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UStylistChatController.h; sourceTree = "<group>"; };
+		B97829F21B43DEE200D602F0 /* UStylistChatController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UStylistChatController.m; sourceTree = "<group>"; };
 		B9782A031B43F05F00D602F0 /* UIColor+Hex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Hex.h"; sourceTree = "<group>"; };
 		B9782A041B43F05F00D602F0 /* UIColor+Hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+Hex.m"; sourceTree = "<group>"; };
 		B9782A091B43F2CB00D602F0 /* EM+Common.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "EM+Common.h"; sourceTree = "<group>"; };
@@ -353,8 +353,8 @@
 			isa = PBXGroup;
 			children = (
 				B97829F41B43DF6B00D602F0 /* Login */,
-				B97829F11B43DEE200D602F0 /* MainController.h */,
-				B97829F21B43DEE200D602F0 /* MainController.m */,
+				B97829F11B43DEE200D602F0 /* UStylistChatController.h */,
+				B97829F21B43DEE200D602F0 /* UStylistChatController.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -796,7 +796,7 @@
 				B9D1BFA01B5A4C3900C0A3D4 /* EMCDDeviceManager+Media.m in Sources */,
 				B9D1BFC51B5E18A200C0A3D4 /* EM+ChatMessageFileBubble.m in Sources */,
 				B94E2CE41B60958A00F7BACE /* EM+DBOPHelper.m in Sources */,
-				B97829F31B43DEE200D602F0 /* MainController.m in Sources */,
+				B97829F31B43DEE200D602F0 /* UStylistChatController.m in Sources */,
 				B928ACE31B58E22A00F618BE /* EM+ChatMessageBaseBubble.m in Sources */,
 				B94E2CF31B623A1400F7BACE /* EM+ChatInputView.m in Sources */,
 				B9782A051B43F05F00D602F0 /* UIColor+Hex.m in Sources */,
