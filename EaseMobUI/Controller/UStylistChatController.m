@@ -7,7 +7,6 @@
 //
 
 #import "UStylistChatController.h"
-#import "EaseMobLoginController.h"
 
 @interface UStylistChatController ()<EM_ChatControllerDelegate>
 
@@ -28,6 +27,14 @@
 }
 
 #define mark - EM_ChatControllerDelegate
+- (NSString *)nickNameWithChatter:(NSString *)chatter{
+    return nil;
+}
+
+- (NSString *)avatarWithChatter:(NSString *)chatter{
+    return nil;
+}
+
 - (NSDictionary *)extendForMessageBody:(id<IEMMessageBody>)messageBody{
     return @{@"extend":@"extend"};
 }
@@ -53,6 +60,10 @@
         label.text = @"extend";
     }
     return label;
+}
+
+- (void)didActionSelectedWithName:(NSString *)name{
+    
 }
 
 @end

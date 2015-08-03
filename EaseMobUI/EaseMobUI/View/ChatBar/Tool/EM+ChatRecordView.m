@@ -266,7 +266,7 @@ typedef NS_ENUM(NSUInteger,RECORD_STATE) {
     
     if (_state == RECORD_STATE_NORMAL) {
         UITouch *touch = [touches anyObject];
-        if (touch.tapCount > 1) {
+        if (event.allTouches.allObjects.count > 1) {
             return;
         }
         CGPoint point = [touch locationInView:self];
@@ -294,7 +294,7 @@ typedef NS_ENUM(NSUInteger,RECORD_STATE) {
     }
     
     UITouch *touch = [touches anyObject];
-    if (touch.tapCount > 1) {
+    if (event.allTouches.allObjects.count > 1) {
         return;
     }
     
@@ -341,7 +341,7 @@ typedef NS_ENUM(NSUInteger,RECORD_STATE) {
     }
     
     UITouch *touch = [touches anyObject];
-    if (touch.tapCount > 1) {
+    if (event.allTouches.allObjects.count > 1) {
         return;
     }
     

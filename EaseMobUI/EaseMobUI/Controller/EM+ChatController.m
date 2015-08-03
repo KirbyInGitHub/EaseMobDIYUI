@@ -286,6 +286,9 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
     MAIN(^{
         [_chatTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+        if(index == _dataSource.count - 1){
+            [_chatTableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+        }
     });
 }
 
@@ -301,6 +304,9 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
     MAIN(^{
         [_chatTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+        if(index == _dataSource.count - 1){
+            [_chatTableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+        }
     });
 }
 
