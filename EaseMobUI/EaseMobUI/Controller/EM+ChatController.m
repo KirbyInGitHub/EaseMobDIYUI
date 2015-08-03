@@ -66,6 +66,9 @@ EMDeviceManagerDelegate>
     dispatch_queue_t _messageQueue;
 }
 
+NSString * const kExtendUserInfo = @"kkExtendUserInfo";
+NSString * const kExtendUserExt = @"kkExtendUserExt";
+
 - (instancetype)initWithChatter:(NSString *)chatter conversationType:(EMConversationType)conversationType config:(EM_ChatUIConfig *)config{
     self = [super init];
     if (self) {
@@ -196,23 +199,30 @@ EMDeviceManagerDelegate>
     [[EaseMob sharedInstance].chatManager asyncSendMessage:message progress:nil];
 }
 
-- (void)sendMessageBody:(id<IEMMessageBody>)messageBody{
-    [self sendMessageBody:messageBody messageData:nil];
+- (void)sendMessageBody:(id<IEMMessageBody>)messageBody {
+    [self sendMessageBody:messageBody userExt:nil];
 }
 
-- (void)sendMessageBody:(id<IEMMessageBody>)messageBody messageData:(NSDictionary *)messageData{
+- (void)sendMessageBody:(id<IEMMessageBody>)messageBody userExt:(NSDictionary *)userExt{
     NSDictionary *userInfo = nil;
     if (_delegate && [_delegate respondsToSelector:@selector(extendForMessageBody:)]) {
         userInfo = [_delegate extendForMessageBody:messageBody];
     }
     
     NSMutableDictionary *extend = [[NSMutableDictionary alloc]init];
+    
+    NSMutableDictionary *userData = [[NSMutableDictionary alloc]init];
     if (userInfo) {
-        [extend setObject:userInfo forKey:kExtendUserInfo];
+        [userData setObject:userInfo forKey:kExtendUserInfo];
     }
-    if (messageData) {
-        [extend setObject:messageData forKey:kExtendMessageData];
+    if (userExt) {
+        [userData setObject:userExt forKey:kExtendUserExt];
     }
+    if (userData.count > 0) {
+        [extend setObject:userData forKey:kExtendUserData];
+    }
+    
+    [extend setObject:[[[EM_ChatMessageData alloc] init] getContentValues] forKey:kExtendMessageData];
     
     EMMessage *retureMsg = [[EMMessage alloc]initWithReceiver:_conversation.chatter bodies:[NSArray arrayWithObject:messageBody]];
     retureMsg.messageType = _messageType;

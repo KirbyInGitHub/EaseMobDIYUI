@@ -9,6 +9,8 @@
 #ifndef EaseMobUI_EM_Common_h
 #define EaseMobUI_EM_Common_h
 
+#define EM_Window [UIApplication sharedApplication].keyWindow
+
 #define SCREEN_WIDTH ([UIScreen mainScreen].bounds.size.width)
 #define SCREEN_HEIGHT ([UIScreen mainScreen].bounds.size.height)
 

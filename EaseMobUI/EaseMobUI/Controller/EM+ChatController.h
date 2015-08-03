@@ -16,6 +16,9 @@
 
 #import "UIViewController+HUD.h"
 
+extern NSString * const kExtendUserInfo;
+extern NSString * const kExtendUserExt;
+
 @protocol EM_ChatControllerDelegate;
 
 @interface EM_ChatController : UIViewController
@@ -34,6 +37,7 @@
 - (instancetype)initWithChatter:(NSString *)chatter conversationType:(EMConversationType)conversationType config:(EM_ChatUIConfig *)config;
 
 - (void)sendMessageBody:(id<IEMMessageBody>)messageBody;
+- (void)sendMessageBody:(id<IEMMessageBody>)messageBody userExt:(NSDictionary *)userExt;
 
 @end
 

@@ -13,6 +13,7 @@
 @interface EM_ChatToolBar()<EM_ChatInputToolDelegate,EM_ChatMoreToolDelegate,EM_ChatTableViewTapDelegate>
 
 @property (nonatomic,strong) EM_ChatUIConfig *config;
+@property (nonatomic, strong) UIView *cover;
 
 @end
 
@@ -61,6 +62,16 @@
     if (_moreToolView) {
         _moreToolView.frame = CGRectMake(0, size.height - HEIGHT_MORE_TOOL_OF_DEFAULT, size.width, HEIGHT_MORE_TOOL_OF_DEFAULT);
     }
+}
+
+- (UIView *)cover{
+    if (!_cover) {
+        _cover = [[UIView alloc]init];
+        _cover.backgroundColor = [UIColor blackColor];
+        _cover.alpha = 0;
+        _cover.userInteractionEnabled = YES;
+    }
+    return _cover;
 }
 
 - (BOOL)inputEditing{
@@ -296,6 +307,12 @@
 }
 
 - (void)didRecordStart{
+    self.cover.frame = CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT - self.bounds.size.height);
+    [EM_Window addSubview:self.cover];
+    [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+        self.cover.alpha = 0.3;
+    } completion:nil];
+    _inputToolView.avtive = NO;
     if (_delegate && [_delegate respondsToSelector:@selector(messageToolBar:didStartRecord:)]) {
         [_delegate messageToolBar:self didStartRecord:_moreToolView.recordView];
     }
@@ -306,18 +323,24 @@
 }
 
 - (void)didRecordEnd:(NSString *)recordName path:recordPath duration:(NSInteger)duration{
+    [self.cover removeFromSuperview];
+    _inputToolView.avtive = YES;
     if (_delegate && [_delegate respondsToSelector:@selector(messageToolBar:didEndRecord:record:duration:)]) {
         [_delegate messageToolBar:self didEndRecord:recordName record:recordPath duration:duration];
     }
 }
 
 - (void)didRecordCancel{
+    [self.cover removeFromSuperview];
+    _inputToolView.avtive = YES;
     if (_delegate && [_delegate respondsToSelector:@selector(messageToolBar:didCancelRecord:)]) {
         [_delegate messageToolBar:self didCancelRecord:_moreToolView.recordView];
     }
 }
 
 - (void)didRecordError:error{
+    [self.cover removeFromSuperview];
+    _inputToolView.avtive = YES;
     if (_delegate && [_delegate respondsToSelector:@selector(messageToolBar:didRecordError:)]) {
         [_delegate messageToolBar:self didRecordError:error];
     }

@@ -33,6 +33,7 @@
     if (self) {
         
         _config = config;
+        _avtive = YES;
         oldContentSize = CGSizeZero;
         
         //录音按钮
@@ -216,6 +217,14 @@
         [self addSubview:moreStateButton];
     }
     return self;
+}
+
+- (void)setAvtive:(BOOL)avtive{
+    _avtive = avtive;
+    recordButton.enabled = _avtive;
+    emojiButton.enabled = _avtive;
+    actionButton.enabled = _avtive;
+    moreStateButton.enabled = _avtive;
 }
 
 - (void)setOverrideNextResponder:(UIResponder *)overrideNextResponder{

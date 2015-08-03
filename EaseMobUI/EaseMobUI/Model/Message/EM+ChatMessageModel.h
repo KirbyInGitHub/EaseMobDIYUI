@@ -10,7 +10,7 @@
 #import "EaseMob.h"
 #import "EM+ChatMessageData.h"
 
-extern NSString * const kExtendUserInfo;
+extern NSString * const kExtendUserData;
 extern NSString * const kExtendMessageData;
 
 @interface EM_ChatMessageModel : NSObject

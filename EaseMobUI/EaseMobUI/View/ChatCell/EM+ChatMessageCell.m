@@ -9,6 +9,7 @@
 #import "UIColor+Hex.h"
 
 #import "EM+ChatMessageCell.h"
+#import "EM+ChatDataUtils.h"
 
 @interface EM_ChatMessageCell()<EM_ChatMessageBubbleDelegate>
 
@@ -264,7 +265,7 @@ NSString * const REUSE_IDENTIFIER_UNKNOWN = @"REUSE_IDENTIFIER_UNKNOWN";
         _bubbleView.backgroundColor = [UIColor colorWithHEX:@"#B5B5B5" alpha:1.0];
     }
     
-    _timeLabel.text = [NSString stringWithFormat:@"%ld",message.timestamp];
+    _timeLabel.text = [EM_ChatDataUtils stringMessageData:message.timestamp / 1000];
     _timeLabel.hidden = !_message.showTime;
     
     _bubbleView.message = _message;

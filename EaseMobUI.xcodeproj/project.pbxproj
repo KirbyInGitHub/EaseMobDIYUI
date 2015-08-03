@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4233C91D54090CEF16F59568 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 055F3965F5D3B2098C86D930 /* libPods.a */; };
+		B900868F1B6F1151003BC694 /* EM+ChatDataUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = B900868E1B6F1151003BC694 /* EM+ChatDataUtils.m */; };
 		B928ACE31B58E22A00F618BE /* EM+ChatMessageBaseBubble.m in Sources */ = {isa = PBXBuildFile; fileRef = B928ACE21B58E22A00F618BE /* EM+ChatMessageBaseBubble.m */; };
 		B94E2CDA1B6088A500F7BACE /* EM+ChatVersion.m in Sources */ = {isa = PBXBuildFile; fileRef = B94E2CD91B6088A500F7BACE /* EM+ChatVersion.m */; };
 		B94E2CDD1B6089D200F7BACE /* EM+ChatConversation.m in Sources */ = {isa = PBXBuildFile; fileRef = B94E2CDC1B6089D200F7BACE /* EM+ChatConversation.m */; };
@@ -84,6 +85,8 @@
 		055F3965F5D3B2098C86D930 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		51174D9749BCC6710D40E6CE /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		988124437FD0EB4776958B18 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		B900868D1B6F1151003BC694 /* EM+ChatDataUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EM+ChatDataUtils.h"; sourceTree = "<group>"; };
+		B900868E1B6F1151003BC694 /* EM+ChatDataUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "EM+ChatDataUtils.m"; sourceTree = "<group>"; };
 		B928ACE11B58E22A00F618BE /* EM+ChatMessageBaseBubble.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EM+ChatMessageBaseBubble.h"; sourceTree = "<group>"; };
 		B928ACE21B58E22A00F618BE /* EM+ChatMessageBaseBubble.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "EM+ChatMessageBaseBubble.m"; sourceTree = "<group>"; };
 		B94E2CD81B6088A500F7BACE /* EM+ChatVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EM+ChatVersion.h"; sourceTree = "<group>"; };
@@ -241,6 +244,15 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		B900868C1B6F111B003BC694 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				B900868D1B6F1151003BC694 /* EM+ChatDataUtils.h */,
+				B900868E1B6F1151003BC694 /* EM+ChatDataUtils.m */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
 		B928ACE01B58E1AA00F618BE /* Bubble */ = {
 			isa = PBXGroup;
 			children = (
@@ -384,6 +396,7 @@
 		B97829FB1B43EE1F00D602F0 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				B900868C1B6F111B003BC694 /* Utils */,
 				B94E2CE11B60952600F7BACE /* DB */,
 				B9782A091B43F2CB00D602F0 /* EM+Common.h */,
 				B965FD8A1B5359DC00B5B23B /* Rdparty */,
@@ -788,6 +801,7 @@
 				B9782A221B46681900D602F0 /* EM+ChatActionView.m in Sources */,
 				B9D1BFAC1B5A56D500C0A3D4 /* EM+ChatRecordArcView.m in Sources */,
 				B9782A251B466A6700D602F0 /* EM+ChatBaseView.m in Sources */,
+				B900868F1B6F1151003BC694 /* EM+ChatDataUtils.m in Sources */,
 				B9D1BFA11B5A4C3900C0A3D4 /* EMCDDeviceManager+Microphone.m in Sources */,
 				B9D1BFA71B5A4C3900C0A3D4 /* EMVoiceConverter.mm in Sources */,
 				B9D1BF9F1B5A4C3900C0A3D4 /* EMAudioRecorderUtil.m in Sources */,
