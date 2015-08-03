@@ -225,6 +225,7 @@
     emojiButton.enabled = _avtive;
     actionButton.enabled = _avtive;
     moreStateButton.enabled = _avtive;
+    inputView.editable = _avtive;
 }
 
 - (void)setOverrideNextResponder:(UIResponder *)overrideNextResponder{

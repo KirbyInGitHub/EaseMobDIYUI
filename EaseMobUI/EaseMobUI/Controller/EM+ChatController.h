@@ -47,10 +47,14 @@ extern NSString * const kExtendUserExt;
 
 @optional
 
+- (NSString *)nickNameWithChatter:(NSString *)chatter;
+- (NSString *)avatarWithChatter:(NSString *)chatter;
 - (NSDictionary *)extendForMessageBody:(id<IEMMessageBody>)messageBody;
 - (BOOL)showForExtendMessage:(NSDictionary *)ext;
 - (NSString *)reuseIdentifierForExtendMessage:(NSDictionary *)ext;
 - (CGSize)sizeForExtendMessage:(NSDictionary *)ext maxWidth:(CGFloat)max;
 - (UIView *)viewForExtendMessage:(NSDictionary *)ext reuseView:(UIView *)view;
+
+- (void)didActionSelectedWithName:(NSString *)name;
 
 @end

@@ -49,6 +49,7 @@ EM_ChatMessageCellDelegate,
 EM_LocationControllerDelegate,
 EM_ChatMessageManagerDelegate,
 EMChatManagerDelegate,
+IEMChatProgressDelegate,
 EMDeviceManagerDelegate>
 
 @property (nonatomic, strong) EMConversation *conversation;
@@ -196,7 +197,7 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
 
 #pragma mark - sendMessage
 - (void)sendMessage:(EMMessage *)message{
-    [[EaseMob sharedInstance].chatManager asyncSendMessage:message progress:nil];
+    [[EaseMob sharedInstance].chatManager asyncSendMessage:message progress:self];
 }
 
 - (void)sendMessageBody:(id<IEMMessageBody>)messageBody {
@@ -235,6 +236,15 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
     EM_ChatMessageModel *messageModel = [[EM_ChatMessageModel alloc]initWithMessage:message];
     NSString *loginChatter = [[EaseMob sharedInstance].chatManager loginInfo][kSDKUsername];
     messageModel.sender = [messageModel.chatter isEqualToString:loginChatter];
+    if (_delegate) {
+        if ([_delegate respondsToSelector:@selector(nickNameWithChatter:)]) {
+            messageModel.nickName = [_delegate nickNameWithChatter:messageModel.chatter];
+        }
+        if ([_delegate respondsToSelector:@selector(avatarWithChatter:)]) {
+            messageModel.avatar = [_delegate avatarWithChatter:messageModel.chatter];
+        }
+    }
+    
     return messageModel;
 }
 
@@ -248,7 +258,7 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
     
     [_dataSource addObject:messageModel];
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:(_dataSource.count - 1) inSection:0];
-    dispatch_async(dispatch_get_main_queue(), ^{
+    MAIN(^{
         [_chatTableView beginUpdates];
         [_chatTableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
         [_chatTableView endUpdates];
@@ -274,10 +284,23 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
     
     [_dataSource replaceObjectAtIndex:index withObject:messageModel];
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [_chatTableView beginUpdates];
+    MAIN(^{
         [_chatTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
-        [_chatTableView endUpdates];
+    });
+}
+
+- (void)reloadMessage:(EMMessage *)message progress:(CGFloat)progress{
+    EM_ChatMessageModel *messageModel = [self formatMessage:message];
+    messageModel.progress = progress;
+    NSInteger index = [_dataSource indexOfObject:messageModel];
+    if (index < 0 || index >= _dataSource.count){
+        return;
+    }
+    
+    [_dataSource replaceObjectAtIndex:index withObject:messageModel];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+    MAIN(^{
+        [_chatTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
     });
 }
 
@@ -312,7 +335,7 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
                 [_dataSource insertObject:messageModel atIndex:0];
             }
             
-            dispatch_async(dispatch_get_main_queue(), ^{
+            MAIN(^{
                 [_chatTableView reloadData];
                 if (scrollBottom) {
                     [_chatTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:_dataSource.count - 1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:animated];
@@ -320,9 +343,7 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
             });
         }
         
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [_chatTableView.header endRefreshing];
-        });
+        MAIN(^{[_chatTableView.header endRefreshing];});
     });
 }
 
@@ -394,7 +415,9 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
         EMFileMessageBody *body = [[EMFileMessageBody alloc]initWithChatObject:chatFile];
         [self sendMessageBody:body];
     }else{
-        
+        if (_delegate && [_delegate respondsToSelector:@selector(didActionSelectedWithName:)]){
+            [_delegate didActionSelectedWithName:action];
+        }
     }
 }
 - (BOOL)messageToolBar:(EM_ChatToolBar *)toolBar shouldRecord:(UIView *)view{
@@ -448,7 +471,7 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
 }
 
 - (void)chatMessageCell:(EM_ChatMessageCell *)cell resendMessageWithMessage:(EM_ChatMessageModel *)message indexPath:(NSIndexPath *)indexPath{
-    
+    [[EaseMob sharedInstance].chatManager resendMessage:message.message progress:self error:nil];
 }
 
 - (void)chatMessageCell:(EM_ChatMessageCell *)cell didTapMessageWithUserInfo:(NSDictionary *)userInfo indexPath:(NSIndexPath *)indexPath{
@@ -809,19 +832,25 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
     return height;
 }
 
+#pragma mark - IEMChatProgressDelegate
+- (void)setProgress:(float)progress forMessage:(EMMessage *)message forMessageBody:(id<IEMMessageBody>)messageBody{
+    [self reloadMessage:message progress:progress];
+}
+
 #pragma mark - EMChatManagerChatDelegate
 - (void)willSendMessage:(EMMessage *)message error:(EMError *)error{
-    if (![_dataSource containsObject:message]) {
+    if (![_dataSource containsObject:message] && !error) {
         [self addMessage:message];
     }
 }
 
 - (void)didSendMessage:(EMMessage *)message error:(EMError *)error{
-    [self reloadMessage:message];
+    if(!error)[self reloadMessage:message];
 }
 
 - (void)didReceiveMessage:(EMMessage *)message{
     if ([message.conversationChatter isEqualToString:_conversation.chatter]) {
+        [[EaseMob sharedInstance].chatManager sendReadAckForMessage:message];
         [self addMessage:message];
     }
 }
@@ -836,7 +865,7 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
 
 - (void)didFetchingMessageAttachments:(EMMessage *)message progress:(float)progress{
     //图片、视频缩略图,语音等下载进度
-    [self reloadMessage:message];
+    [self reloadMessage:message progress:progress];
 }
 
 - (void)didMessageAttachmentsStatusChanged:(EMMessage *)message error:(EMError *)error{
@@ -846,6 +875,7 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
 
 - (void)didReceiveHasReadResponse:(EMReceipt *)resp{
     //已读回执
+    
 }
 
 - (void)didReceiveHasDeliveredResponse:(EMReceipt *)resp{
@@ -856,11 +886,14 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
     //未读消息数量发生变化
 }
 
+- (void)didReceiveOfflineMessages:(NSArray *)offlineMessages{
+    NSLog(@"接收离线消息中");
+}
+
 - (void)didFinishedReceiveOfflineMessages:(NSArray *)offlineMessages{
-    if (offlineMessages.count > 0) {
-        [_dataSource removeAllObjects];
-        [self loadMoreMessage:YES animated:YES];
-    }
+    NSLog(@"接收离线消息完毕");
+    [_dataSource removeAllObjects];
+    [self loadMoreMessage:YES animated:YES];
 }
 
 - (void)didFinishedReceiveOfflineCmdMessages:(NSArray *)offlineCmdMessages{

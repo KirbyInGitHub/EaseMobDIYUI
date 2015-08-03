@@ -16,8 +16,9 @@ extern NSString * const kExtendMessageData;
 @interface EM_ChatMessageModel : NSObject
 
 @property (nonatomic,copy,readonly) NSString *messageId;
-@property (nonatomic,copy,readonly) NSString *nickName;
 @property (nonatomic,copy,readonly) NSString *chatter;
+@property (nonatomic,copy) NSString *nickName;
+@property (nonatomic, strong) NSString *avatar;
 @property (nonatomic,assign) BOOL sender;
 @property (nonatomic,assign,readonly) long timestamp;
 @property (nonatomic,assign,readonly) MessageBodyType bodyType;
@@ -33,6 +34,7 @@ extern NSString * const kExtendMessageData;
 @property (nonatomic,assign) BOOL showTime;
 @property (nonatomic, assign) CGSize extendSize;
 @property (nonatomic, assign) BOOL extendShow;
+@property (nonatomic, assign) CGFloat progress;
 
 
 - (instancetype)initWithMessage:(EMMessage *)message;

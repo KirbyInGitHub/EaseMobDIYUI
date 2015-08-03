@@ -10,6 +10,8 @@
 
 #import "EM+ChatMessageCell.h"
 #import "EM+ChatDataUtils.h"
+#import "UIButton+WebCache.h"
+#import "EM+ChatUIConfig.h"
 
 @interface EM_ChatMessageCell()<EM_ChatMessageBubbleDelegate>
 
@@ -134,8 +136,9 @@ NSString * const REUSE_IDENTIFIER_UNKNOWN = @"REUSE_IDENTIFIER_UNKNOWN";
         [self.contentView addSubview:_nameLabel];
         
         _avatarView = [[UIButton alloc]init];
-        _avatarView.backgroundColor = [UIColor grayColor];
         _avatarView.layer.cornerRadius = CELL_AVATAR_SIZE / 2;
+        _avatarView.layer.masksToBounds = YES;
+        [_avatarView setImage:[UIImage imageNamed:RES_IMAGE_CELL(@"avatar_default")] forState:UIControlStateNormal];
         [_avatarView addTarget:self action:@selector(avatarClicked:) forControlEvents:UIControlEventTouchUpInside];
         [self.contentView addSubview:_avatarView];
         
@@ -180,13 +183,21 @@ NSString * const REUSE_IDENTIFIER_UNKNOWN = @"REUSE_IDENTIFIER_UNKNOWN";
         [self.contentView addSubview:_bubbleView];
         
         _indicatorView = [[UIActivityIndicatorView alloc]init];
+        _indicatorView.hidden = YES;
+        _indicatorView.bounds = CGRectMake(0, 0, CELL_INDICATOR_SIZE, CELL_INDICATOR_SIZE);
         [self.contentView addSubview:_indicatorView];
         
         _retryButton = [[UIButton alloc]init];
+        _retryButton.hidden = YES;
+        [_retryButton setTitle:@"!" forState:UIControlStateNormal];
+        [_retryButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
         [_retryButton addTarget:self action:@selector(retryClicked:) forControlEvents:UIControlEventTouchUpInside];
         [self.contentView addSubview:_retryButton];
         
         _stateLabel = [[UILabel alloc]init];
+        _stateLabel.hidden = YES;
+        _stateLabel.textColor = [UIColor blackColor];
+        _stateLabel.font = [UIFont systemFontOfSize:10];
         [self.contentView addSubview:_stateLabel];
     }
     return self;
@@ -212,8 +223,6 @@ NSString * const REUSE_IDENTIFIER_UNKNOWN = @"REUSE_IDENTIFIER_UNKNOWN";
     }
 
     CGFloat _bubbleViewOriginY = _nameLabel.frame.origin.y + _nameLabel.frame.size.height;
-    CGFloat _indicatorViewPadding = (CELL_AVATAR_SIZE + CELL_PADDING - CELL_INDICATOR_SIZE) / 2;
-    CGFloat _indicatorViewOriginY = _bubbleView.frame.origin.y + (_bubbleView.frame.size.height - CELL_INDICATOR_SIZE) / 2;
     
     
     CGSize bubbleSize = _message.bubbleSize;
@@ -224,19 +233,24 @@ NSString * const REUSE_IDENTIFIER_UNKNOWN = @"REUSE_IDENTIFIER_UNKNOWN";
         bubbleSize.height += (_message.extendSize.height + CELL_BUBBLE_EXTEND_PADDING);
     }
     
+    CGFloat centerX;
+    
     if(_message.sender){
         _avatarView.frame = CGRectMake(size.width - CELL_AVATAR_SIZE - CELL_PADDING, _originY, CELL_AVATAR_SIZE, CELL_AVATAR_SIZE);
         _bubbleView.frame = CGRectMake(_avatarView.frame.origin.x - bubbleSize.width - CELL_BUBBLE_TAIL_WIDTH, _bubbleViewOriginY, bubbleSize.width, bubbleSize.height);
         
-        _indicatorView.frame = CGRectMake(_bubbleView.frame.origin.x - _indicatorViewPadding - CELL_INDICATOR_SIZE, _indicatorViewOriginY, CELL_INDICATOR_SIZE, CELL_INDICATOR_SIZE);
+        centerX = _bubbleView.frame.origin.x - CELL_INDICATOR_SIZE / 2 * 3;
     }else{
         _avatarView.frame = CGRectMake(CELL_PADDING, _originY, CELL_AVATAR_SIZE, CELL_AVATAR_SIZE);
         _bubbleView.frame = CGRectMake(_avatarView.frame.origin.x + _avatarView.frame.size.width + CELL_BUBBLE_TAIL_WIDTH, _bubbleViewOriginY, bubbleSize.width, bubbleSize.height);
-        
-        _indicatorView.frame = CGRectMake(_bubbleView.frame.origin.x + _bubbleView.frame.size.width + _indicatorViewPadding, _indicatorViewOriginY, CELL_INDICATOR_SIZE, CELL_INDICATOR_SIZE);
+        centerX = _bubbleView.frame.origin.x + _bubbleView.frame.size.width + CELL_INDICATOR_SIZE / 2 * 3;
     }
+    
+    _indicatorView.center = CGPointMake(centerX, _bubbleView.frame.origin.y + _bubbleView.frame.size.height / 2);
     _retryButton.frame =_indicatorView.frame;
-    _stateLabel.frame = _indicatorView.frame;
+    
+    _stateLabel.center = _indicatorView.center;
+    [_stateLabel sizeToFit];
 }
 
 - (void)avatarClicked:(id)sender{
@@ -257,6 +271,10 @@ NSString * const REUSE_IDENTIFIER_UNKNOWN = @"REUSE_IDENTIFIER_UNKNOWN";
     _nameLabel.text = message.nickName;
     _nameLabel.hidden = message.messageType == eMessageTypeChat;
     
+    if (_message.avatar) {
+        [_avatarView sd_setImageWithURL:[[NSURL alloc] initWithString:_message.avatar] forState:UIControlStateNormal];
+    }
+    
     if (_message.sender) {
         _nameLabel.textAlignment = NSTextAlignmentRight;
         _bubbleView.backgroundColor = [UIColor colorWithHEX:@"#EED2EE" alpha:1.0];
@@ -267,6 +285,28 @@ NSString * const REUSE_IDENTIFIER_UNKNOWN = @"REUSE_IDENTIFIER_UNKNOWN";
     
     _timeLabel.text = [EM_ChatDataUtils stringMessageData:message.timestamp / 1000];
     _timeLabel.hidden = !_message.showTime;
+    
+    if (_message.message.deliveryState == eMessageDeliveryState_Failure
+        || _message.message.deliveryState == eMessageDeliveryState_Delivered) {
+        if (_indicatorView.isAnimating) {
+            [_indicatorView stopAnimating];
+        }
+        _indicatorView.hidden = YES;
+        _retryButton.hidden = _message.message.deliveryState == eMessageDeliveryState_Delivered;
+        //_stateLabel.hidden = !(_message.message.deliveryState == eMessageDeliveryState_Delivered && _message.sender);
+        if (_message.message.deliveryState == eMessageDeliveryState_Delivered && _message.sender) {
+            if (_message.message.isReadAcked) {
+                _stateLabel.text = @"已读";
+            }else{
+                _stateLabel.text = @"已送达";
+            }
+        }
+    }else{
+        if (!_indicatorView.isAnimating) {
+            [_indicatorView startAnimating];
+        }
+        _indicatorView.hidden = NO;
+    }
     
     _bubbleView.message = _message;
 }

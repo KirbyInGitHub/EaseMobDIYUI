@@ -15,6 +15,7 @@
 
 @implementation UStylistChatController
 
+
 - (void)viewDidLoad {
     self.delegate = self;
     [super viewDidLoad];
