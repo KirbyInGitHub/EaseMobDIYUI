@@ -24,6 +24,8 @@ NSString * const kAttributeBackgroundColor = @"kActionBackgroundColor";
 NSString * const kAttributeBorderColor = @"kAttribuBorderColor";
 NSString * const kAttributeBorderWidth = @"kAttribuBorderWidth";
 NSString * const kAttributeCornerRadius = @"kAttribuCornerRadius";
+NSString * const kAttributeFont = @"kAttributeFont";
+NSString * const kAttributeText = @"kAttributeText";
 
 //工具栏按钮
 NSString * const kButtonNameRecord = @"kButtonNameRecord";

@@ -21,3 +21,5 @@ pod 'FMDB','2.5'
 
 #富文本
 pod 'TTTAttributedLabel','1.13.4'
+
+pod 'FontAwesomeKit'
