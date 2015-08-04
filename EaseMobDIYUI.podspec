@@ -10,7 +10,7 @@ Pod::Spec.new do |s|
 
   # ―――  Spec Metadata  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   s.name         = "EaseMobDIYUI"
-  s.version      = "0.1.0"
+  s.version      = "0.1.2"
   s.summary      = "环信DIY聊天UI"
 
   s.description  = <<-DESC
@@ -48,8 +48,8 @@ Pod::Spec.new do |s|
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-  s.source_files  = "EaseMobUI/EaseMobUI/*.{h,m}"
-  #s.exclude_files = "Classes/Exclude"
+  s.source_files  = "EaseMobUI/EaseMobUI/*"
+  # s.exclude_files = "Classes/Exclude"
   # s.public_header_files = "Classes/**/*.h"
 
 
