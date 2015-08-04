@@ -53,17 +53,17 @@ Pod::Spec.new do |s|
   end
 
   s.subspec 'View' do |view|
-      view.source_files = 'EaseMobUI/EaseMobUI/View/**/*.{h.m}'
+      view.source_files = 'EaseMobUI/EaseMobUI/View/**/*'
       view.public_header_files = 'EaseMobUI/EaseMobUI/View/**/*.h'
   end
 
   s.subspec 'Model' do |model|
-      model.source_files = 'EaseMobUI/EaseMobUI/Model/**/*.{h,m}'
+      model.source_files = 'EaseMobUI/EaseMobUI/Model/**/*'
       model.public_header_files = 'EaseMobUI/EaseMobUI/Model/**/*.h'
   end
 
   s.subspec 'Common' do |common|
-      common.source_files = 'EaseMobUI/EaseMobUI/Common/**/*.{h,m}'
+      common.source_files = 'EaseMobUI/EaseMobUI/Common/**/*'
       common.public_header_files = 'EaseMobUI/EaseMobUI/Common/**/*.h'
   end
 
