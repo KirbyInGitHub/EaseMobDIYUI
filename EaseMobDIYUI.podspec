@@ -53,22 +53,121 @@ Pod::Spec.new do |s|
   end
 
   s.subspec 'View' do |view|
-      view.source_files = 'EaseMobUI/EaseMobUI/View/**/*'
-      view.public_header_files = 'EaseMobUI/EaseMobUI/View/**/*.h'
+      view.source_files = 'EaseMobUI/EaseMobUI/View/*.{h.m}'
+      view.public_header_files = 'EaseMobUI/EaseMobUI/View/*.h'
+
+      view.subspec 'ChatBar' do |chatBar|
+          chatBar.source_files = 'EaseMobUI/EaseMobUI/View/ChatBar/*.{h,m}'
+          chatBar.public_header_files = 'EaseMobUI/EaseMobUI/View/ChatBar/*.h'
+
+          chatBar.subspec 'Tool' do |tool|
+              tool.source_files = 'EaseMobUI/EaseMobUI/View/ChatBar/Tool/*.{h,m}'
+              tool.public_header_files = 'EaseMobUI/EaseMobUI/View/ChatBar/Tool/*.h'
+          end
+      end
+
+      view.subspec 'ChatCell' do |chatCell|
+          chatCell.source_files = 'EaseMobUI/EaseMobUI/View/ChatCell/*.{h,m}'
+          chatCell.public_header_files = 'EaseMobUI/EaseMobUI/View/ChatCell/*.h'
+
+          chatCell.subspec 'Bubble' do |bubble|
+              bubble.source_files =  'EaseMobUI/EaseMobUI/View/ChatCell/Bubble/*.{h,m}'
+              bubble.public_header_files = 'EaseMobUI/EaseMobUI/View/ChatCell/Bubble/*.h'
+          end
+      end
+
   end
 
   s.subspec 'Model' do |model|
-      model.source_files = 'EaseMobUI/EaseMobUI/model/**/*.'
-      model.public_header_files = 'EaseMobUI/EaseMobUI/model/**/*.h'
+      model.source_files = 'EaseMobUI/EaseMobUI/Model/*.{h,m}'
+      model.public_header_files = 'EaseMobUI/EaseMobUI/Model/*.h'
+
+      model.subspec 'DB' do |db|
+          db.source_files = 'EaseMobUI/EaseMobUI/Model/DB/*.{h,m}'
+          db.public_header_files = 'EaseMobUI/EaseMobUI/Model/DB/*.h'
+      end
+
+      model.subspec 'Message' do |message|
+          message.source_files = 'EaseMobUI/EaseMobUI/Model/Message/*.{h,m}'
+          message.public_header_files = 'EaseMobUI/EaseMobUI/Model/Message/*.h'
+      end
   end
 
   s.subspec 'Common' do |common|
-      common.source_files = 'EaseMobUI/EaseMobUI/Common/**/*.{h,m}'
-      common.public_header_files = 'EaseMobUI/EaseMobUI/Common/**/*.h'
+      common.source_files = 'EaseMobUI/EaseMobUI/Common/*.{h,m}'
+      common.public_header_files = 'EaseMobUI/EaseMobUI/Common/*.h'
+
+      common.subspec 'Utils' do |utils|
+          utils.source_files = 'EaseMobUI/EaseMobUI/Common/Utils/*.{h,m}'
+          utils.public_header_files = 'EaseMobUI/EaseMobUI/Common/Utils/*.h'
+      end
+
+      common.subspec 'DB' do |db|
+          db.source_files = 'EaseMobUI/EaseMobUI/Common/DB/*.{h,m}'
+          db.public_header_files = 'EaseMobUI/EaseMobUI/Common/DB/*.h'
+      end
+
+      common.subspec 'Rdparty' do |rdparty|
+          rdparty.source_files = 'EaseMobUI/EaseMobUI/Common/Rdparty/*.{h,m}'
+          rdparty.public_header_files = 'EaseMobUI/EaseMobUI/Common/Rdparty/*.h'
+
+          rdparty.subspec 'DeviceUtil' do |deviceUtil|
+              deviceUtil.source_files = 'EaseMobUI/EaseMobUI/Common/Rdparty/DeviceUtil/*.{h,m}'
+              deviceUtil.public_header_files = 'EaseMobUI/EaseMobUI/Common/Rdparty/DeviceUtil/*.h'
+
+              deviceUtil.subspec 'delegates' do |delegates|
+                  delegates.source_files = 'EaseMobUI/EaseMobUI/Common/Rdparty/DeviceUtil/delegates/*.{h,m}'
+                  delegates.public_header_files = 'EaseMobUI/EaseMobUI/Common/Rdparty/DeviceUtil/delegates/*.h'
+              end
+
+              deviceUtil.subspec 'internal' do |internal|
+                  internal.source_files = 'EaseMobUI/EaseMobUI/Common/Rdparty/DeviceUtil/internal/*.{h,m}'
+                  internal.public_header_files = 'EaseMobUI/EaseMobUI/Common/Rdparty/DeviceUtil/internal/*.h'
+              end
+          end
+
+          rdparty.subspec 'VoiceConvert' do |voiceConvert|
+              voiceConvert.source_files = 'EaseMobUI/EaseMobUI/Common/Rdparty/VoiceConvert/*.{h,m}'
+              voiceConvert.public_header_files = 'EaseMobUI/EaseMobUI/Common/Rdparty/VoiceConvert/*.h'
+
+              voiceConvert.subspec 'amrwapper' do |amrwapper|
+                  amrwapper.source_files = 'EaseMobUI/EaseMobUI/Common/Rdparty/VoiceConvert/amrwapper/*.{h,m}'
+                  amrwapper.public_header_files = 'EaseMobUI/EaseMobUI/Common/Rdparty/VoiceConvert/amrwapper/*.h'
+              end
+
+              voiceConvert.subspec 'opencore-amrnb' do |opencore-amrnb|
+                  opencore-amrnb.source_files = 'EaseMobUI/EaseMobUI/Common/Rdparty/VoiceConvert/opencore-amrnb/*'
+                  opencore-amrnb.public_header_files = 'EaseMobUI/EaseMobUI/Common/Rdparty/VoiceConvert/opencore-amrnb/*.h'
+              end
+
+              voiceConvert.subspec 'opencore-amrwb' do |opencore-amrwb|
+                  opencore-amrwb.source_files = 'EaseMobUI/EaseMobUI/Common/Rdparty/VoiceConvert/opencore-amrwb/*'
+                  opencore-amrwb.public_header_files = 'EaseMobUI/EaseMobUI/Common/Rdparty/VoiceConvert/opencore-amrwb/*.h'
+              end
+
+          end
+
+          rdparty.subspec 'Emoji' do |emoji|
+              emoji.source_files = 'EaseMobUI/EaseMobUI/Common/Rdparty/Emoji/*.{h,m}'
+              emoji.public_header_files = 'EaseMobUI/EaseMobUI/Common/Rdparty/Emoji/*.h'
+          end
+
+      end
+
+      common.subspec 'Category' do |category|
+          category.source_files = 'EaseMobUI/EaseMobUI/Common/Category/*.{h,m}'
+          category.public_header_files = 'EaseMobUI/EaseMobUI/Common/Category/*.h'
+      end
+
+      common.subspec 'Class' do |class|
+          class.source_files = 'EaseMobUI/EaseMobUI/Common/Class/*.{h,m}'
+          class.public_header_files = 'EaseMobUI/EaseMobUI/Common/Class/*.h'
+      end
+
   end
 
   # ――― Resources ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-  s.resources = "EaseMobUI/Resource/EM_Resource.bundle,EaseMobUI/Resource/EM_ChatStrings.strings"
+  s.resources = ["EaseMobUI/Resource/EM_Resource.bundle","EaseMobUI/Resource/EM_ChatStrings.strings"]
   # s.preserve_paths = "FilesToSave", "MoreFilesToSave"
 
 
