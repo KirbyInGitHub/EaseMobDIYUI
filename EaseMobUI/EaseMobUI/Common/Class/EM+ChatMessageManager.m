@@ -25,7 +25,7 @@ static EM_ChatMessageManager *detailInstance = nil;
 @end
 
 @implementation EM_ChatMessageManager{
-    
+    NSInteger playIndex;
 }
 
 + (instancetype)defaultManager{
@@ -79,12 +79,11 @@ static EM_ChatMessageManager *detailInstance = nil;
     return _photoBrowser;
 }
 
-- (BOOL)isIsPlaying{
+- (BOOL)isPlaying{
     return [EMCDDeviceManager sharedInstance].isPlaying;
 }
 
 - (void)showBrowserWithImagesMessage:(NSArray *)imageMessageArray index:(NSInteger)index{
-    _currentImageMessage = nil;
     [_photoArray removeAllObjects];
     for (int i = 0; i < imageMessageArray.count; i++) {
         EM_ChatMessageModel *messageModel = imageMessageArray[i];
@@ -105,7 +104,6 @@ static EM_ChatMessageManager *detailInstance = nil;
 }
 
 - (void)showBrowserWithVideoMessage:(EM_ChatMessageModel *)videoMessage{
-    _currentVideoMessage = nil;
     [_photoArray removeAllObjects];
     EMVideoMessageBody *videoBody = (EMVideoMessageBody *)videoMessage.messageBody;
     MWPhoto *video;
@@ -118,25 +116,61 @@ static EM_ChatMessageManager *detailInstance = nil;
     [_photoArray addObject:video];
     UIViewController *rootController = [self.keyWindow rootViewController];
     [rootController presentViewController:self.photoNavigationController animated:YES completion:nil];
-    _currentVideoMessage = videoMessage;
 }
 
 - (void)playVoice:(NSArray *)voiceMessageArray index:(NSInteger)index{
+    if (index < 0 || index >= voiceMessageArray.count) {
+        return;
+    }
     [self stopVoice];
     [_voiceArray addObjectsFromArray:voiceMessageArray];
-    for (int i = 0; i < _voiceArray.count; i++) {
-        EM_ChatMessageModel *messageModel = _voiceArray[i];
-        messageModel.playing = NO;
+    playIndex = index;
+    [self playNextVoice];
+    if (_delegate) {
+        [_delegate playStartWithMessage:_voiceArray[index]];
     }
-    _currentVoiceMessage = _voiceArray[index];
 }
 
 - (void)playNextVoice{
+    if (playIndex >= 0 && playIndex < _voiceArray.count) {
+        for (int i = 0; i < _voiceArray.count; i++) {
+            EM_ChatMessageModel *messageModel = _voiceArray[i];
+            messageModel.messageData.checking = i == playIndex;
+        }
+        
+        __block EM_ChatMessageModel *messageModel = _voiceArray[playIndex];
+        EMVoiceMessageBody *messageBody = (EMVoiceMessageBody *)messageModel.messageBody;
+        
+        [[EMCDDeviceManager sharedInstance] asyncPlayingWithPath:messageBody.localPath completion:^(NSError *error) {
+            
+            messageModel.messageData.checking = NO;
+            playIndex ++;
+            EM_ChatMessageModel *nextMessageModel;
+            
+            if (playIndex < _voiceArray.count && _voiceArray.count > 1) {
+                nextMessageModel = _voiceArray[playIndex];
+                if (nextMessageModel.sender) {
+                    playIndex ++;
+                    if (playIndex < _voiceArray.count) {
+                        nextMessageModel = _voiceArray[playIndex];
+                    }else{
+                        nextMessageModel = nil;
+                    }
+                }
+                if (nextMessageModel && !nextMessageModel.messageData.details) {
+                    [self playNextVoice];
+                }
+            }
+            
+            if(_delegate){
+                [_delegate playCompletionWithMessage:messageModel nextMessage:nextMessageModel];
+            }
+        }];
+    }
     
 }
 
 - (void)stopVoice{
-    _currentVoiceMessage = nil;
     [_voiceArray removeAllObjects];
     if (self.isPlaying) {
         [[EMCDDeviceManager sharedInstance] stopPlaying];
@@ -147,26 +181,17 @@ static EM_ChatMessageManager *detailInstance = nil;
 - (NSUInteger)numberOfPhotosInPhotoBrowser:(MWPhotoBrowser *)photoBrowser{
     return _photoArray.count;
 }
+
 - (id <MWPhoto>)photoBrowser:(MWPhotoBrowser *)photoBrowser photoAtIndex:(NSUInteger)index{
     return _photoArray[index];
 }
+
 - (void)photoBrowser:(MWPhotoBrowser *)photoBrowser didDisplayPhotoAtIndex:(NSUInteger)index{
-    if (index < _photoArray.count) {
-        _currentImageMessage = _photoArray[index];
-    }
-}
-- (void)photoBrowserDidFinishModalPresentation:(MWPhotoBrowser *)photoBrowser{
-    _currentImageMessage = nil;
-    _currentVideoMessage = nil;
     
-    [_photoArray removeAllObjects];
 }
 
 - (void)dealloc{
     _photoArray = nil;
-    _currentImageMessage = nil;
-    _currentVideoMessage = nil;
-    _currentVoiceMessage = nil;
 }
 
 @end

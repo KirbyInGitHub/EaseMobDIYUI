@@ -24,4 +24,5 @@
 
 - (void)chatTableView:(EM_ChatTableView *)table didTapEnded:(NSSet *)touches withEvent:(UIEvent *)event;
 
+
 @end

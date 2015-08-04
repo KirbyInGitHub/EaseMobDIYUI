@@ -38,7 +38,14 @@
     [super layoutSubviews];
     
     CGSize size = self.frame.size;
-    imageView.frame = CGRectMake(CELL_VIDEO_PADDING, CELL_VIDEO_PADDING, size.width - CELL_VIDEO_PADDING * 2, size.height - CELL_VIDEO_PADDING * 2);
+    imageView.frame = CGRectMake(CELL_VIDEO_PADDING, CELL_VIDEO_PADDING, size.width - CELL_VIDEO_PADDING * 2, size.height - CELL_VIDEO_PADDING * 2 - self.message.extendSize.height - CELL_BUBBLE_EXTEND_PADDING);
+    
+    if (self.extendView) {
+        self.extendView.center = CGPointMake(size.width / 2, size.height - CELL_VIDEO_PADDING - self.message.extendSize.height / 2);
+    }
+    if (self.extendLine) {
+        self.extendLine.frame = CGRectMake(0, self.extendView.frame.origin.y + CELL_BUBBLE_EXTEND_PADDING, size.width, CELL_BUBBLE_EXTEND_PADDING);
+    }
 }
 
 - (NSString *)handleAction{

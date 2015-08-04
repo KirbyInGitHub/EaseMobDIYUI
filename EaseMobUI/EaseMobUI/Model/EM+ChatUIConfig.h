@@ -24,6 +24,8 @@ extern NSString * const kAttributeBackgroundColor;
 extern NSString * const kAttributeBorderColor;
 extern NSString * const kAttributeBorderWidth;
 extern NSString * const kAttributeCornerRadius;
+extern NSString * const kAttributeFont;
+extern NSString * const kAttributeText;
 
 //工具栏按钮Name
 extern NSString * const kButtonNameRecord;

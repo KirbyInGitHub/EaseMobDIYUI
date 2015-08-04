@@ -16,6 +16,11 @@
 
 #import "UIViewController+HUD.h"
 
+extern NSString * const kExtendUserInfo;
+extern NSString * const kExtendUserExt;
+
+@protocol EM_ChatControllerDelegate;
+
 @interface EM_ChatController : UIViewController
 
 @property (nonatomic,strong,readonly) NSString *chatter;
@@ -27,9 +32,29 @@
 @property (nonatomic,strong,readonly) EM_ChatTableView *chatTableView;
 @property (nonatomic,strong,readonly) EM_ChatToolBar *chatToolBarView;
 
-- (instancetype)initWithChatter:(NSString *)chatter conversationType:(EMConversationType)conversationType;
+@property (nonatomic,weak) id<EM_ChatControllerDelegate> delegate;
 
-- (void)sendMessage:(EMMessage *)message;
+- (instancetype)initWithChatter:(NSString *)chatter conversationType:(EMConversationType)conversationType config:(EM_ChatUIConfig *)config;
+
 - (void)sendMessageBody:(id<IEMMessageBody>)messageBody;
+- (void)sendMessageBody:(id<IEMMessageBody>)messageBody userExt:(NSDictionary *)userExt;
+
+@end
+
+@protocol EM_ChatControllerDelegate <NSObject>
+
+@required
+
+@optional
+
+- (NSString *)nickNameWithChatter:(NSString *)chatter;
+- (NSString *)avatarWithChatter:(NSString *)chatter;
+- (NSDictionary *)extendForMessageBody:(id<IEMMessageBody>)messageBody;
+- (BOOL)showForExtendMessage:(NSDictionary *)ext;
+- (NSString *)reuseIdentifierForExtendMessage:(NSDictionary *)ext;
+- (CGSize)sizeForExtendMessage:(NSDictionary *)ext maxWidth:(CGFloat)max;
+- (UIView *)viewForExtendMessage:(NSDictionary *)ext reuseView:(UIView *)view;
+
+- (void)didActionSelectedWithName:(NSString *)name;
 
 @end

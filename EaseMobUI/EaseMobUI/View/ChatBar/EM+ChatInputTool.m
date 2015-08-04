@@ -8,6 +8,7 @@
 
 #import "EM+ChatInputTool.h"
 #import "EM+Common.h"
+#import "EM+ChatInputView.h"
 
 #define PADDING (5)
 
@@ -18,7 +19,7 @@
 @end
 
 @implementation EM_ChatInputTool{
-    UITextView *inputView;
+    EM_ChatInputView *inputView;
     UIButton *recordButton;
     UIButton *emojiButton;
     UIButton *actionButton;
@@ -32,6 +33,7 @@
     if (self) {
         
         _config = config;
+        _avtive = YES;
         oldContentSize = CGSizeZero;
         
         //录音按钮
@@ -43,6 +45,11 @@
         [self addSubview:recordButton];
         NSDictionary *recordDictionary = _config.toolDictionary[kButtonNameRecord];
         if (recordDictionary) {
+            UIFont *font = recordDictionary[kAttributeFont];
+            if (font) {
+                recordButton.titleLabel.font = font;
+            }
+            
             UIImage *normalImage = recordDictionary[kAttributeNormalImage];
             if (normalImage) {
                 [recordButton setImage:normalImage forState:UIControlStateNormal];
@@ -53,6 +60,13 @@
             UIImage *highlightImage = recordDictionary[kAttributeHighlightImage];
             if (highlightImage) {
                 [recordButton setImage:highlightImage forState:UIControlStateHighlighted];
+            }
+            
+            if (!normalImage && !highlightImage) {
+                NSString *text = recordDictionary[kAttributeText];
+                [recordButton setTitle:text forState:UIControlStateNormal];
+                [recordButton setTitleColor:[UIColor colorWithHEX:TEXT_NORMAL_COLOR alpha:1.0] forState:UIControlStateNormal];
+                [recordButton setTitleColor:[UIColor colorWithHEX:TEXT_SELECT_COLOR alpha:1.0] forState:UIControlStateHighlighted];
             }
             
             UIColor *backgroundColor = recordDictionary[kAttributeBackgroundColor];
@@ -85,6 +99,12 @@
         [self addSubview:emojiButton];
         NSDictionary *emojiDictionary = _config.toolDictionary[kButtonNameEmoji];
         if (emojiDictionary) {
+            
+            UIFont *font = emojiDictionary[kAttributeFont];
+            if (font) {
+                emojiButton.titleLabel.font = font;
+            }
+            
             UIImage *normalImage = emojiDictionary[kAttributeNormalImage];
             if (normalImage) {
                 [emojiButton setImage:normalImage forState:UIControlStateNormal];
@@ -95,6 +115,13 @@
             UIImage *highlightImage = emojiDictionary[kAttributeHighlightImage];
             if (highlightImage) {
                 [emojiButton setImage:highlightImage forState:UIControlStateHighlighted];
+            }
+            
+            if (!normalImage && !highlightImage) {
+                NSString *text = emojiDictionary[kAttributeText];
+                [emojiButton setTitle:text forState:UIControlStateNormal];
+                [emojiButton setTitleColor:[UIColor colorWithHEX:TEXT_NORMAL_COLOR alpha:1.0] forState:UIControlStateNormal];
+                [emojiButton setTitleColor:[UIColor colorWithHEX:TEXT_SELECT_COLOR alpha:1.0] forState:UIControlStateHighlighted];
             }
             
             UIColor *backgroundColor = emojiDictionary[kAttributeBackgroundColor];
@@ -128,6 +155,12 @@
         [self addSubview:actionButton];
         NSDictionary *actionDictionary = _config.toolDictionary[kButtonNameAction];
         if (actionDictionary) {
+            
+            UIFont *font = actionDictionary[kAttributeFont];
+            if (font) {
+                actionButton.titleLabel.font = font;
+            }
+            
             UIImage *normalImage = actionDictionary[kAttributeNormalImage];
             if (normalImage) {
                 [actionButton setImage:normalImage forState:UIControlStateNormal];
@@ -138,6 +171,13 @@
             UIImage *highlightImage = actionDictionary[kAttributeHighlightImage];
             if (highlightImage) {
                 [actionButton setImage:highlightImage forState:UIControlStateHighlighted];
+            }
+            
+            if (!normalImage && !highlightImage) {
+                NSString *text = actionDictionary[kAttributeText];
+                [actionButton setTitle:text forState:UIControlStateNormal];
+                [actionButton setTitleColor:[UIColor colorWithHEX:TEXT_NORMAL_COLOR alpha:1.0] forState:UIControlStateNormal];
+                [actionButton setTitleColor:[UIColor colorWithHEX:TEXT_SELECT_COLOR alpha:1.0] forState:UIControlStateHighlighted];
             }
             
             UIColor *backgroundColor = actionDictionary[kAttributeBackgroundColor];
@@ -161,24 +201,8 @@
             }
         }
         
-        inputView = [[UITextView alloc]init];
-        inputView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-        inputView.scrollEnabled = YES;
-        inputView.scrollsToTop = NO;
-        inputView.dataDetectorTypes = UIDataDetectorTypeAll;
-        inputView.enablesReturnKeyAutomatically = YES;
-        inputView.userInteractionEnabled = YES;
-        inputView.font = [UIFont systemFontOfSize:16.0f];
-        inputView.textColor = [UIColor blackColor];
-        inputView.backgroundColor = [UIColor whiteColor];
-        inputView.keyboardAppearance = UIKeyboardAppearanceDefault;
-        inputView.returnKeyType = UIReturnKeySend;
-        inputView.textAlignment = NSTextAlignmentLeft;
+        inputView = [[EM_ChatInputView alloc]init];
         inputView.delegate = self;
-        inputView.layer.masksToBounds = YES;
-        inputView.layer.cornerRadius = 6;
-        inputView.layer.borderWidth = 0.5;
-        inputView.layer.borderColor = [UIColor colorWithHexRGB:0xe5e5e5].CGColor;
         [self addSubview:inputView];
         
         contentInsets = inputView.contentInset;
@@ -193,6 +217,31 @@
         [self addSubview:moreStateButton];
     }
     return self;
+}
+
+- (void)setAvtive:(BOOL)avtive{
+    _avtive = avtive;
+    recordButton.enabled = _avtive;
+    emojiButton.enabled = _avtive;
+    actionButton.enabled = _avtive;
+    moreStateButton.enabled = _avtive;
+    inputView.editable = _avtive;
+}
+
+- (void)setOverrideNextResponder:(UIResponder *)overrideNextResponder{
+    inputView.overrideNextResponder = overrideNextResponder;
+}
+
+- (NSString *)editor{
+    return inputView.text;
+}
+
+- (void)setEditor:(NSString *)editor{
+    inputView.text = editor;
+}
+
+- (BOOL)inputEditing{
+    return inputView.isFirstResponder;
 }
 
 - (void)layoutSubviews{

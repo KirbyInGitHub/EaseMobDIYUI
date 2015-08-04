@@ -10,6 +10,7 @@
 
 #import "EM+ChatUIConfig.h"
 #import "EM+Common.h"
+#import "UIColor+Hex.h"
 
 @interface EM_ChatActionButton()
 
@@ -33,6 +34,12 @@
         
         _actionButton = [[UIButton alloc]init];
         [_actionButton addTarget:self action:@selector(actionClick:) forControlEvents:UIControlEventTouchUpInside];
+        
+        UIFont *font = _actionAttribute[kAttributeFont];
+        if (font) {
+            _actionButton.titleLabel.font = font;
+        }
+        
         UIImage *normalImage = _actionAttribute[kAttributeNormalImage];
         if (normalImage) {
             [_actionButton setImage:normalImage forState:UIControlStateNormal];
@@ -41,6 +48,13 @@
         UIImage *highlightImage = _actionAttribute[kAttributeHighlightImage];
         if (highlightImage){
             [_actionButton setImage:highlightImage forState:UIControlStateHighlighted];
+        }
+        
+        if (!normalImage && !highlightImage) {
+            NSString *text = _actionAttribute[kAttributeText];
+            [_actionButton setTitle:text forState:UIControlStateNormal];
+            [_actionButton setTitleColor:[UIColor colorWithHEX:TEXT_NORMAL_COLOR alpha:1.0] forState:UIControlStateNormal];
+            [_actionButton setTitleColor:[UIColor colorWithHEX:TEXT_SELECT_COLOR alpha:1.0] forState:UIControlStateHighlighted];
         }
         
         UIColor *backgroundColor = _actionAttribute[kAttributeBackgroundColor];

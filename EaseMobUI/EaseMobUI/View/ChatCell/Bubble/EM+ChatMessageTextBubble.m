@@ -35,20 +35,14 @@
         systemVersion = [[[UIDevice currentDevice] systemVersion] floatValue];
     });
     
-    if (systemVersion >= 7.0) {
-        NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-        [paragraphStyle setLineSpacing:TEXT_LINE_SPACING];//调整行间距
-        size = [textBody.text boundingRectWithSize:maxSize options:NSStringDrawingUsesLineFragmentOrigin
-                                         attributes:@{
-                                                      NSFontAttributeName:[UIFont systemFontOfSize:TEXT_FONT_SIZE],
-                                                      NSParagraphStyleAttributeName:paragraphStyle
-                                                      }
-                                            context:nil].size;
-    }else{
-        size = [textBody.text sizeWithFont:[UIFont systemFontOfSize:TEXT_FONT_SIZE]
-                          constrainedToSize:maxSize
-                              lineBreakMode:NSLineBreakByWordWrapping];
-    }
+    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    [paragraphStyle setLineSpacing:TEXT_LINE_SPACING];//调整行间距
+    size = [textBody.text boundingRectWithSize:maxSize options:NSStringDrawingUsesLineFragmentOrigin
+                                    attributes:@{
+                                                 NSFontAttributeName:[UIFont systemFontOfSize:TEXT_FONT_SIZE],
+                                                 NSParagraphStyleAttributeName:paragraphStyle
+                                                 }
+                                       context:nil].size;
     
     superSize.height += (size.height + TEXT_PADDING * 2);
     superSize.width += (size.width + TEXT_PADDING * 2);
@@ -67,7 +61,6 @@
         textLabel.numberOfLines = 0;
         textLabel.lineSpacing = TEXT_LINE_SPACING;
         textLabel.lineBreakMode = NSLineBreakByWordWrapping;
-        textLabel.textAlignment = NSTextAlignmentCenter;
         textLabel.textColor = [UIColor blackColor];
         textLabel.font = [UIFont systemFontOfSize:TEXT_FONT_SIZE];
         [self addSubview:textLabel];
@@ -79,7 +72,14 @@
     [super layoutSubviews];
     CGSize size = self.frame.size;
     
-    textLabel.frame = CGRectMake(CELL_BUBBLE_LEFT_PADDING, CELL_BUBBLE_TOP_PADDING, size.width - CELL_BUBBLE_LEFT_PADDING - CELL_BUBBLE_RIGHT_PADDING, size.height -  CELL_BUBBLE_TOP_PADDING - CELL_BUBBLE_BOTTOM_PADDING);
+    textLabel.frame = CGRectMake(CELL_BUBBLE_LEFT_PADDING, CELL_BUBBLE_TOP_PADDING, size.width - CELL_BUBBLE_LEFT_PADDING - CELL_BUBBLE_RIGHT_PADDING, size.height -  CELL_BUBBLE_TOP_PADDING - CELL_BUBBLE_BOTTOM_PADDING - self.message.extendSize.height - CELL_BUBBLE_EXTEND_PADDING);
+    
+    if (self.extendView) {
+        self.extendView.center = CGPointMake(size.width / 2, size.height - CELL_BUBBLE_BOTTOM_PADDING - self.message.extendSize.height / 2);
+    }
+    if (self.extendLine) {
+        self.extendLine.frame = CGRectMake(0, self.extendView.frame.origin.y + CELL_BUBBLE_EXTEND_PADDING, size.width, CELL_BUBBLE_EXTEND_PADDING);
+    }
 }
 
 - (NSString *)handleAction{

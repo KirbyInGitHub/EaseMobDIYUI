@@ -8,8 +8,9 @@
 
 #import "AppDelegate.h"
 #import "EaseMob.h"
-#import "MainController.h"
+#import "UStylistChatController.h"
 #import "EM+Common.h"
+#import "EM+ChatDB.h"
 
 #define EaseMob_AppKey (@"zhou-yuzhen#easemobchatui")
 
@@ -31,6 +32,10 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
+    EM_ChatDB *db = [EM_ChatDB shared];
+    if (![db connect]) {
+        NSLog(@"初始化数据库失败");
+    }
     
     self.window = [[UIWindow alloc]initWithFrame:[UIScreen mainScreen].bounds];
     self.window.backgroundColor = [UIColor whiteColor];
@@ -52,7 +57,11 @@
         password = @"123456";
     }
     
-    UIViewController *rootController = [[MainController alloc]initWithChatter:chatter conversationType:eConversationTypeChat];
+    EM_ChatUIConfig *config = [EM_ChatUIConfig defaultConfig];
+    [config removeActionWithName:kActionNameVoice];
+    [config removeActionWithName:kActionNameVideo];
+    [config removeActionWithName:kActionNameFile];
+    UIViewController *rootController = [[UStylistChatController alloc]initWithChatter:chatter conversationType:eConversationTypeChat config:config];
     self.window.rootViewController = [[UINavigationController alloc]initWithRootViewController:rootController];
     [self.window makeKeyAndVisible];
 

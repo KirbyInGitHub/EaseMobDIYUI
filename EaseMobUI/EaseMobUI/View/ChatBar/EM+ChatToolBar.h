@@ -21,6 +21,7 @@
 @property (nonatomic,assign) id <EM_MessageToolBarDelegate> delegate;
 
 @property (nonatomic,assign,readonly) BOOL keyboardVisible;
+@property (nonatomic, assign, readonly) BOOL inputEditing;
 @property (nonatomic,assign,readonly) CGRect keyboardRect;
 
 @property (nonatomic,assign,readonly) BOOL moreToolVisble;
