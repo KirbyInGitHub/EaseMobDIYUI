@@ -65,8 +65,8 @@ Pod::Spec.new do |s|
   s.subspec 'Common' do |common|
 
       common.subspec 'Utils' do |utils|
-          common.source_files = 'EaseMobUI/EaseMobUI/Common/Utils/*.{h,m}'
-          common.public_header_files = 'EaseMobUI/EaseMobUI/Common/Utils/*.h'
+          utils.source_files = 'EaseMobUI/EaseMobUI/Common/Utils/*.{h,m}'
+          utils.public_header_files = 'EaseMobUI/EaseMobUI/Common/Utils/*.h'
       end
 
       common.subspec 'DB' do |db|
@@ -75,6 +75,22 @@ Pod::Spec.new do |s|
       end
 
       common.subspec 'Rdparty' do |rdparty|
+
+          rdparty.subspec 'DeviceUtil' do |deviceUtil|
+              deviceUtil.source_files = 'EaseMobUI/EaseMobUI/Common/Rdparty/DeviceUtil/*.{h,m}'
+              deviceUtil.public_header_files = 'EaseMobUI/EaseMobUI/Common/Rdparty/DeviceUtil/*.h'
+          end
+
+          rdparty.subspec 'VoiceConvert' do |voiceConvert|
+              voiceConvert.source_files = 'EaseMobUI/EaseMobUI/Common/Rdparty/VoiceConvert/*.{h,m}'
+              voiceConvert.public_header_files = 'EaseMobUI/EaseMobUI/Common/Rdparty/VoiceConvert/*.h'
+          end
+
+          rdparty.subspec 'Emoji' do |emoji|
+              emoji.source_files = 'EaseMobUI/EaseMobUI/Common/Rdparty/Emoji/*.{h,m}'
+              emoji.public_header_files = 'EaseMobUI/EaseMobUI/Common/Rdparty/Emoji/*.h'
+          end
+
           rdparty.source_files = 'EaseMobUI/EaseMobUI/Common/Rdparty/*.{h,m}'
           rdparty.public_header_files = 'EaseMobUI/EaseMobUI/Common/Rdparty/*.h'
       end
