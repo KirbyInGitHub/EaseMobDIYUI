@@ -85,6 +85,5 @@ Pod::Spec.new do |s|
   s.dependency "MBProgressHUD", "0.9.1"
   s.dependency "FMDB", "2.5"
   s.dependency "TTTAttributedLabel", "1.13.4"
-  s.dependency "VoiceConvert",:git => "https://github.com/AwakenDragon/VoiceConvert.git"
 
 end
