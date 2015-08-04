@@ -44,26 +44,19 @@ Pod::Spec.new do |s|
 
 
   # ――― Source Location ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-  s.source       = { :git => "https://github.com/AwakenDragon/EaseMobDIYUI.git", :tag => s.version.to_s }
-
+  s.source       = { :git => "https://github.com/AwakenDragon/EaseMobDIYUI.git", :tag => "0.1.3" }
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-  s.source_files  = "EaseMobUI/EaseMobUI/*"
-  # s.exclude_files = "Classes/Exclude"
-  # s.public_header_files = "Classes/**/*.h"
+  s.source_files = 'EaseMobUI/EaseMobUI/**/*'
 
 
   # ――― Resources ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-  # s.resource  = "icon.png"
-  s.resources = "EaseMobUI/Resource/*"
+  s.resources = "EaseMobUI/Resource/**/*"
   # s.preserve_paths = "FilesToSave", "MoreFilesToSave"
 
 
   # ――― Project Linking ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-  # s.framework  = "SomeFramework"
   s.frameworks = "UIKit", "MapKit","Foundation"
-
-  # s.library   = "iconv"
   # s.libraries = "iconv", "xml2"
 
 
