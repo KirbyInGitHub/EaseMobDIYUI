@@ -63,49 +63,7 @@ Pod::Spec.new do |s|
   end
 
   s.subspec 'Common' do |common|
-
-      common.subspec 'Utils' do |utils|
-          utils.source_files = 'EaseMobUI/EaseMobUI/Common/Utils/*.{h,m}'
-          utils.public_header_files = 'EaseMobUI/EaseMobUI/Common/Utils/*.h'
-      end
-
-      common.subspec 'DB' do |db|
-          db.source_files = 'EaseMobUI/EaseMobUI/Common/DB/*.{h,m}'
-          db.public_header_files = 'EaseMobUI/EaseMobUI/Common/DB/*.h'
-      end
-
-      common.subspec 'Rdparty' do |rdparty|
-
-          rdparty.subspec 'DeviceUtil' do |deviceUtil|
-              deviceUtil.source_files = 'EaseMobUI/EaseMobUI/Common/Rdparty/DeviceUtil/*.{h,m}'
-              deviceUtil.public_header_files = 'EaseMobUI/EaseMobUI/Common/Rdparty/DeviceUtil/*.h'
-          end
-
-          rdparty.subspec 'VoiceConvert' do |voiceConvert|
-              voiceConvert.source_files = 'EaseMobUI/EaseMobUI/Common/Rdparty/VoiceConvert/*.{h,m}'
-              voiceConvert.public_header_files = 'EaseMobUI/EaseMobUI/Common/Rdparty/VoiceConvert/*.h'
-          end
-
-          rdparty.subspec 'Emoji' do |emoji|
-              emoji.source_files = 'EaseMobUI/EaseMobUI/Common/Rdparty/Emoji/*.{h,m}'
-              emoji.public_header_files = 'EaseMobUI/EaseMobUI/Common/Rdparty/Emoji/*.h'
-          end
-
-          rdparty.source_files = 'EaseMobUI/EaseMobUI/Common/Rdparty/*.{h,m}'
-          rdparty.public_header_files = 'EaseMobUI/EaseMobUI/Common/Rdparty/*.h'
-      end
-
-      common.subspec 'Category' do |category|
-          category.source_files = 'EaseMobUI/EaseMobUI/Common/Category/*.{h,m}'
-          category.public_header_files = 'EaseMobUI/EaseMobUI/Common/Category/*.h'
-      end
-
-      common.subspec 'Class' do |class|
-          class.source_files = 'EaseMobUI/EaseMobUI/Common/Class/*.{h,m}'
-          class.public_header_files = 'EaseMobUI/EaseMobUI/Common/Class/*.h'
-      end
-
-      common.source_files = 'EaseMobUI/EaseMobUI/Common/*.{h,m}'
+      common.source_files = 'EaseMobUI/EaseMobUI/Common/**/*'
       common.public_header_files = 'EaseMobUI/EaseMobUI/Common/*.h'
   end
 
@@ -116,6 +74,8 @@ Pod::Spec.new do |s|
 
   # ――― Project Linking ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   s.frameworks = "UIKit", "MapKit","Foundation"
+  s.weak_framework = ['EaseMobUI/EaseMobUI/Common/Rdparty/VoiceConvert/opencore-amrnb/libopencore-amrnb.a',
+                          'EaseMobUI/EaseMobUI/Common/Rdparty/VoiceConvert/opencore-amrwb/libopencore-amrwb.a']
   s.vendored_libraries = ['EaseMobUI/EaseMobUI/Common/Rdparty/VoiceConvert/opencore-amrnb/libopencore-amrnb.a',
                           'EaseMobUI/EaseMobUI/Common/Rdparty/VoiceConvert/opencore-amrwb/libopencore-amrwb.a']
   s.libraries = ['EaseMobUI/EaseMobUI/Common/Rdparty/VoiceConvert/opencore-amrnb/libopencore-amrnb.a',
