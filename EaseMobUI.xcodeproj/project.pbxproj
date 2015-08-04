@@ -55,11 +55,6 @@
 		B9D1BFA21B5A4C3900C0A3D4 /* EMCDDeviceManager+ProximitySensor.m in Sources */ = {isa = PBXBuildFile; fileRef = B9D1BF881B5A4C3900C0A3D4 /* EMCDDeviceManager+ProximitySensor.m */; };
 		B9D1BFA31B5A4C3900C0A3D4 /* EMCDDeviceManager+Remind.m in Sources */ = {isa = PBXBuildFile; fileRef = B9D1BF8A1B5A4C3900C0A3D4 /* EMCDDeviceManager+Remind.m */; };
 		B9D1BFA41B5A4C3900C0A3D4 /* EMCDDeviceManagerBase.m in Sources */ = {isa = PBXBuildFile; fileRef = B9D1BF8D1B5A4C3900C0A3D4 /* EMCDDeviceManagerBase.m */; };
-		B9D1BFA51B5A4C3900C0A3D4 /* amrFileCodec.mm in Sources */ = {isa = PBXBuildFile; fileRef = B9D1BF911B5A4C3900C0A3D4 /* amrFileCodec.mm */; };
-		B9D1BFA61B5A4C3900C0A3D4 /* wav.mm in Sources */ = {isa = PBXBuildFile; fileRef = B9D1BF931B5A4C3900C0A3D4 /* wav.mm */; };
-		B9D1BFA71B5A4C3900C0A3D4 /* EMVoiceConverter.mm in Sources */ = {isa = PBXBuildFile; fileRef = B9D1BF951B5A4C3900C0A3D4 /* EMVoiceConverter.mm */; };
-		B9D1BFA81B5A4C3900C0A3D4 /* libopencore-amrnb.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B9D1BF991B5A4C3900C0A3D4 /* libopencore-amrnb.a */; };
-		B9D1BFA91B5A4C3900C0A3D4 /* libopencore-amrwb.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B9D1BF9D1B5A4C3900C0A3D4 /* libopencore-amrwb.a */; };
 		B9D1BFAC1B5A56D500C0A3D4 /* EM+ChatRecordArcView.m in Sources */ = {isa = PBXBuildFile; fileRef = B9D1BFAB1B5A56D500C0A3D4 /* EM+ChatRecordArcView.m */; };
 		B9D1BFAF1B5CE8CF00C0A3D4 /* EM+LocationController.m in Sources */ = {isa = PBXBuildFile; fileRef = B9D1BFAE1B5CE8CF00C0A3D4 /* EM+LocationController.m */; };
 		B9D1BFB21B5DE8E800C0A3D4 /* EM+ChatMessageModel.m in Sources */ = {isa = PBXBuildFile; fileRef = B9D1BFB11B5DE8E800C0A3D4 /* EM+ChatMessageModel.m */; };
@@ -182,18 +177,6 @@
 		B9D1BF8B1B5A4C3900C0A3D4 /* EMCDDeviceManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EMCDDeviceManager.h; sourceTree = "<group>"; };
 		B9D1BF8C1B5A4C3900C0A3D4 /* EMCDDeviceManagerBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EMCDDeviceManagerBase.h; sourceTree = "<group>"; };
 		B9D1BF8D1B5A4C3900C0A3D4 /* EMCDDeviceManagerBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EMCDDeviceManagerBase.m; sourceTree = "<group>"; };
-		B9D1BF901B5A4C3900C0A3D4 /* amrFileCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = amrFileCodec.h; sourceTree = "<group>"; };
-		B9D1BF911B5A4C3900C0A3D4 /* amrFileCodec.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = amrFileCodec.mm; sourceTree = "<group>"; };
-		B9D1BF921B5A4C3900C0A3D4 /* wav.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = wav.h; sourceTree = "<group>"; };
-		B9D1BF931B5A4C3900C0A3D4 /* wav.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = wav.mm; sourceTree = "<group>"; };
-		B9D1BF941B5A4C3900C0A3D4 /* EMVoiceConverter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EMVoiceConverter.h; sourceTree = "<group>"; };
-		B9D1BF951B5A4C3900C0A3D4 /* EMVoiceConverter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EMVoiceConverter.mm; sourceTree = "<group>"; };
-		B9D1BF971B5A4C3900C0A3D4 /* interf_dec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = interf_dec.h; sourceTree = "<group>"; };
-		B9D1BF981B5A4C3900C0A3D4 /* interf_enc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = interf_enc.h; sourceTree = "<group>"; };
-		B9D1BF991B5A4C3900C0A3D4 /* libopencore-amrnb.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libopencore-amrnb.a"; sourceTree = "<group>"; };
-		B9D1BF9B1B5A4C3900C0A3D4 /* dec_if.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dec_if.h; sourceTree = "<group>"; };
-		B9D1BF9C1B5A4C3900C0A3D4 /* if_rom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = if_rom.h; sourceTree = "<group>"; };
-		B9D1BF9D1B5A4C3900C0A3D4 /* libopencore-amrwb.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libopencore-amrwb.a"; sourceTree = "<group>"; };
 		B9D1BFAA1B5A56D500C0A3D4 /* EM+ChatRecordArcView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EM+ChatRecordArcView.h"; sourceTree = "<group>"; };
 		B9D1BFAB1B5A56D500C0A3D4 /* EM+ChatRecordArcView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "EM+ChatRecordArcView.m"; sourceTree = "<group>"; };
 		B9D1BFAD1B5CE8CF00C0A3D4 /* EM+LocationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EM+LocationController.h"; sourceTree = "<group>"; };
@@ -220,8 +203,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				4233C91D54090CEF16F59568 /* libPods.a in Frameworks */,
-				B9D1BFA91B5A4C3900C0A3D4 /* libopencore-amrwb.a in Frameworks */,
-				B9D1BFA81B5A4C3900C0A3D4 /* libopencore-amrnb.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -326,7 +307,6 @@
 			isa = PBXGroup;
 			children = (
 				B9D1BF791B5A4C3900C0A3D4 /* DeviceUtil */,
-				B9D1BF8E1B5A4C3900C0A3D4 /* VoiceConvert */,
 				B965FD8E1B535FD000B5B23B /* Emoji */,
 			);
 			path = Rdparty;
@@ -608,49 +588,6 @@
 			path = internal;
 			sourceTree = "<group>";
 		};
-		B9D1BF8E1B5A4C3900C0A3D4 /* VoiceConvert */ = {
-			isa = PBXGroup;
-			children = (
-				B9D1BF8F1B5A4C3900C0A3D4 /* amrwapper */,
-				B9D1BF941B5A4C3900C0A3D4 /* EMVoiceConverter.h */,
-				B9D1BF951B5A4C3900C0A3D4 /* EMVoiceConverter.mm */,
-				B9D1BF961B5A4C3900C0A3D4 /* opencore-amrnb */,
-				B9D1BF9A1B5A4C3900C0A3D4 /* opencore-amrwb */,
-			);
-			path = VoiceConvert;
-			sourceTree = "<group>";
-		};
-		B9D1BF8F1B5A4C3900C0A3D4 /* amrwapper */ = {
-			isa = PBXGroup;
-			children = (
-				B9D1BF901B5A4C3900C0A3D4 /* amrFileCodec.h */,
-				B9D1BF911B5A4C3900C0A3D4 /* amrFileCodec.mm */,
-				B9D1BF921B5A4C3900C0A3D4 /* wav.h */,
-				B9D1BF931B5A4C3900C0A3D4 /* wav.mm */,
-			);
-			path = amrwapper;
-			sourceTree = "<group>";
-		};
-		B9D1BF961B5A4C3900C0A3D4 /* opencore-amrnb */ = {
-			isa = PBXGroup;
-			children = (
-				B9D1BF971B5A4C3900C0A3D4 /* interf_dec.h */,
-				B9D1BF981B5A4C3900C0A3D4 /* interf_enc.h */,
-				B9D1BF991B5A4C3900C0A3D4 /* libopencore-amrnb.a */,
-			);
-			path = "opencore-amrnb";
-			sourceTree = "<group>";
-		};
-		B9D1BF9A1B5A4C3900C0A3D4 /* opencore-amrwb */ = {
-			isa = PBXGroup;
-			children = (
-				B9D1BF9B1B5A4C3900C0A3D4 /* dec_if.h */,
-				B9D1BF9C1B5A4C3900C0A3D4 /* if_rom.h */,
-				B9D1BF9D1B5A4C3900C0A3D4 /* libopencore-amrwb.a */,
-			);
-			path = "opencore-amrwb";
-			sourceTree = "<group>";
-		};
 		DCEF3704E015E69BA9E67AC5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -803,7 +740,6 @@
 				B9782A251B466A6700D602F0 /* EM+ChatBaseView.m in Sources */,
 				B900868F1B6F1151003BC694 /* EM+ChatDataUtils.m in Sources */,
 				B9D1BFA11B5A4C3900C0A3D4 /* EMCDDeviceManager+Microphone.m in Sources */,
-				B9D1BFA71B5A4C3900C0A3D4 /* EMVoiceConverter.mm in Sources */,
 				B9D1BF9F1B5A4C3900C0A3D4 /* EMAudioRecorderUtil.m in Sources */,
 				B94E2CDD1B6089D200F7BACE /* EM+ChatConversation.m in Sources */,
 				B965FD9F1B535FD000B5B23B /* EmojiTransport.m in Sources */,
@@ -823,14 +759,12 @@
 				B9D1BFA41B5A4C3900C0A3D4 /* EMCDDeviceManagerBase.m in Sources */,
 				B98CC2521B57D106002558D2 /* EM+ChatMessageCell.m in Sources */,
 				B990CA4F1B5F735300BA25B1 /* EM+ChatMessageManager.m in Sources */,
-				B9D1BFA61B5A4C3900C0A3D4 /* wav.mm in Sources */,
 				B965FD9B1B535FD000B5B23B /* Emoji.m in Sources */,
 				B9BF0E001B42889F0003FF67 /* AppDelegate.m in Sources */,
 				B9782A1F1B4667F600D602F0 /* EM+ChatEmojiView.m in Sources */,
 				B98CC23F1B54F705002558D2 /* EM+ChatTableView.m in Sources */,
 				B965FD9D1B535FD000B5B23B /* EmojiMapSymbols.m in Sources */,
 				B94E2CEA1B60D7FD00F7BACE /* EM+ChatBase.m in Sources */,
-				B9D1BFA51B5A4C3900C0A3D4 /* amrFileCodec.mm in Sources */,
 				B9D1BFBC1B5E17AD00C0A3D4 /* EM+ChatMessageVideoBubble.m in Sources */,
 				B9782A2B1B46762300D602F0 /* EM+ChatUIConfig.m in Sources */,
 				B9D1BFB91B5E16FA00C0A3D4 /* EM+ChatMessageImageBubble.m in Sources */,
