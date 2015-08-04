@@ -63,8 +63,34 @@ Pod::Spec.new do |s|
   end
 
   s.subspec 'Common' do |common|
-      common.source_files = 'EaseMobUI/EaseMobUI/Common/**/*'
-      common.public_header_files = 'EaseMobUI/EaseMobUI/Common/**/*.h'
+
+      common.subspec 'Utils' do |utils|
+          common.source_files = 'EaseMobUI/EaseMobUI/Common/Utils/*.{h,m}'
+          common.public_header_files = 'EaseMobUI/EaseMobUI/Common/Utils/*.h'
+      end
+
+      common.subspec 'DB' do |db|
+          db.source_files = 'EaseMobUI/EaseMobUI/Common/DB/*.{h,m}'
+          db.public_header_files = 'EaseMobUI/EaseMobUI/Common/DB/*.h'
+      end
+
+      common.subspec 'Rdparty' do |rdparty|
+          rdparty.source_files = 'EaseMobUI/EaseMobUI/Common/Rdparty/*.{h,m}'
+          rdparty.public_header_files = 'EaseMobUI/EaseMobUI/Common/Rdparty/*.h'
+      end
+
+      common.subspec 'Category' do |category|
+          category.source_files = 'EaseMobUI/EaseMobUI/Common/Category/*.{h,m}'
+          category.public_header_files = 'EaseMobUI/EaseMobUI/Common/Category/*.h'
+      end
+
+      common.subspec 'Class' do |class|
+          class.source_files = 'EaseMobUI/EaseMobUI/Common/Class/*.{h,m}'
+          class.public_header_files = 'EaseMobUI/EaseMobUI/Common/Class/*.h'
+      end
+
+      common.source_files = 'EaseMobUI/EaseMobUI/Common/*.{h,m}'
+      common.public_header_files = 'EaseMobUI/EaseMobUI/Common/*.h'
   end
 
   # ――― Resources ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
