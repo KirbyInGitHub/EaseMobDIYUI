@@ -9,9 +9,9 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-#define RES_IMAGE_TOOL(name) ([NSString stringWithFormat:@"EM_Resourse.bundle/images/tool/%@",name])
-#define RES_IMAGE_ACTION(name) ([NSString stringWithFormat:@"EM_Resourse.bundle/images/action/%@",name])
-#define RES_IMAGE_CELL(name) ([NSString stringWithFormat:@"EM_Resourse.bundle/images/cell/%@",name])
+#define RES_IMAGE_TOOL(name) ([NSString stringWithFormat:@"EM_Resource.bundle/images/tool/%@",name])
+#define RES_IMAGE_ACTION(name) ([NSString stringWithFormat:@"EM_Resource.bundle/images/action/%@",name])
+#define RES_IMAGE_CELL(name) ([NSString stringWithFormat:@"EM_Resource.bundle/images/cell/%@",name])
 
 #define RES_FONT_DEFAUT (14)
 

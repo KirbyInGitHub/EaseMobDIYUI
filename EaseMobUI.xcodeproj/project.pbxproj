@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		4233C91D54090CEF16F59568 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 055F3965F5D3B2098C86D930 /* libPods.a */; };
 		B900868F1B6F1151003BC694 /* EM+ChatDataUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = B900868E1B6F1151003BC694 /* EM+ChatDataUtils.m */; };
+		B90086C51B7091CC003BC694 /* EM_ChatStrings.strings in Resources */ = {isa = PBXBuildFile; fileRef = B90086C31B7091CC003BC694 /* EM_ChatStrings.strings */; };
+		B90086C61B7091CC003BC694 /* EM_Resource.bundle in Resources */ = {isa = PBXBuildFile; fileRef = B90086C41B7091CC003BC694 /* EM_Resource.bundle */; };
 		B928ACE31B58E22A00F618BE /* EM+ChatMessageBaseBubble.m in Sources */ = {isa = PBXBuildFile; fileRef = B928ACE21B58E22A00F618BE /* EM+ChatMessageBaseBubble.m */; };
 		B94E2CDA1B6088A500F7BACE /* EM+ChatVersion.m in Sources */ = {isa = PBXBuildFile; fileRef = B94E2CD91B6088A500F7BACE /* EM+ChatVersion.m */; };
 		B94E2CDD1B6089D200F7BACE /* EM+ChatConversation.m in Sources */ = {isa = PBXBuildFile; fileRef = B94E2CDC1B6089D200F7BACE /* EM+ChatConversation.m */; };
@@ -19,7 +21,6 @@
 		B94E2CED1B60E98900F7BACE /* EM+ChatDBM.m in Sources */ = {isa = PBXBuildFile; fileRef = B94E2CEC1B60E98900F7BACE /* EM+ChatDBM.m */; };
 		B94E2CF01B60F29E00F7BACE /* EM+ChatLatelyEmoji.m in Sources */ = {isa = PBXBuildFile; fileRef = B94E2CEF1B60F29E00F7BACE /* EM+ChatLatelyEmoji.m */; };
 		B94E2CF31B623A1400F7BACE /* EM+ChatInputView.m in Sources */ = {isa = PBXBuildFile; fileRef = B94E2CF21B623A1400F7BACE /* EM+ChatInputView.m */; };
-		B94E2CF51B62424800F7BACE /* EM_ChatStrings.strings in Resources */ = {isa = PBXBuildFile; fileRef = B94E2CF41B62424800F7BACE /* EM_ChatStrings.strings */; };
 		B95FC56D1B516B2400804333 /* EM+ChatActionButton.m in Sources */ = {isa = PBXBuildFile; fileRef = B95FC56C1B516B2400804333 /* EM+ChatActionButton.m */; };
 		B965FD8D1B535ADB00B5B23B /* EaseMobLoginController.m in Sources */ = {isa = PBXBuildFile; fileRef = B965FD8C1B535ADB00B5B23B /* EaseMobLoginController.m */; };
 		B965FD9B1B535FD000B5B23B /* Emoji.m in Sources */ = {isa = PBXBuildFile; fileRef = B965FD911B535FD000B5B23B /* Emoji.m */; };
@@ -37,7 +38,6 @@
 		B9782A1F1B4667F600D602F0 /* EM+ChatEmojiView.m in Sources */ = {isa = PBXBuildFile; fileRef = B9782A1E1B4667F600D602F0 /* EM+ChatEmojiView.m */; };
 		B9782A221B46681900D602F0 /* EM+ChatActionView.m in Sources */ = {isa = PBXBuildFile; fileRef = B9782A211B46681900D602F0 /* EM+ChatActionView.m */; };
 		B9782A251B466A6700D602F0 /* EM+ChatBaseView.m in Sources */ = {isa = PBXBuildFile; fileRef = B9782A241B466A6700D602F0 /* EM+ChatBaseView.m */; };
-		B9782A271B4675BC00D602F0 /* EM_Resourse.bundle in Resources */ = {isa = PBXBuildFile; fileRef = B9782A261B4675BC00D602F0 /* EM_Resourse.bundle */; };
 		B9782A2B1B46762300D602F0 /* EM+ChatUIConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = B9782A2A1B46762300D602F0 /* EM+ChatUIConfig.m */; };
 		B98CC23F1B54F705002558D2 /* EM+ChatTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = B98CC23E1B54F705002558D2 /* EM+ChatTableView.m */; };
 		B98CC2521B57D106002558D2 /* EM+ChatMessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B98CC2511B57D106002558D2 /* EM+ChatMessageCell.m */; };
@@ -87,6 +87,8 @@
 		988124437FD0EB4776958B18 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		B900868D1B6F1151003BC694 /* EM+ChatDataUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EM+ChatDataUtils.h"; sourceTree = "<group>"; };
 		B900868E1B6F1151003BC694 /* EM+ChatDataUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "EM+ChatDataUtils.m"; sourceTree = "<group>"; };
+		B90086C31B7091CC003BC694 /* EM_ChatStrings.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = EM_ChatStrings.strings; sourceTree = "<group>"; };
+		B90086C41B7091CC003BC694 /* EM_Resource.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = EM_Resource.bundle; sourceTree = "<group>"; };
 		B928ACE11B58E22A00F618BE /* EM+ChatMessageBaseBubble.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EM+ChatMessageBaseBubble.h"; sourceTree = "<group>"; };
 		B928ACE21B58E22A00F618BE /* EM+ChatMessageBaseBubble.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "EM+ChatMessageBaseBubble.m"; sourceTree = "<group>"; };
 		B94E2CD81B6088A500F7BACE /* EM+ChatVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EM+ChatVersion.h"; sourceTree = "<group>"; };
@@ -107,7 +109,6 @@
 		B94E2CEF1B60F29E00F7BACE /* EM+ChatLatelyEmoji.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "EM+ChatLatelyEmoji.m"; sourceTree = "<group>"; };
 		B94E2CF11B623A1400F7BACE /* EM+ChatInputView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EM+ChatInputView.h"; sourceTree = "<group>"; };
 		B94E2CF21B623A1400F7BACE /* EM+ChatInputView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "EM+ChatInputView.m"; sourceTree = "<group>"; };
-		B94E2CF41B62424800F7BACE /* EM_ChatStrings.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = EM_ChatStrings.strings; sourceTree = "<group>"; };
 		B95FC56B1B516B2400804333 /* EM+ChatActionButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EM+ChatActionButton.h"; sourceTree = "<group>"; };
 		B95FC56C1B516B2400804333 /* EM+ChatActionButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "EM+ChatActionButton.m"; sourceTree = "<group>"; };
 		B965FD8B1B535ADB00B5B23B /* EaseMobLoginController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EaseMobLoginController.h; sourceTree = "<group>"; };
@@ -143,7 +144,6 @@
 		B9782A211B46681900D602F0 /* EM+ChatActionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "EM+ChatActionView.m"; sourceTree = "<group>"; };
 		B9782A231B466A6700D602F0 /* EM+ChatBaseView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EM+ChatBaseView.h"; sourceTree = "<group>"; };
 		B9782A241B466A6700D602F0 /* EM+ChatBaseView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "EM+ChatBaseView.m"; sourceTree = "<group>"; };
-		B9782A261B4675BC00D602F0 /* EM_Resourse.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = EM_Resourse.bundle; sourceTree = "<group>"; };
 		B9782A291B46762300D602F0 /* EM+ChatUIConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EM+ChatUIConfig.h"; sourceTree = "<group>"; };
 		B9782A2A1B46762300D602F0 /* EM+ChatUIConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "EM+ChatUIConfig.m"; sourceTree = "<group>"; };
 		B98CC23D1B54F705002558D2 /* EM+ChatTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EM+ChatTableView.h"; sourceTree = "<group>"; };
@@ -253,6 +253,15 @@
 			path = Utils;
 			sourceTree = "<group>";
 		};
+		B90086C21B709143003BC694 /* Resource */ = {
+			isa = PBXGroup;
+			children = (
+				B90086C31B7091CC003BC694 /* EM_ChatStrings.strings */,
+				B90086C41B7091CC003BC694 /* EM_Resource.bundle */,
+			);
+			path = Resource;
+			sourceTree = "<group>";
+		};
 		B928ACE01B58E1AA00F618BE /* Bubble */ = {
 			isa = PBXGroup;
 			children = (
@@ -309,7 +318,6 @@
 				B97829FB1B43EE1F00D602F0 /* Common */,
 				B97829FA1B43EE0A00D602F0 /* View */,
 				B97829E81B43DC3E00D602F0 /* Controller */,
-				B97829E51B43DBF800D602F0 /* Supporting Files */,
 			);
 			path = EaseMobUI;
 			sourceTree = "<group>";
@@ -339,15 +347,6 @@
 				B965FD991B535FD000B5B23B /* EmojiTransport.m */,
 			);
 			path = Emoji;
-			sourceTree = "<group>";
-		};
-		B97829E51B43DBF800D602F0 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				B9782A261B4675BC00D602F0 /* EM_Resourse.bundle */,
-				B94E2CF41B62424800F7BACE /* EM_ChatStrings.strings */,
-			);
-			path = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		B97829E81B43DC3E00D602F0 /* Controller */ = {
@@ -544,6 +543,7 @@
 		B9BF0DFA1B42889F0003FF67 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				B90086C21B709143003BC694 /* Resource */,
 				B9BF0DFB1B42889F0003FF67 /* Info.plist */,
 				B9BF0DFC1B42889F0003FF67 /* main.m */,
 			);
@@ -743,9 +743,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				B9BF0E0B1B42889F0003FF67 /* LaunchScreen.xib in Resources */,
-				B94E2CF51B62424800F7BACE /* EM_ChatStrings.strings in Resources */,
 				B9BF0E081B42889F0003FF67 /* Images.xcassets in Resources */,
-				B9782A271B4675BC00D602F0 /* EM_Resourse.bundle in Resources */,
+				B90086C51B7091CC003BC694 /* EM_ChatStrings.strings in Resources */,
+				B90086C61B7091CC003BC694 /* EM_Resource.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
