@@ -136,12 +136,12 @@ Pod::Spec.new do |s|
               end
 
               voiceConvert.subspec 'opencore-amrnb' do |opencore-amrnb|
-                  opencore-amrnb.source_files = 'EaseMobUI/EaseMobUI/Common/Rdparty/VoiceConvert/opencore-amrnb/*'
+                  opencore-amrnb.source_files = 'EaseMobUI/EaseMobUI/Common/Rdparty/VoiceConvert/opencore-amrnb/*.{h,m}'
                   opencore-amrnb.public_header_files = 'EaseMobUI/EaseMobUI/Common/Rdparty/VoiceConvert/opencore-amrnb/*.h'
               end
 
               voiceConvert.subspec 'opencore-amrwb' do |opencore-amrwb|
-                  opencore-amrwb.source_files = 'EaseMobUI/EaseMobUI/Common/Rdparty/VoiceConvert/opencore-amrwb/*'
+                  opencore-amrwb.source_files = 'EaseMobUI/EaseMobUI/Common/Rdparty/VoiceConvert/opencore-amrwb/*.{h,m}'
                   opencore-amrwb.public_header_files = 'EaseMobUI/EaseMobUI/Common/Rdparty/VoiceConvert/opencore-amrwb/*.h'
               end
 
@@ -174,6 +174,8 @@ Pod::Spec.new do |s|
   # ――― Project Linking ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   s.frameworks = "UIKit", "MapKit","Foundation"
   s.vendored_libraries = ['EaseMobUI/EaseMobUI/Common/Rdparty/VoiceConvert/opencore-amrnb/libopencore-amrnb.a',
+                          'EaseMobUI/EaseMobUI/Common/Rdparty/VoiceConvert/opencore-amrwb/libopencore-amrwb.a']
+  s.libraries = ['EaseMobUI/EaseMobUI/Common/Rdparty/VoiceConvert/opencore-amrnb/libopencore-amrnb.a',
                           'EaseMobUI/EaseMobUI/Common/Rdparty/VoiceConvert/opencore-amrwb/libopencore-amrwb.a']
   # s.libraries = "iconv", "xml2"
 
