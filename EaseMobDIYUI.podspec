@@ -10,7 +10,7 @@ Pod::Spec.new do |s|
 
   # ―――  Spec Metadata  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   s.name         = "EaseMobDIYUI"
-  s.version      = "0.1.2"
+  s.version      = "0.1.3"
   s.summary      = "环信DIY聊天UI"
 
   s.description  = <<-DESC
@@ -55,7 +55,7 @@ Pod::Spec.new do |s|
 
   # ――― Resources ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   # s.resource  = "icon.png"
-  s.resources = "EaseMobUI/EaseMobUI/Supporting Files/*"
+  s.resources = "EaseMobUI/Resource/*"
   # s.preserve_paths = "FilesToSave", "MoreFilesToSave"
 
 
