@@ -10,7 +10,7 @@ Pod::Spec.new do |s|
 
   # ―――  Spec Metadata  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   s.name         = "EaseMobDIYUI"
-  s.version      = "0.1.3"
+  s.version      = "0.1.4"
   s.summary      = "环信DIY聊天UI"
 
   s.description  = <<-DESC
@@ -44,19 +44,38 @@ Pod::Spec.new do |s|
 
 
   # ――― Source Location ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-  s.source       = { :git => "https://github.com/AwakenDragon/EaseMobDIYUI.git", :tag => "0.1.3" }
+  s.source       = { :git => "https://github.com/AwakenDragon/EaseMobDIYUI.git", :tag => s.version.to_s }
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-  s.source_files = 'EaseMobUI/EaseMobUI/**/*'
+  s.subspec 'Controller' do |controller|
+      controller.source_files = 'EaseMobUI/EaseMobUI/Controller/**/*'
+      controller.public_header_files = 'EaseMobUI/EaseMobUI/Controller/**/*.h'
+  end
 
+  s.subspec 'View' do |view|
+      view.source_files = 'EaseMobUI/EaseMobUI/View/**/*'
+      view.public_header_files = 'EaseMobUI/EaseMobUI/View/**/*.h'
+  end
+
+  s.subspec 'Model' do |model|
+      model.source_files = 'EaseMobUI/EaseMobUI/model/**/*.'
+      model.public_header_files = 'EaseMobUI/EaseMobUI/model/**/*.h'
+  end
+
+  s.subspec 'Common' do |common|
+      common.source_files = 'EaseMobUI/EaseMobUI/Common/**/*.{h,m}'
+      common.public_header_files = 'EaseMobUI/EaseMobUI/Common/**/*.h'
+  end
 
   # ――― Resources ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-  s.resources = "EaseMobUI/Resource/**/*"
+  s.resources = "EaseMobUI/Resource/EM_Resource.bundle,EaseMobUI/Resource/EM_ChatStrings.strings"
   # s.preserve_paths = "FilesToSave", "MoreFilesToSave"
 
 
   # ――― Project Linking ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   s.frameworks = "UIKit", "MapKit","Foundation"
+  s.vendored_libraries = ['EaseMobUI/EaseMobUI/Common/Rdparty/VoiceConvert/opencore-amrnb/libopencore-amrnb.a',
+                          'EaseMobUI/EaseMobUI/Common/Rdparty/VoiceConvert/opencore-amrwb/libopencore-amrwb.a']
   # s.libraries = "iconv", "xml2"
 
 
