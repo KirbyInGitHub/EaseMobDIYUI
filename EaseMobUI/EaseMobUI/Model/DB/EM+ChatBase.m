@@ -10,7 +10,7 @@
 
 @implementation EM_ChatBase
 
-+ (EM_ChatBase *)currentVersion{
++ (EM_ChatVersion *)currentVersion{
     return nil;
 }
 

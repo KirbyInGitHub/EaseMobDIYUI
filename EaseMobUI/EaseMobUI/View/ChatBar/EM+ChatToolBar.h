@@ -5,14 +5,12 @@
 //  Created by 周玉震 on 15/7/2.
 //  Copyright (c) 2015年 周玉震. All rights reserved.
 //
-
-#import <UIKit/UIKit.h>
-#import "EM+Common.h"
-
 #import "EM+ChatBaseView.h"
-#import "EM+ChatInputTool.h"
-#import "EM+ChatMoreTool.h"
-#import "EM+ChatTableView.h"
+
+@class EM_ChatInputTool;
+@class EM_ChatMoreTool;
+@class EM_ChatTableView;
+@class EM_ChatUIConfig;
 
 @protocol EM_MessageToolBarDelegate;
 

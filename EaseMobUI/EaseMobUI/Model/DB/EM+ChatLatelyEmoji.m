@@ -7,6 +7,7 @@
 //
 
 #import "EM+ChatLatelyEmoji.h"
+#import "EM+ChatVersion.h"
 
 @implementation EM_ChatLatelyEmoji
 

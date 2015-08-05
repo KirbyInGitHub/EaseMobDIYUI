@@ -13,6 +13,13 @@
 #import "UIButton+WebCache.h"
 #import "EM+ChatUIConfig.h"
 
+#import "EM+ChatMessageTextBubble.h"
+#import "EM+ChatMessageImageBubble.h"
+#import "EM+ChatMessageVideoBubble.h"
+#import "EM+ChatMessageLocationBubble.h"
+#import "EM+ChatMessageVoiceBubble.h"
+#import "EM+ChatMessageFileBubble.h"
+
 @interface EM_ChatMessageCell()<EM_ChatMessageBubbleDelegate>
 
 @property (nonatomic,strong) UILabel *nameLabel;

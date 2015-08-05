@@ -7,10 +7,10 @@
 //
 
 #import "AppDelegate.h"
-#import "EaseMob.h"
+#import "EaseMobUIClient.h"
+
 #import "UStylistChatController.h"
-#import "EM+Common.h"
-#import "EM+ChatDB.h"
+
 
 #define EaseMob_AppKey (@"zhou-yuzhen#easemobchatui")
 
@@ -32,10 +32,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
-    EM_ChatDB *db = [EM_ChatDB shared];
-    if (![db connect]) {
-        NSLog(@"初始化数据库失败");
-    }
+    
     
     self.window = [[UIWindow alloc]initWithFrame:[UIScreen mainScreen].bounds];
     self.window.backgroundColor = [UIColor whiteColor];
@@ -56,6 +53,8 @@
         user = @"yuanjing";
         password = @"123456";
     }
+    
+    [EaseMobUIClient sharedInstance];
     
     EM_ChatUIConfig *config = [EM_ChatUIConfig defaultConfig];
     [config removeActionWithName:kActionNameVoice];

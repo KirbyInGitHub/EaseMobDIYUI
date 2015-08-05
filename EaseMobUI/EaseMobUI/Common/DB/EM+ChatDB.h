@@ -7,10 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "EM+DBOPHelper.h"
-#import "EM+ChatVersion.h"
-#import "EM+ChatConversation.h"
-#import "EM+ChatLatelyEmoji.h"
+@class FMDatabase;
 
 #define EM_DB_NAME (@"EM_Chat_UI.db")
 #define EM_DB_VERSION   (1)

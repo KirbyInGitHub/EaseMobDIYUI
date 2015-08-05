@@ -8,6 +8,7 @@
 
 #import "EM+ChatMessageTextBubble.h"
 #import "TTTAttributedLabel.h"
+#import "EM+ChatMessageModel.h"
 
 #define TEXT_LINE_SPACING (1)
 #define TEXT_FONT_SIZE (16)

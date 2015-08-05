@@ -7,7 +7,6 @@
 //
 
 #import "EM+ChatBase.h"
-#import "EM+ChatVersion.h"
 
 #define EMOJI_COLUMN_EMOJI      (@"emoji")
 #define EMOJI_COLUMN_CALCULATE  (@"calculate")

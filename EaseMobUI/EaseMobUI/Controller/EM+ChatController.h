@@ -7,14 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
-
-//View
-#import "EM+ChatToolBar.h"
-#import "EM+ChatTableView.h"
-#import "EM+ChatMessageCell.h"
-#import "MJRefresh.h"
-
 #import "UIViewController+HUD.h"
+#import "EM+ChatMessageCell.h"
+#import "EM+ChatUIConfig.h"
+
+@class EM_ChatToolBar;
+@class EM_ChatTableView;
 
 extern NSString * const kExtendUserInfo;
 extern NSString * const kExtendUserExt;

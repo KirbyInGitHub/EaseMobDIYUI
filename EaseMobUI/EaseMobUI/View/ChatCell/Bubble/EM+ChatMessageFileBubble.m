@@ -7,6 +7,7 @@
 //
 
 #import "EM+ChatMessageFileBubble.h"
+#import "EM+ChatMessageModel.h"
 
 @implementation EM_ChatMessageFileBubble{
     UIImageView *fileView;

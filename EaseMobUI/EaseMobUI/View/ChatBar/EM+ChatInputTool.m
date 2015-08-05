@@ -7,8 +7,11 @@
 //
 
 #import "EM+ChatInputTool.h"
-#import "EM+Common.h"
 #import "EM+ChatInputView.h"
+
+#import "EM+ChatUIConfig.h"
+#import "EM+Common.h"
+#import "UIColor+Hex.h"
 
 #define PADDING (5)
 

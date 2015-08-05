@@ -6,20 +6,16 @@
 //  Copyright (c) 2015年 周玉震. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-
 #import "EM+ChatBaseView.h"
-#import "EM+ChatRecordView.h"
-#import "EM+ChatEmojiView.h"
-#import "EM+ChatActionView.h"
+@class EM_ChatUIConfig;
 
 @protocol EM_ChatMoreToolDelegate;
 
 @interface EM_ChatMoreTool : EM_ChatBaseView
 
-@property (nonatomic,strong,readonly) EM_ChatRecordView *recordView;
-@property (nonatomic,strong,readonly) EM_ChatEmojiView *emojiView;
-@property (nonatomic,strong,readonly) EM_ChatActionView *actionView;
+@property (nonatomic,strong,readonly) UIView *recordView;
+@property (nonatomic,strong,readonly) UIView *emojiView;
+@property (nonatomic,strong,readonly) UIView *actionView;
 
 @property (nonatomic,strong,readonly) UIView *currentTool;
 

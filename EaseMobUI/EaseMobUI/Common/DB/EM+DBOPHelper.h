@@ -7,7 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "FMDB.h"
+@class FMDatabase;
+@class FMResultSet;
 
 @interface EM_DBOPHelper : NSObject
 

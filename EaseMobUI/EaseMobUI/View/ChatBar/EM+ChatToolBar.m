@@ -8,6 +8,12 @@
 
 #import "EM+ChatToolBar.h"
 
+#import "EM+Common.h"
+#import "EM+ChatInputTool.h"
+#import "EM+ChatMoreTool.h"
+#import "EM+ChatTableView.h"
+#import "EM+ChatUIConfig.h"
+
 #define _UIKeyboardFrameEndUserInfoKey (&UIKeyboardFrameEndUserInfoKey != NULL ? UIKeyboardFrameEndUserInfoKey : @"UIKeyboardBoundsUserInfoKey")
 
 @interface EM_ChatToolBar()<EM_ChatInputToolDelegate,EM_ChatMoreToolDelegate,EM_ChatTableViewTapDelegate>

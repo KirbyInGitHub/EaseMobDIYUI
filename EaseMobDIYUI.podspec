@@ -10,7 +10,7 @@ Pod::Spec.new do |s|
 
   # ―――  Spec Metadata  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   s.name         = "EaseMobDIYUI"
-  s.version      = "0.1.6"
+  s.version      = "0.1.7"
   s.summary      = "环信DIY聊天UI"
 
   s.description  = <<-DESC
@@ -47,6 +47,11 @@ Pod::Spec.new do |s|
   s.source       = { :git => "https://github.com/AwakenDragon/EaseMobDIYUI.git", :tag => s.version.to_s }
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
+  s.subspec 'Main' do |main|
+      main.source_files = 'EaseMobUI/EaseMobUI/Main/**/*'
+      main.public_header_files = 'EaseMobUI/EaseMobUI/Main/**/*.h'
+  end
+
   s.subspec 'Controller' do |controller|
       controller.source_files = 'EaseMobUI/EaseMobUI/Controller/**/*'
       controller.public_header_files = 'EaseMobUI/EaseMobUI/Controller/**/*.h'
@@ -69,7 +74,6 @@ Pod::Spec.new do |s|
 
   # ――― Resources ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   s.resources = ["EaseMobUI/Resource/EM_Resource.bundle","EaseMobUI/Resource/EM_ChatStrings.strings"]
-  # s.preserve_paths = "FilesToSave", "MoreFilesToSave"
 
 
   # ――― Project Linking ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #

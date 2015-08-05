@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "EaseMob.h"
 #import "EM+ChatMessageData.h"
 
 extern NSString * const kExtendUserData;

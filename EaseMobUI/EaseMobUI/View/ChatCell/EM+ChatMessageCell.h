@@ -7,13 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "EM+ChatMessageBaseBubble.h"
 #import "EM+ChatMessageModel.h"
-#import "EM+ChatMessageTextBubble.h"
-#import "EM+ChatMessageImageBubble.h"
-#import "EM+ChatMessageVideoBubble.h"
-#import "EM+ChatMessageLocationBubble.h"
-#import "EM+ChatMessageVoiceBubble.h"
-#import "EM+ChatMessageFileBubble.h"
 
 #define CELL_AVATAR_SIZE (50)
 #define CELL_PADDING (15)

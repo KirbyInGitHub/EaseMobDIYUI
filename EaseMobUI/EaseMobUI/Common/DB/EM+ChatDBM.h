@@ -7,8 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "EM+ChatConversation.h"
-#import "EM+ChatLatelyEmoji.h"
+@class EM_ChatConversation;
+@class EM_ChatLatelyEmoji;
 
 @interface EM_ChatDBM : NSObject
 

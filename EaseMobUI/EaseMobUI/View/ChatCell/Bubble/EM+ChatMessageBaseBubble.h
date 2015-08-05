@@ -7,7 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "EM+ChatMessageModel.h"
+@class EM_ChatMessageModel;
+@class EM_ChatMessageTextBubble;
+@class EM_ChatMessageImageBubble;
+@class EM_ChatMessageVideoBubble;
+@class EM_ChatMessageLocationBubble;
+@class EM_ChatMessageVoiceBubble;
+@class EM_ChatMessageFileBubble;
 
 
 #define CELL_BUBBLE_LEFT_PADDING (12)

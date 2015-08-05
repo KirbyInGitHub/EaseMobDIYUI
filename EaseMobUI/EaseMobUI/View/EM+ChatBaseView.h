@@ -8,8 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-#import "UIColor+Hex.h"
-
 @interface EM_ChatBaseView : UIView
 
 @property (nonatomic,strong) UIView *backgroundView;
