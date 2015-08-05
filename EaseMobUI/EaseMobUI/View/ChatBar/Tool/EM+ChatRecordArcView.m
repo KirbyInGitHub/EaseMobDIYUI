@@ -7,6 +7,8 @@
 //
 
 #import "EM+ChatRecordArcView.h"
+#import "EMCDDeviceManager.h"
+#import <AVFoundation/AVFoundation.h>
 
 typedef NS_ENUM(NSUInteger,ACTION_STATE) {
     ACTION_STATE_NORMAL = 0,

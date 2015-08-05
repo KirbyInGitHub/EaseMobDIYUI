@@ -8,7 +8,7 @@
 
 #import "EM+ChatMessageVoiceBubble.h"
 #import "EM+ChatUIConfig.h"
-
+#import "EM+ChatMessageModel.h"
 
 @implementation EM_ChatMessageVoiceBubble{
     UIImageView *animationView;

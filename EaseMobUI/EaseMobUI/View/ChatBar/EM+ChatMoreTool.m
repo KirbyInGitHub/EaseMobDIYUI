@@ -8,6 +8,12 @@
 
 #import "EM+ChatMoreTool.h"
 
+#import "EM+ChatRecordView.h"
+#import "EM+ChatEmojiView.h"
+#import "EM+ChatActionView.h"
+
+#import "EM+ChatUIConfig.h"
+
 @interface EM_ChatMoreTool()<EM_ChatActionViewDelegate,EM_ChatEmojiViewDelegate,EM_ChatRecordViewDelegate>
 
 @property (nonatomic,strong) EM_ChatUIConfig *config;
@@ -24,19 +30,19 @@
         
         if (!_config.hiddenOfRecord) {
             _recordView = [[EM_ChatRecordView alloc]init];
-            _recordView.delegate = self;
+            ((EM_ChatRecordView *)_recordView).delegate = self;
             [self addSubview:_recordView];
         }
         
         if (!_config.hiddenOfEmoji) {
             _emojiView = [[EM_ChatEmojiView alloc]init];
-            _emojiView.delegate = self;
+            ((EM_ChatEmojiView *)_emojiView).delegate = self;
             [self addSubview:_emojiView];
         }
         
         if (_config.actionDictionary.count > 0) {
             _actionView = [[EM_ChatActionView alloc]initWithConfig:_config];
-            _actionView.delegate = self;
+            ((EM_ChatActionView *)_actionView).delegate = self;
             [self addSubview:_actionView];
         }
     }

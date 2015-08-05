@@ -7,6 +7,7 @@
 //
 
 #import "EM+ChatConversation.h"
+#import "EM+ChatVersion.h"
 
 @implementation EM_ChatConversation
 

@@ -7,6 +7,7 @@
 //
 
 #import "EM+DBOPHelper.h"
+#import "FMDB.h"
 
 @implementation EM_DBOPHelper
 

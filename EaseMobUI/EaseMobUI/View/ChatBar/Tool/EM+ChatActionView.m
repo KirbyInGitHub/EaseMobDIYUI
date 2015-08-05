@@ -9,6 +9,7 @@
 #import "EM+ChatActionView.h"
 #import "EM+ChatActionButton.h"
 #import "EM+Common.h"
+#import "EM+ChatUIConfig.h"
 
 #define HORIZONTAL_COUNT (4)
 #define VERTICAL_COUNT  (2)

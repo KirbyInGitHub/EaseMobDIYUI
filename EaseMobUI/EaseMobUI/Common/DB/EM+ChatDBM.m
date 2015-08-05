@@ -8,6 +8,11 @@
 
 #import "EM+ChatDBM.h"
 #import "EM+ChatDB.h"
+#import "EM+DBOPHelper.h"
+#import "FMDB.h"
+
+#import "EM+ChatConversation.h"
+#import "EM+ChatLatelyEmoji.h"
 
 @implementation EM_ChatDBM
 

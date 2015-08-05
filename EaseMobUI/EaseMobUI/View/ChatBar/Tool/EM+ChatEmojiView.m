@@ -12,7 +12,9 @@
 #import "EM+Common.h"
 #import "EM+ChatUIConfig.h"
 #import "UIColor+Hex.h"
+
 #import "EM+ChatDBM.h"
+#import "EM+ChatLatelyEmoji.h"
 
 #define HORIZONTAL_COUNT (8)
 #define VERTICAL_COUNT  (3)

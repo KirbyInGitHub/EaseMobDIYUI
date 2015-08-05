@@ -10,6 +10,8 @@
 #import "UIColor+Hex.h"
 #import "EM+Common.h"
 
+#import "EM+ChatMessageModel.h"
+
 @implementation EM_ChatMessageBaseBubble{
     UITapGestureRecognizer *tap;
     UILongPressGestureRecognizer *longPress;

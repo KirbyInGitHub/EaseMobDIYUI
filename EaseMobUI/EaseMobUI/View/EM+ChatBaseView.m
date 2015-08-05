@@ -7,6 +7,7 @@
 //
 
 #import "EM+ChatBaseView.h"
+#import "UIColor+Hex.h"
 
 @implementation EM_ChatBaseView
 

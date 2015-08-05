@@ -7,7 +7,6 @@
 //
 
 #import "EM+ChatBase.h"
-#import "EM+ChatVersion.h"
 
 #define CONVERSATION_COLUMN_CHATTER (@"conversationChatter")
 #define CONVERSATION_COLUMN_EDITOR  (@"converstionEditor")

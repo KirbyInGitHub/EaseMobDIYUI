@@ -8,6 +8,12 @@
 
 #import "EM+ChatDB.h"
 #import "EM+Common.h"
+#import "EM+DBOPHelper.h"
+#import "FMDB.h"
+
+#import "EM+ChatVersion.h"
+#import "EM+ChatConversation.h"
+#import "EM+ChatLatelyEmoji.h"
 
 @implementation EM_ChatDB{
     FMDatabaseQueue * _dbQueue;

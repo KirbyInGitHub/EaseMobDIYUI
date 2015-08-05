@@ -11,6 +11,7 @@
 		B900868F1B6F1151003BC694 /* EM+ChatDataUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = B900868E1B6F1151003BC694 /* EM+ChatDataUtils.m */; };
 		B90086C51B7091CC003BC694 /* EM_ChatStrings.strings in Resources */ = {isa = PBXBuildFile; fileRef = B90086C31B7091CC003BC694 /* EM_ChatStrings.strings */; };
 		B90086C61B7091CC003BC694 /* EM_Resource.bundle in Resources */ = {isa = PBXBuildFile; fileRef = B90086C41B7091CC003BC694 /* EM_Resource.bundle */; };
+		B90087141B71AC42003BC694 /* EaseMobUIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = B90087131B71AC42003BC694 /* EaseMobUIClient.m */; };
 		B928ACE31B58E22A00F618BE /* EM+ChatMessageBaseBubble.m in Sources */ = {isa = PBXBuildFile; fileRef = B928ACE21B58E22A00F618BE /* EM+ChatMessageBaseBubble.m */; };
 		B94E2CDA1B6088A500F7BACE /* EM+ChatVersion.m in Sources */ = {isa = PBXBuildFile; fileRef = B94E2CD91B6088A500F7BACE /* EM+ChatVersion.m */; };
 		B94E2CDD1B6089D200F7BACE /* EM+ChatConversation.m in Sources */ = {isa = PBXBuildFile; fileRef = B94E2CDC1B6089D200F7BACE /* EM+ChatConversation.m */; };
@@ -84,6 +85,8 @@
 		B900868E1B6F1151003BC694 /* EM+ChatDataUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "EM+ChatDataUtils.m"; sourceTree = "<group>"; };
 		B90086C31B7091CC003BC694 /* EM_ChatStrings.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = EM_ChatStrings.strings; sourceTree = "<group>"; };
 		B90086C41B7091CC003BC694 /* EM_Resource.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = EM_Resource.bundle; sourceTree = "<group>"; };
+		B90087121B71AC42003BC694 /* EaseMobUIClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EaseMobUIClient.h; sourceTree = "<group>"; };
+		B90087131B71AC42003BC694 /* EaseMobUIClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EaseMobUIClient.m; sourceTree = "<group>"; };
 		B928ACE11B58E22A00F618BE /* EM+ChatMessageBaseBubble.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EM+ChatMessageBaseBubble.h"; sourceTree = "<group>"; };
 		B928ACE21B58E22A00F618BE /* EM+ChatMessageBaseBubble.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "EM+ChatMessageBaseBubble.m"; sourceTree = "<group>"; };
 		B94E2CD81B6088A500F7BACE /* EM+ChatVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EM+ChatVersion.h"; sourceTree = "<group>"; };
@@ -243,6 +246,15 @@
 			path = Resource;
 			sourceTree = "<group>";
 		};
+		B90087111B71ABF6003BC694 /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				B90087121B71AC42003BC694 /* EaseMobUIClient.h */,
+				B90087131B71AC42003BC694 /* EaseMobUIClient.m */,
+			);
+			path = Main;
+			sourceTree = "<group>";
+		};
 		B928ACE01B58E1AA00F618BE /* Bubble */ = {
 			isa = PBXGroup;
 			children = (
@@ -295,6 +307,7 @@
 		B95E576E1B43CD7000A844EF /* EaseMobUI */ = {
 			isa = PBXGroup;
 			children = (
+				B90087111B71ABF6003BC694 /* Main */,
 				B9782A281B4675E500D602F0 /* Model */,
 				B97829FB1B43EE1F00D602F0 /* Common */,
 				B97829FA1B43EE0A00D602F0 /* View */,
@@ -774,6 +787,7 @@
 				B965FD9E1B535FD000B5B23B /* EmojiPictographs.m in Sources */,
 				B9D1BF751B59167600C0A3D4 /* UIViewController+HUD.m in Sources */,
 				B9782A121B4629AC00D602F0 /* EM+ChatInputTool.m in Sources */,
+				B90087141B71AC42003BC694 /* EaseMobUIClient.m in Sources */,
 				B94E2CE01B608B9C00F7BACE /* EM+ChatMessageData.m in Sources */,
 				B9782A0C1B43F31F00D602F0 /* EM+ChatController.m in Sources */,
 				B94E2CE71B60963B00F7BACE /* EM+ChatDB.m in Sources */,

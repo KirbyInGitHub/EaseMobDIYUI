@@ -8,6 +8,7 @@
 
 #import "EM+ChatMessageLocationBubble.h"
 #import "EM+ChatUIConfig.h"
+#import "EM+ChatMessageModel.h"
 
 @implementation EM_ChatMessageLocationBubble{
     UIImageView *mapView;

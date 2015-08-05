@@ -6,10 +6,8 @@
 //  Copyright (c) 2015年 周玉震. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-
 #import "EM+ChatBaseView.h"
-#import "EM+ChatUIConfig.h"
+@class EM_ChatUIConfig;
 
 @protocol EM_ChatActionViewDelegate;
 

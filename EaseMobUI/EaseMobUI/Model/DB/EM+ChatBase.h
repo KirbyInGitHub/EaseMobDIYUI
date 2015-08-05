@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+@class EM_ChatVersion;
 
 #define COLUMN_ID                   (@"_id")
 
@@ -14,7 +15,7 @@
 
 @property (nonatomic,assign) long long _id;
 
-+ (EM_ChatBase *)currentVersion;
++ (EM_ChatVersion *)currentVersion;
 + (NSString *)tableName;
 + (NSInteger)tableVersion;
 + (NSInteger)fieldCount;

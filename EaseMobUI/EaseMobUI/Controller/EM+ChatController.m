@@ -7,12 +7,20 @@
 //
 
 #import "EM+ChatController.h"
-#import "UIColor+Hex.h"
-#import "MBProgressHUD.h"
+
 #import "EM+LocationController.h"
+#import "EM+ChatToolBar.h"
+#import "EM+ChatTableView.h"
+#import "EM+ChatInputTool.h"
 #import "EM+ChatMessageModel.h"
 #import "EM+ChatMessageManager.h"
 #import "EM+ChatDBM.h"
+#import "EM+Common.h"
+#import "EM+ChatConversation.h"
+
+#import "MJRefresh.h"
+#import "MBProgressHUD.h"
+#import "UIColor+Hex.h"
 
 #import <MediaPlayer/MediaPlayer.h>
 #import <MobileCoreServices/MobileCoreServices.h>
