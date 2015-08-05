@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "UIViewController+HUD.h"
 #import "EM+ChatMessageCell.h"
 #import "EM+ChatUIConfig.h"
 
