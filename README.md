@@ -47,9 +47,12 @@ pod 'VoiceConvert',:git => "https://github.com/AwakenDragon/VoiceConvert.git"
 - ```"TTTAttributedLabel", "1.13.4"``` 富文本显示 [TTTAttributedLabel](https://github.com/TTTAttributedLabel/TTTAttributedLabel)
 
 所以你不需要再额外pod这些了。
+
 **注意：**在pod完成开始运行的时候， [EaseMobSDKFull](https://github.com/dujiepeng/EaseMobSDKFull)
 的一个文件*```EMErrorDefs.h```*可能会报错，具体原因是几个枚举没有或者重复。
+
 **解决办法：**从环信最新的SDK([EaseMobSDK](https://github.com/easemob/sdk-ios-cocoapods) )中拿到这个文件，然后进入自己项目[EaseMobSDKFull](https://github.com/dujiepeng/EaseMobSDKFull)的对应pod目录，覆盖掉该文件即可。虽然在```XCode```里不允许修改pod的文件，但这样做事没有问题的。
+
 **文件目录：**
 - ```EaseMobSDK --> include --> Utility --> ErrorManager --> EMErrorDefs.h``` 
 - ```你项目根目录 --> Pods --> EaseMobSDKFull --> EaseMobSDKFull --> include --> Utility --> ErrorManager --> EMErrorDefs.h```
