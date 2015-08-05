@@ -38,21 +38,21 @@ pod 'VoiceConvert',:git => "https://github.com/AwakenDragon/VoiceConvert.git"
 
 ###依赖
 在pod [EaseMobDIYUI](https://github.com/AwakenDragon/EaseMobDIYUI)的时候，EaseMobSDKFull已经添加了以下依赖：
-```"EaseMobSDKFull", "2.1.7"``` 不解释 [EaseMobSDKFull](https://github.com/dujiepeng/EaseMobSDKFull)
-```"SDWebImage", "3.7.3"``` 用来加载图片的 [SDWebImage](https://github.com/rs/SDWebImage)
-```"MJRefresh", "2.0.4"``` 上拉下拉，相信你也会用到 [MJRefresh](https://github.com/CoderMJLee/MJRefresh)
-```"MWPhotoBrowser", "2.1.1"``` 图片浏览，同时也支持视频播放 [MWPhotoBrowser](https://github.com/mwaterfall/MWPhotoBrowser)
-```"MBProgressHUD", "0.9.1"``` 主要还是toast功能 [MBProgressHUD](https://github.com/jdg/MBProgressHUD)
-```"FMDB", "2.5"``` 这是实现保存会话状态和聊天表情的，你应该也会用到 [FMDB](https://github.com/ccgus/fmdb)
-```"TTTAttributedLabel", "1.13.4"``` 富文本显示 [TTTAttributedLabel](https://github.com/TTTAttributedLabel/TTTAttributedLabel)
+- ```"EaseMobSDKFull", "2.1.7"``` 不解释 [EaseMobSDKFull](https://github.com/dujiepeng/EaseMobSDKFull)
+- ```"SDWebImage", "3.7.3"``` 用来加载图片的 [SDWebImage](https://github.com/rs/SDWebImage)
+- ```"MJRefresh", "2.0.4"``` 上拉下拉，相信你也会用到 [MJRefresh](https://github.com/CoderMJLee/MJRefresh)
+- ```"MWPhotoBrowser", "2.1.1"``` 图片浏览，同时也支持视频播放 [MWPhotoBrowser](https://github.com/mwaterfall/MWPhotoBrowser)
+- ```"MBProgressHUD", "0.9.1"``` 主要还是toast功能 [MBProgressHUD](https://github.com/jdg/MBProgressHUD)
+- ```"FMDB", "2.5"``` 这是实现保存会话状态和聊天表情的，你应该也会用到 [FMDB](https://github.com/ccgus/fmdb)
+- ```"TTTAttributedLabel", "1.13.4"``` 富文本显示 [TTTAttributedLabel](https://github.com/TTTAttributedLabel/TTTAttributedLabel)
 
 所以你不需要再额外pod这些了。
 **注意：**在pod完成开始运行的时候， [EaseMobSDKFull](https://github.com/dujiepeng/EaseMobSDKFull)
 的一个文件*```EMErrorDefs.h```*可能会报错，具体原因是几个枚举没有或者重复。
 **解决办法：**从环信最新的SDK([EaseMobSDK](https://github.com/easemob/sdk-ios-cocoapods) )中拿到这个文件，然后进入自己项目[EaseMobSDKFull](https://github.com/dujiepeng/EaseMobSDKFull)的对应pod目录，覆盖掉该文件即可。虽然在```XCode```里不允许修改pod的文件，但这样做事没有问题的。
 **文件目录：**
-```EaseMobSDK --> include --> Utility --> ErrorManager --> EMErrorDefs.h``` 
-```你项目根目录 --> Pods --> EaseMobSDKFull --> EaseMobSDKFull --> include --> Utility --> ErrorManager --> EMErrorDefs.h```
+- ```EaseMobSDK --> include --> Utility --> ErrorManager --> EMErrorDefs.h``` 
+- ```你项目根目录 --> Pods --> EaseMobSDKFull --> EaseMobSDKFull --> include --> Utility --> ErrorManager --> EMErrorDefs.h```
 
 ### 初始化及使用
 ```
