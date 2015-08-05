@@ -18,6 +18,8 @@
 #import "EM+Common.h"
 #import "EM+ChatConversation.h"
 
+#import "UIViewController+HUD.h"
+
 #import "MJRefresh.h"
 #import "MBProgressHUD.h"
 #import "UIColor+Hex.h"
