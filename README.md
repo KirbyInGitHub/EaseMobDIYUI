@@ -5,15 +5,27 @@
 - **[环信](http://www.easemob.com/)**：环信即时通讯云是移动即时通讯能力的云计算 PaaS (Platform as a Service, 平台即服务)平台服务商。移动即时通讯能力是指基于互联网和移动终端的单聊，群聊，富媒体消息，实时语音，实时视频，多人语音视频，流媒体播放及互动等通讯能力。环信将移动即时通讯能力通过云端开放的API 和客户端 SDK 包的方式提供给开发者和企业，帮助合作伙伴在自己的产品中便捷、快速的实现通讯和社交功能
 - **[EaseMobDIYUI](https://github.com/AwakenDragon/EaseMobDIYUI)**：[LeanCloud](https://leancloud.cn/)、[融云](http://www.rongcloud.cn/)、[环信](http://www.easemob.com/)是我用过IM平台，也是当前比较受欢迎的三个IM平台。通过对比它们的优缺点，还是非常明显的。[LeanCloud](https://leancloud.cn/)免费内容太少，超过500用户就要收费，SDK支持的平台倒是挺多的。[融云](http://www.rongcloud.cn/)还不错，在1.0时代有太多的问题，有幸看到过它们的UI代码，写的比较烂。没有WinPhone的支持， Server SDK支持也比较多。[环信](http://www.easemob.com/)在免费内容上和融云做得差不多，SDK 的API也不错，但是没有让开发者直接拿来继承使用的UI（只是有个Demo，但是直接使用太麻烦，如果能pod得话就更好，这也是我现在写这个项目的初衷）。
 
-[TOC]
-
-##简介
+---
+* [简介](#1) 
+    * [环信SDK](#1.1) 
+    * [额外功能](#1.2) 
+* [使用](#2)
+    * [要求](#2.1) 
+    * [pod](#2.2) 
+    * [依赖](#2.3) 
+    * [初始化及使用](#2.4) 
+    * [配置文件](#2.5)   
+    * [Delegate](#2.6) 
+    * [UI](#2.7)
+* [期望](#3)
+  
+<h2 id = "1">简介</h2>
 集成环信的即时通讯功能，pod集成，方便管理。简单继承，轻松定制自己的UI界面。当前最新版本```0.1.8```,目前暂时只完成了单聊界面，暂时不支持即时语音和即时视频功能。很多功能和界面都在开发中，聊天界面的UI也没有开发完善，所以现在显示很挫。在```1.0.0```版本之前会完成所有可以使用环信SDK实现的功能，并且加入其它实用的功能，在此之前也不适合使用。当然你也可以参考环信的[Demo](http://www.easemob.com/downloads)。
 
-###环信SDK
+<h3 id = "1.1">环信SDK</h3>
 使用pod集成的[EaseMobSDKFull](https://github.com/dujiepeng/EaseMobSDKFull)，集成版本```2.1.7```。因为pod集成[EaseMobSDK](https://github.com/easemob/sdk-ios-cocoapods)是没有语音和视频通讯功能的。
 
-###额外功能
+<h3 id = "1.2">额外功能</h3>
 - 会话编辑状态保存
 - 最近Emoji表情的保存
 - 自定义扩展View，由环信的消息扩展来决定
@@ -23,10 +35,10 @@
 - 文件浏览器（未实现）
 - .......
 
-##使用
-###要求
+<h2 id = "2">使用</h2>
+<h3 id = "2.1">要求</h3>
 iOS版本7.0以上
-###pod
+<h3 id = "2.2">pod</h3>
 ```
 pod 'EaseMobDIYUI', :git => 'https://github.com/AwakenDragon/EaseMobDIYUI.git'
 ```
@@ -36,7 +48,7 @@ pod 'VoiceConvert',:git => "https://github.com/AwakenDragon/VoiceConvert.git"
 
 *PS:语音消息的播放需要[VoiceConvert](https://github.com/AwakenDragon/VoiceConvert)功能模块，开始我试图直接把[VoiceConvert](https://github.com/AwakenDragon/VoiceConvert)功能代码放到项目里使用，但在制作成pod并使用的时候，总是报找不到相关类库文件的错误。无奈只能单独将[VoiceConvert](https://github.com/AwakenDragon/VoiceConvert)功能做成pod来集成。但在制作[EaseMobDIYUI](https://github.com/AwakenDragon/EaseMobDIYUI)的pod的时候，没有办法把[VoiceConvert](https://github.com/AwakenDragon/VoiceConvert)作为依赖添加进入，所以只能要求使用者，在pod [EaseMobDIYUI](https://github.com/AwakenDragon/EaseMobDIYUI) 的时候，同时pod [VoiceConvert](https://github.com/AwakenDragon/VoiceConvert)。后期，我会想办法修复这个问题，好可以只pod [EaseMobDIYUI](https://github.com/AwakenDragon/EaseMobDIYUI)。*
 
-###依赖
+<h3 id = "2.3">依赖</h3>
 在pod [EaseMobDIYUI](https://github.com/AwakenDragon/EaseMobDIYUI)的时候，EaseMobSDKFull已经添加了以下依赖：
 - ```"EaseMobSDKFull", "2.1.7"``` 不解释 [EaseMobSDKFull](https://github.com/dujiepeng/EaseMobSDKFull)
 - ```"SDWebImage", "3.7.3"``` 用来加载图片的 [SDWebImage](https://github.com/rs/SDWebImage)
@@ -57,7 +69,7 @@ pod 'VoiceConvert',:git => "https://github.com/AwakenDragon/VoiceConvert.git"
 - ```EaseMobSDK --> include --> Utility --> ErrorManager --> EMErrorDefs.h``` 
 - ```你项目根目录 --> Pods --> EaseMobSDKFull --> EaseMobSDKFull --> include --> Utility --> ErrorManager --> EMErrorDefs.h```
 
-### 初始化及使用
+<h3 id = "2.4">初始化及使用</h3>
 ```
 #import "EaseMobUIClient.h"
 ```
@@ -76,7 +88,7 @@ UIViewController *chatController = [[EM_ChatController alloc]initWithChatter:cha
 ```
 具体其他的环信API调用请参考环信的[官方文档](http://www.easemob.com/docs/ios/IOSSDKPrepare/)。
 
-###配置文件
+<h3 id = "2.5">配置文件</h3>
 ```
 EM_ChatUIConfig
 ```
@@ -128,7 +140,7 @@ extern NSString * const kActionNameFile;
 ```
 配置文件只在初始化显示聊天界面的时候使用，在聊天界面显示后再修改并不能修改界面元素
 
-###Delegate
+<h3 id = "2.6">Delegate</h3>
 ```
 EM_ChatControllerDelegate
 ```
@@ -147,7 +159,7 @@ EM_ChatControllerDelegate
 
 @end
 ```
-###UI
+<h3 id = "2.7">UI</h3>
 **聊天界面**
 
 ![enter image description here](https://github.com/AwakenDragon/ImageRepository/blob/master/EaseMobDIYUI/01.PNG?raw=true)
@@ -164,6 +176,6 @@ EM_ChatControllerDelegate
 
 ![enter image description here](https://github.com/AwakenDragon/ImageRepository/blob/master/EaseMobDIYUI/04.PNG?raw=true)
 
-##期望
+<h2 id = "3">期望</h2>
 - **合作：**如果你 也是环信的使用者，可以一起和我开发这个项目，让更多的环信开发者方便使用
 - **联系：**请联系我 QQ：940549652
