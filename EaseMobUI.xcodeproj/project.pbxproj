@@ -40,6 +40,11 @@
 		B9782A221B46681900D602F0 /* EM+ChatActionView.m in Sources */ = {isa = PBXBuildFile; fileRef = B9782A211B46681900D602F0 /* EM+ChatActionView.m */; };
 		B9782A251B466A6700D602F0 /* EM+ChatBaseView.m in Sources */ = {isa = PBXBuildFile; fileRef = B9782A241B466A6700D602F0 /* EM+ChatBaseView.m */; };
 		B9782A2B1B46762300D602F0 /* EM+ChatUIConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = B9782A2A1B46762300D602F0 /* EM+ChatUIConfig.m */; };
+		B97F05451B73AA420096B98D /* EM+ChatFileUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = B97F05441B73AA420096B98D /* EM+ChatFileUtils.m */; };
+		B97F05481B73AAD10096B98D /* EM+ChatResourcesUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = B97F05471B73AAD10096B98D /* EM+ChatResourcesUtils.m */; };
+		B97F054B1B7461160096B98D /* EM+ChatDBUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = B97F054A1B7461160096B98D /* EM+ChatDBUtils.m */; };
+		B97F054D1B7461350096B98D /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B97F054C1B7461350096B98D /* CoreData.framework */; };
+		B97F05501B74630D0096B98D /* EM_ChatModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B97F054E1B74630D0096B98D /* EM_ChatModel.xcdatamodeld */; };
 		B98CC23F1B54F705002558D2 /* EM+ChatTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = B98CC23E1B54F705002558D2 /* EM+ChatTableView.m */; };
 		B98CC2521B57D106002558D2 /* EM+ChatMessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B98CC2511B57D106002558D2 /* EM+ChatMessageCell.m */; };
 		B990CA4F1B5F735300BA25B1 /* EM+ChatMessageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B990CA4E1B5F735300BA25B1 /* EM+ChatMessageManager.m */; };
@@ -144,6 +149,14 @@
 		B9782A241B466A6700D602F0 /* EM+ChatBaseView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "EM+ChatBaseView.m"; sourceTree = "<group>"; };
 		B9782A291B46762300D602F0 /* EM+ChatUIConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EM+ChatUIConfig.h"; sourceTree = "<group>"; };
 		B9782A2A1B46762300D602F0 /* EM+ChatUIConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "EM+ChatUIConfig.m"; sourceTree = "<group>"; };
+		B97F05431B73AA420096B98D /* EM+ChatFileUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EM+ChatFileUtils.h"; sourceTree = "<group>"; };
+		B97F05441B73AA420096B98D /* EM+ChatFileUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "EM+ChatFileUtils.m"; sourceTree = "<group>"; };
+		B97F05461B73AAD10096B98D /* EM+ChatResourcesUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EM+ChatResourcesUtils.h"; sourceTree = "<group>"; };
+		B97F05471B73AAD10096B98D /* EM+ChatResourcesUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "EM+ChatResourcesUtils.m"; sourceTree = "<group>"; };
+		B97F05491B7461160096B98D /* EM+ChatDBUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EM+ChatDBUtils.h"; sourceTree = "<group>"; };
+		B97F054A1B7461160096B98D /* EM+ChatDBUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "EM+ChatDBUtils.m"; sourceTree = "<group>"; };
+		B97F054C1B7461350096B98D /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		B97F054F1B74630D0096B98D /* EM_ChatModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = EM_ChatModel.xcdatamodel; sourceTree = "<group>"; };
 		B98CC23D1B54F705002558D2 /* EM+ChatTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EM+ChatTableView.h"; sourceTree = "<group>"; };
 		B98CC23E1B54F705002558D2 /* EM+ChatTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "EM+ChatTableView.m"; sourceTree = "<group>"; };
 		B98CC2501B57D106002558D2 /* EM+ChatMessageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EM+ChatMessageCell.h"; sourceTree = "<group>"; };
@@ -205,6 +218,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B97F054D1B7461350096B98D /* CoreData.framework in Frameworks */,
 				4233C91D54090CEF16F59568 /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -233,6 +247,12 @@
 			children = (
 				B900868D1B6F1151003BC694 /* EM+ChatDataUtils.h */,
 				B900868E1B6F1151003BC694 /* EM+ChatDataUtils.m */,
+				B97F05431B73AA420096B98D /* EM+ChatFileUtils.h */,
+				B97F05441B73AA420096B98D /* EM+ChatFileUtils.m */,
+				B97F05461B73AAD10096B98D /* EM+ChatResourcesUtils.h */,
+				B97F05471B73AAD10096B98D /* EM+ChatResourcesUtils.m */,
+				B97F05491B7461160096B98D /* EM+ChatDBUtils.h */,
+				B97F054A1B7461160096B98D /* EM+ChatDBUtils.m */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -242,6 +262,7 @@
 			children = (
 				B90086C31B7091CC003BC694 /* EM_ChatStrings.strings */,
 				B90086C41B7091CC003BC694 /* EM_Resource.bundle */,
+				B97F054E1B74630D0096B98D /* EM_ChatModel.xcdatamodeld */,
 			);
 			path = Resource;
 			sourceTree = "<group>";
@@ -604,6 +625,7 @@
 		DCEF3704E015E69BA9E67AC5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B97F054C1B7461350096B98D /* CoreData.framework */,
 				055F3965F5D3B2098C86D930 /* libPods.a */,
 			);
 			name = Frameworks;
@@ -778,6 +800,7 @@
 				B98CC23F1B54F705002558D2 /* EM+ChatTableView.m in Sources */,
 				B965FD9D1B535FD000B5B23B /* EmojiMapSymbols.m in Sources */,
 				B94E2CEA1B60D7FD00F7BACE /* EM+ChatBase.m in Sources */,
+				B97F05451B73AA420096B98D /* EM+ChatFileUtils.m in Sources */,
 				B9D1BFBC1B5E17AD00C0A3D4 /* EM+ChatMessageVideoBubble.m in Sources */,
 				B9782A2B1B46762300D602F0 /* EM+ChatUIConfig.m in Sources */,
 				B9D1BFB91B5E16FA00C0A3D4 /* EM+ChatMessageImageBubble.m in Sources */,
@@ -786,7 +809,9 @@
 				B9D1BFB21B5DE8E800C0A3D4 /* EM+ChatMessageModel.m in Sources */,
 				B965FD9E1B535FD000B5B23B /* EmojiPictographs.m in Sources */,
 				B9D1BF751B59167600C0A3D4 /* UIViewController+HUD.m in Sources */,
+				B97F054B1B7461160096B98D /* EM+ChatDBUtils.m in Sources */,
 				B9782A121B4629AC00D602F0 /* EM+ChatInputTool.m in Sources */,
+				B97F05501B74630D0096B98D /* EM_ChatModel.xcdatamodeld in Sources */,
 				B90087141B71AC42003BC694 /* EaseMobUIClient.m in Sources */,
 				B94E2CE01B608B9C00F7BACE /* EM+ChatMessageData.m in Sources */,
 				B9782A0C1B43F31F00D602F0 /* EM+ChatController.m in Sources */,
@@ -796,6 +821,7 @@
 				B9D1BFA31B5A4C3900C0A3D4 /* EMCDDeviceManager+Remind.m in Sources */,
 				B9BF0DFD1B42889F0003FF67 /* main.m in Sources */,
 				B95FC56D1B516B2400804333 /* EM+ChatActionButton.m in Sources */,
+				B97F05481B73AAD10096B98D /* EM+ChatResourcesUtils.m in Sources */,
 				B9D1BFBF1B5E17F700C0A3D4 /* EM+ChatMessageLocationBubble.m in Sources */,
 				B94E2CF01B60F29E00F7BACE /* EM+ChatLatelyEmoji.m in Sources */,
 			);
@@ -1018,6 +1044,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		B97F054E1B74630D0096B98D /* EM_ChatModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				B97F054F1B74630D0096B98D /* EM_ChatModel.xcdatamodel */,
+			);
+			currentVersion = B97F054F1B74630D0096B98D /* EM_ChatModel.xcdatamodel */;
+			path = EM_ChatModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = B9BF0DEF1B42889F0003FF67 /* Project object */;
 }

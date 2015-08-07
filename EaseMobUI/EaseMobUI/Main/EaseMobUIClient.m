@@ -8,6 +8,7 @@
 
 #import "EaseMobUIClient.h"
 #import "EM+ChatDB.h"
+#import "EM+ChatFileUtils.h"
 
 static EaseMobUIClient *sharedClient;
 
@@ -21,6 +22,7 @@ static EaseMobUIClient *sharedClient;
     @synchronized(self){
         static dispatch_once_t pred;
         dispatch_once(&pred, ^{
+            [EM_ChatFileUtils initialize];
             sharedClient = [[self alloc] init];
         });
     }

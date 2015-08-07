@@ -10,6 +10,7 @@
 #import "EM+ChatInputView.h"
 
 #import "EM+ChatUIConfig.h"
+#import "EM+ChatResourcesUtils.h"
 #import "EM+Common.h"
 #import "UIColor+Hex.h"
 
@@ -56,8 +57,6 @@
             UIImage *normalImage = recordDictionary[kAttributeNormalImage];
             if (normalImage) {
                 [recordButton setImage:normalImage forState:UIControlStateNormal];
-            }else{
-                [recordButton setImage:[UIImage imageNamed:RES_IMAGE_TOOL(@"tool_record")] forState:UIControlStateNormal];
             }
             
             UIImage *highlightImage = recordDictionary[kAttributeHighlightImage];
@@ -111,8 +110,6 @@
             UIImage *normalImage = emojiDictionary[kAttributeNormalImage];
             if (normalImage) {
                 [emojiButton setImage:normalImage forState:UIControlStateNormal];
-            }else{
-                [emojiButton setImage:[UIImage imageNamed:RES_IMAGE_TOOL(@"tool_emoji")] forState:UIControlStateNormal];
             }
             
             UIImage *highlightImage = emojiDictionary[kAttributeHighlightImage];
@@ -167,8 +164,6 @@
             UIImage *normalImage = actionDictionary[kAttributeNormalImage];
             if (normalImage) {
                 [actionButton setImage:normalImage forState:UIControlStateNormal];
-            }else{
-                [actionButton setImage:[UIImage imageNamed:RES_IMAGE_TOOL(@"tool_action")] forState:UIControlStateNormal];
             }
             
             UIImage *highlightImage = actionDictionary[kAttributeHighlightImage];
@@ -214,8 +209,8 @@
         moreStateButton.hidden = YES;
         moreStateButton.backgroundColor = [UIColor colorWithHexRGB:0xF8F8F8];
         moreStateButton.layer.cornerRadius = 6;
-        [moreStateButton setImage:[UIImage imageNamed:RES_IMAGE_TOOL(@"tool_state_normal")] forState:UIControlStateNormal];
-        [moreStateButton setImage:[UIImage imageNamed:RES_IMAGE_TOOL(@"tool_state_selected")] forState:UIControlStateSelected];
+        [moreStateButton setImage:[EM_ChatResourcesUtils toolImageWithName:@"tool_state_normal"] forState:UIControlStateNormal];
+        [moreStateButton setImage:[EM_ChatResourcesUtils toolImageWithName:@"tool_state_selected"] forState:UIControlStateSelected];
         [moreStateButton addTarget:self action:@selector(stateClicked:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:moreStateButton];
     }
@@ -353,8 +348,6 @@
             UIImage *normalImage = keyboardDictionary[kAttributeNormalImage];
             if (normalImage) {
                 [recordButton setImage:normalImage forState:UIControlStateNormal];
-            }else{
-                [recordButton setImage:[UIImage imageNamed:RES_IMAGE_TOOL(@"tool_keyboard")] forState:UIControlStateNormal];
             }
             
             UIImage *highlightImage = keyboardDictionary[kAttributeHighlightImage];
@@ -368,8 +361,6 @@
             UIImage *normalImage = recordDictionary[kAttributeNormalImage];
             if (normalImage) {
                 [recordButton setImage:normalImage forState:UIControlStateNormal];
-            }else{
-                [recordButton setImage:[UIImage imageNamed:RES_IMAGE_TOOL(@"tool_record")] forState:UIControlStateNormal];
             }
             
             UIImage *highlightImage = recordDictionary[kAttributeHighlightImage];
@@ -389,8 +380,6 @@
             UIImage *normalImage = keyboardDictionary[kAttributeNormalImage];
             if (normalImage) {
                 [emojiButton setImage:normalImage forState:UIControlStateNormal];
-            }else{
-                [emojiButton setImage:[UIImage imageNamed:RES_IMAGE_TOOL(@"tool_keyboard")] forState:UIControlStateNormal];
             }
             
             UIImage *highlightImage = keyboardDictionary[kAttributeHighlightImage];
@@ -404,8 +393,6 @@
             UIImage *normalImage = emojiDictionary[kAttributeNormalImage];
             if (normalImage) {
                 [emojiButton setImage:normalImage forState:UIControlStateNormal];
-            }else{
-                [emojiButton setImage:[UIImage imageNamed:RES_IMAGE_TOOL(@"tool_emoji")] forState:UIControlStateNormal];
             }
             
             UIImage *highlightImage = emojiDictionary[kAttributeHighlightImage];
@@ -425,8 +412,6 @@
             UIImage *normalImage = keyboardDictionary[kAttributeNormalImage];
             if (normalImage) {
                 [actionButton setImage:normalImage forState:UIControlStateNormal];
-            }else{
-                [actionButton setImage:[UIImage imageNamed:RES_IMAGE_TOOL(@"tool_keyboard")] forState:UIControlStateNormal];
             }
             
             UIImage *highlightImage = keyboardDictionary[kAttributeHighlightImage];
@@ -440,8 +425,6 @@
             UIImage *normalImage = actionDictionary[kAttributeNormalImage];
             if (normalImage) {
                 [actionButton setImage:normalImage forState:UIControlStateNormal];
-            }else{
-                [actionButton setImage:[UIImage imageNamed:RES_IMAGE_TOOL(@"tool_action")] forState:UIControlStateNormal];
             }
             
             UIImage *highlightImage = actionDictionary[kAttributeHighlightImage];

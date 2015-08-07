@@ -9,6 +9,7 @@
 #import "EM+ChatMessageVoiceBubble.h"
 #import "EM+ChatUIConfig.h"
 #import "EM+ChatMessageModel.h"
+#import "EM+ChatResourcesUtils.h"
 
 @implementation EM_ChatMessageVoiceBubble{
     UIImageView *animationView;
@@ -84,18 +85,18 @@
     
     if (self.message.sender) {
         [animationView setAnimationImages:@[
-                                            [UIImage imageNamed:RES_IMAGE_CELL(@"voice_left_1")],
-                                            [UIImage imageNamed:RES_IMAGE_CELL(@"voice_left_2")],
-                                            [UIImage imageNamed:RES_IMAGE_CELL(@"voice_left_3")]
+                                            [EM_ChatResourcesUtils cellImageWithName:@"voice_right_1"],
+                                            [EM_ChatResourcesUtils cellImageWithName:@"voice_right_2"],
+                                            [EM_ChatResourcesUtils cellImageWithName:@"voice_right_3"]
                                             ]];
-        animationView.image = [UIImage imageNamed:RES_IMAGE_CELL(@"voice_left_3")];
+        animationView.image = [EM_ChatResourcesUtils cellImageWithName:@"voice_right_3"];
     }else{
         [animationView setAnimationImages:@[
-                                            [UIImage imageNamed:RES_IMAGE_CELL(@"voice_right_1")],
-                                            [UIImage imageNamed:RES_IMAGE_CELL(@"voice_right_2")],
-                                            [UIImage imageNamed:RES_IMAGE_CELL(@"voice_right_3")]
+                                            [EM_ChatResourcesUtils cellImageWithName:@"voice_left_1"],
+                                            [EM_ChatResourcesUtils cellImageWithName:@"voice_left_2"],
+                                            [EM_ChatResourcesUtils cellImageWithName:@"voice_left_3"]
                                             ]];
-        animationView.image = [UIImage imageNamed:RES_IMAGE_CELL(@"voice_right_3")];
+        animationView.image = [EM_ChatResourcesUtils cellImageWithName:@"voice_left_3"];
     }
     if (self.message.messageData.checking && !animationView.isAnimating) {
         [animationView startAnimating];

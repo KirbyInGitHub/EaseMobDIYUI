@@ -10,6 +10,7 @@
 #import "EmojiEmoticons.h"
 
 #import "EM+Common.h"
+#import "EM+ChatResourcesUtils.h"
 #import "EM+ChatUIConfig.h"
 #import "UIColor+Hex.h"
 
@@ -59,7 +60,7 @@ typedef NS_ENUM(NSInteger, Emoji_Type) {
         
         latelyButton = [[UIButton alloc]init];
         latelyButton.backgroundColor = self.backgroundColor;
-        [latelyButton setTitle:EM_ChatString(@"common.lately") forState:UIControlStateNormal];
+        [latelyButton setTitle:[EM_ChatResourcesUtils stringWithName:@"common.lately"] forState:UIControlStateNormal];
         [latelyButton setTitleColor:[UIColor colorWithHEX:TEXT_NORMAL_COLOR alpha:1.0] forState:UIControlStateNormal];
         [latelyButton setTitleColor:[UIColor colorWithHEX:TEXT_SELECT_COLOR alpha:1.0] forState:UIControlStateSelected];
         [latelyButton addTarget:self action:@selector(emojiLatelyClicked:) forControlEvents:UIControlEventTouchUpInside];
@@ -77,7 +78,7 @@ typedef NS_ENUM(NSInteger, Emoji_Type) {
         sendButton = [[UIButton alloc]init];
         sendButton.backgroundColor = [UIColor colorWithHEX:@"#A4D3EE" alpha:1.0];
         sendButton.selected = YES;
-        [sendButton setTitle:EM_ChatString(@"common.send") forState:UIControlStateNormal];
+        [sendButton setTitle:[EM_ChatResourcesUtils stringWithName:@"common.send"] forState:UIControlStateNormal];
         [sendButton setTitleColor:[UIColor colorWithHEX:TEXT_NORMAL_COLOR alpha:1.0] forState:UIControlStateNormal];
         [sendButton setTitleColor:[UIColor colorWithHEX:TEXT_SELECT_COLOR alpha:1.0] forState:UIControlStateSelected];
         [sendButton addTarget:self action:@selector(emojiSendClicked:) forControlEvents:UIControlEventTouchUpInside];
@@ -132,7 +133,7 @@ typedef NS_ENUM(NSInteger, Emoji_Type) {
         
         if (i % pageEmojiCount == pageEmojiCount - 1 || i == array.count - 1) {
             UIButton *deleteButton = [[UIButton alloc]init];
-            [deleteButton setImage:[UIImage imageNamed:RES_IMAGE_TOOL(@"tool_delete")] forState:UIControlStateNormal];
+            [deleteButton setImage:[EM_ChatResourcesUtils toolImageWithName:@"tool_delete"] forState:UIControlStateNormal];
             [deleteButton addTarget:self action:@selector(emojiDeleteClicked:) forControlEvents:UIControlEventTouchUpInside];
             [scroll addSubview:deleteButton];
         }

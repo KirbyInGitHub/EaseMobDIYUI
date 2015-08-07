@@ -9,6 +9,7 @@
 #import "EM+ChatMessageLocationBubble.h"
 #import "EM+ChatUIConfig.h"
 #import "EM+ChatMessageModel.h"
+#import "EM+ChatResourcesUtils.h"
 
 @implementation EM_ChatMessageLocationBubble{
     UIImageView *mapView;
@@ -23,7 +24,7 @@
     self = [super init];
     if (self) {
         mapView = [[UIImageView alloc]init];
-        mapView.image = [UIImage imageNamed:RES_IMAGE_CELL(@"location_preview")];
+        mapView.image = [EM_ChatResourcesUtils cellImageWithName:@"location_preview"];
         [self addSubview:mapView];
         
         addressLabel = [[UILabel alloc]init];

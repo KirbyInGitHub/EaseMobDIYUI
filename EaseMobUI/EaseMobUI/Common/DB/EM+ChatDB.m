@@ -10,6 +10,7 @@
 #import "EM+Common.h"
 #import "EM+DBOPHelper.h"
 #import "FMDB.h"
+#import "EM+ChatFileUtils.h"
 
 #import "EM+ChatVersion.h"
 #import "EM+ChatConversation.h"

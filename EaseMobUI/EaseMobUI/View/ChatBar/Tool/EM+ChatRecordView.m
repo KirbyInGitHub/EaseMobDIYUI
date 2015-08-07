@@ -10,6 +10,7 @@
 
 #import "EM+ChatRecordView.h"
 #import "EM+Common.h"
+#import "EM+ChatResourcesUtils.h"
 #import "UIColor+Hex.h"
 #import "EM+ChatUIConfig.h"
 #import "EM+ChatRecordArcView.h"
@@ -72,25 +73,25 @@ typedef NS_ENUM(NSUInteger,RECORD_STATE) {
         [self addSubview:recordView];
         
         cancelView = [[UIImageView alloc]init];
-        cancelView.image = [UIImage imageNamed:RES_IMAGE_TOOL(@"tool_trash")];
+        cancelView.image = [EM_ChatResourcesUtils toolImageWithName:@"tool_trash"];
         cancelView.layer.cornerRadius = BUTTON_SIZE / 2;
         [self addSubview:cancelView];
         
         playView = [[UIImageView alloc]init];
-        playView.image = [UIImage imageNamed:RES_IMAGE_TOOL(@"tool_play")];
+        playView.image = [EM_ChatResourcesUtils toolImageWithName:@"tool_play"];;
         playView.layer.cornerRadius = BUTTON_SIZE / 2;
         [self addSubview:playView];
         
         cancelButton = [[UIButton alloc]init];
         cancelButton.backgroundColor = [UIColor whiteColor];
-        [cancelButton setTitle:EM_ChatString(@"common.cancel") forState:UIControlStateNormal];
+        [cancelButton setTitle:[EM_ChatResourcesUtils stringWithName:@"common.cancel"] forState:UIControlStateNormal];
         [cancelButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         [cancelButton addTarget:self action:@selector(recordCancel:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:cancelButton];
         
         sendButton = [[UIButton alloc]init];
         sendButton.backgroundColor = [UIColor whiteColor];
-        [sendButton setTitle:EM_ChatString(@"common.send") forState:UIControlStateNormal];
+        [sendButton setTitle:[EM_ChatResourcesUtils stringWithName:@"common.send"] forState:UIControlStateNormal];
         [sendButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         [sendButton addTarget:self action:@selector(recordSend:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:sendButton];
@@ -110,7 +111,7 @@ typedef NS_ENUM(NSUInteger,RECORD_STATE) {
         case RECORD_STATE_RECORDING:{
             recordLabel.tag = 0;
             
-            recordView.image = [UIImage imageNamed:RES_IMAGE_TOOL(@"tool_volume")];
+            recordView.image = [EM_ChatResourcesUtils toolImageWithName:@"tool_volume"];
             recordView.backgroundColor = [UIColor colorWithHEX:RECORD_HIGHLIGHTED_BACKGROUND_COLOR alpha:1.0];
             
             playView.backgroundColor = [UIColor whiteColor];
@@ -128,9 +129,9 @@ typedef NS_ENUM(NSUInteger,RECORD_STATE) {
             break;
         case RECORD_STATE_WILL_CANCEL:{
             recordLabel.tag = 1;
-            recordLabel.text = EM_ChatString(@"record.will_cancel");
+            recordLabel.text = [EM_ChatResourcesUtils stringWithName:@"record.will_cancel"];
             
-            recordView.image = [UIImage imageNamed:RES_IMAGE_TOOL(@"tool_volume")];
+            recordView.image = [EM_ChatResourcesUtils toolImageWithName:@"tool_volume"];
             recordView.backgroundColor = [UIColor colorWithHEX:RECORD_HIGHLIGHTED_BACKGROUND_COLOR alpha:1.0];
             
             playView.backgroundColor = [UIColor whiteColor];
@@ -148,9 +149,9 @@ typedef NS_ENUM(NSUInteger,RECORD_STATE) {
             break;
         case RECORD_STATE_WILL_PLAY:{
             recordLabel.tag = 1;
-            recordLabel.text = EM_ChatString(@"record.will_audition");
+            recordLabel.text = [EM_ChatResourcesUtils stringWithName:@"record.will_audition"];
             
-            recordView.image = [UIImage imageNamed:RES_IMAGE_TOOL(@"tool_volume")];
+            recordView.image = [EM_ChatResourcesUtils toolImageWithName:@"tool_volume"];
             recordView.backgroundColor = [UIColor colorWithHEX:RECORD_HIGHLIGHTED_BACKGROUND_COLOR alpha:1.0];
             
             playView.backgroundColor = [UIColor grayColor];
@@ -169,7 +170,7 @@ typedef NS_ENUM(NSUInteger,RECORD_STATE) {
         case RECORD_STATE_PLAYING:{
             recordLabel.tag = 0;
             
-            recordView.image = [UIImage imageNamed:RES_IMAGE_TOOL(@"tool_stop")];
+            recordView.image = [EM_ChatResourcesUtils toolImageWithName:@"tool_stop"];
             recordView.backgroundColor = [UIColor whiteColor];
             
             playView.backgroundColor = [UIColor whiteColor];
@@ -201,7 +202,7 @@ typedef NS_ENUM(NSUInteger,RECORD_STATE) {
             recordLabel.text = time;
             recordLabel.tag = 0;
             
-            recordView.image = [UIImage imageNamed:RES_IMAGE_TOOL(@"tool_play")];
+            recordView.image = [EM_ChatResourcesUtils toolImageWithName:@"tool_play"];
             recordView.backgroundColor = [UIColor whiteColor];
             
             playView.backgroundColor = [UIColor whiteColor];
@@ -219,9 +220,9 @@ typedef NS_ENUM(NSUInteger,RECORD_STATE) {
             break;
         default:{
             recordLabel.tag = 0;
-            recordLabel.text = EM_ChatString(@"record.normal_record");
+            recordLabel.text = [EM_ChatResourcesUtils stringWithName:@"record.normal_record"];
             
-            recordView.image = [UIImage imageNamed:RES_IMAGE_TOOL(@"tool_volume")];
+            recordView.image = [EM_ChatResourcesUtils toolImageWithName:@"tool_volume"];
             recordView.backgroundColor = [UIColor colorWithHEX:RECORD_NORMAL_BACKGROUND_COLOR alpha:1.0];
             
             playView.backgroundColor = [UIColor whiteColor];
@@ -398,7 +399,7 @@ typedef NS_ENUM(NSUInteger,RECORD_STATE) {
 
 #pragma mark - EM_ChatRecordArcViewDelegate
 - (void)willRecordStart{
-    recordLabel.text = EM_ChatString(@"record.will_record");
+    recordLabel.text = [EM_ChatResourcesUtils stringWithName:@"record.will_record"];
 }
 - (void)didRecordStart:(NSString *)recordName{
     _recordName = recordName;
