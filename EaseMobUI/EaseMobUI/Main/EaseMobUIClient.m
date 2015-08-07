@@ -7,8 +7,8 @@
 //
 
 #import "EaseMobUIClient.h"
-#import "EM+ChatDB.h"
 #import "EM+ChatFileUtils.h"
+#import "EM+ChatDBUtils.h"
 
 static EaseMobUIClient *sharedClient;
 
@@ -23,6 +23,7 @@ static EaseMobUIClient *sharedClient;
         static dispatch_once_t pred;
         dispatch_once(&pred, ^{
             [EM_ChatFileUtils initialize];
+            [EM_ChatDBUtils shared];
             sharedClient = [[self alloc] init];
         });
     }
@@ -33,12 +34,25 @@ static EaseMobUIClient *sharedClient;
 - (instancetype)init{
     self = [super init];
     if (self) {
-        EM_ChatDB *db = [EM_ChatDB shared];
-        if (![db connect]) {
-            NSLog(@"初始化数据库失败");
-        }
+        
     }
     return self;
+}
+
+- (void)applicationDidEnterBackground:(UIApplication *)application {
+    [[EaseMob sharedInstance] applicationDidEnterBackground:application];
+    if ([EM_ChatDBUtils shared]) {
+        
+    }
+}
+
+- (void)applicationWillEnterForeground:(UIApplication *)application {
+    [[EaseMob sharedInstance] applicationWillEnterForeground:application];
+}
+
+- (void)applicationWillTerminate:(UIApplication *)application {
+    [[EaseMob sharedInstance] applicationWillTerminate:application];
+    
 }
 
 @end

@@ -14,10 +14,10 @@
 #import "EM+ChatInputTool.h"
 #import "EM+ChatMessageModel.h"
 #import "EM+ChatMessageManager.h"
-#import "EM+ChatDBM.h"
 #import "EM+Common.h"
 #import "EM+ChatResourcesUtils.h"
-#import "EM+ChatConversation.h"
+#import "EM+ChatDBUtils.h"
+#import "EM_ChatConversation.h"
 
 #import "UIViewController+HUD.h"
 
@@ -182,27 +182,26 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
 }
 
 - (void)saveEditor{
-    NSString *editor = _chatToolBarView.inputToolView.editor;
+    NSString *editorText = _chatToolBarView.inputToolView.editor;
     
-    EM_ChatConversation *conversation = [[EM_ChatConversation alloc]init];
-    conversation.conversationChatter = self.conversation.chatter;
-    conversation.conversationType = self.conversation.conversationType;
-    conversation.conversationEditor = editor;
-    
-    if (editor && editor > 0) {
-        BOOL update = [EM_ChatDBM updateConversation:conversation];
-        if (!update) {
-            [EM_ChatDBM insertConversation:conversation];
+    EM_ChatConversation *editor = [[EM_ChatDBUtils shared]queryConversationWithChatter:self.conversation.chatter];
+    if (editorText && editorText.length > 0) {
+        if (!editor) {
+            editor = [[EM_ChatDBUtils shared] insertNewConversation];
+            editor.chatter = self.chatter;
+            editor.type = @(self.conversationType);
         }
+        editor.editor = editorText;
     }else{
-        [EM_ChatDBM deleteConversation:conversation];
+        [[EM_ChatDBUtils shared] deleteConversationWithChatter:editor];
     }
+    [[EM_ChatDBUtils shared] saveChat];
 }
 
 - (void)queryEditor{
-    EM_ChatConversation *conversation = [EM_ChatDBM queryConversation:self.conversation.chatter];
-    if (conversation && conversation.conversationEditor && conversation.conversationEditor.length > 0) {
-        _chatToolBarView.inputToolView.editor = conversation.conversationEditor;
+    EM_ChatConversation *editor = [[EM_ChatDBUtils shared]queryConversationWithChatter:self.conversation.chatter];
+    if (editor) {
+        _chatToolBarView.inputToolView.editor = editor.editor;
     }
 }
 

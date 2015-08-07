@@ -8,6 +8,22 @@
 
 #import <Foundation/Foundation.h>
 
+@class EM_ChatConversation;
+@class EM_ChatEmoji;
+
 @interface EM_ChatDBUtils : NSObject
+
++ (instancetype)shared;
+- (EM_ChatConversation *)insertNewConversation;
+- (void)deleteConversationWithChatter:(EM_ChatConversation *)conversation;
+- (EM_ChatConversation *)queryConversationWithChatter:(NSString *)chatter;
+
+- (EM_ChatEmoji *)insertNewEmoji;
+- (void)deleteEmoji:(EM_ChatEmoji *)emoji;
+- (NSArray *)queryEmoji;
+- (EM_ChatEmoji *)queryEmoji:(NSString *)emoji;
+
+- (void)processPendingChangesChat;
+- (BOOL)saveChat;
 
 @end

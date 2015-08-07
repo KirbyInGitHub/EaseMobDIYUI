@@ -82,15 +82,15 @@
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
-    [[EaseMob sharedInstance] applicationDidEnterBackground:application];
+    [[EaseMobUIClient sharedInstance] applicationDidEnterBackground:application];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
-    [[EaseMob sharedInstance] applicationWillEnterForeground:application];
+    [[EaseMobUIClient sharedInstance] applicationWillEnterForeground:application];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
-    [[EaseMob sharedInstance] applicationWillTerminate:application];
+    [[EaseMobUIClient sharedInstance] applicationWillTerminate:application];
 }
 
 @end

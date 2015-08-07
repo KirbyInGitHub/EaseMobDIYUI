@@ -16,6 +16,8 @@
     if (!create) {
         NSLog(@"创建根目录失败");
         return NO;
+    }else{
+        NSLog(@"创建根目录 - %@",kChatFolderPath);
     }
     
     create = [self createFolderWithPath:kChatDBFolderPath];
