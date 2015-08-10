@@ -67,8 +67,8 @@
             if (!normalImage && !highlightImage) {
                 NSString *text = recordDictionary[kAttributeText];
                 [recordButton setTitle:text forState:UIControlStateNormal];
-                [recordButton setTitleColor:[UIColor colorWithHEX:TEXT_NORMAL_COLOR alpha:1.0] forState:UIControlStateNormal];
-                [recordButton setTitleColor:[UIColor colorWithHEX:TEXT_SELECT_COLOR alpha:1.0] forState:UIControlStateHighlighted];
+                [recordButton setTitleColor:[UIColor colorWithHexRGB:TEXT_NORMAL_COLOR] forState:UIControlStateNormal];
+                [recordButton setTitleColor:[UIColor colorWithHexRGB:TEXT_SELECT_COLOR] forState:UIControlStateHighlighted];
             }
             
             UIColor *backgroundColor = recordDictionary[kAttributeBackgroundColor];
@@ -120,8 +120,8 @@
             if (!normalImage && !highlightImage) {
                 NSString *text = emojiDictionary[kAttributeText];
                 [emojiButton setTitle:text forState:UIControlStateNormal];
-                [emojiButton setTitleColor:[UIColor colorWithHEX:TEXT_NORMAL_COLOR alpha:1.0] forState:UIControlStateNormal];
-                [emojiButton setTitleColor:[UIColor colorWithHEX:TEXT_SELECT_COLOR alpha:1.0] forState:UIControlStateHighlighted];
+                [emojiButton setTitleColor:[UIColor colorWithHexRGB:TEXT_NORMAL_COLOR] forState:UIControlStateNormal];
+                [emojiButton setTitleColor:[UIColor colorWithHexRGB:TEXT_SELECT_COLOR] forState:UIControlStateHighlighted];
             }
             
             UIColor *backgroundColor = emojiDictionary[kAttributeBackgroundColor];
@@ -174,8 +174,8 @@
             if (!normalImage && !highlightImage) {
                 NSString *text = actionDictionary[kAttributeText];
                 [actionButton setTitle:text forState:UIControlStateNormal];
-                [actionButton setTitleColor:[UIColor colorWithHEX:TEXT_NORMAL_COLOR alpha:1.0] forState:UIControlStateNormal];
-                [actionButton setTitleColor:[UIColor colorWithHEX:TEXT_SELECT_COLOR alpha:1.0] forState:UIControlStateHighlighted];
+                [actionButton setTitleColor:[UIColor colorWithHexRGB:TEXT_NORMAL_COLOR] forState:UIControlStateNormal];
+                [actionButton setTitleColor:[UIColor colorWithHexRGB:TEXT_SELECT_COLOR] forState:UIControlStateHighlighted];
             }
             
             UIColor *backgroundColor = actionDictionary[kAttributeBackgroundColor];

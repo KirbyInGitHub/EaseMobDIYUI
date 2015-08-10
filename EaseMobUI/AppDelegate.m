@@ -59,7 +59,6 @@
     EM_ChatUIConfig *config = [EM_ChatUIConfig defaultConfig];
     [config removeActionWithName:kActionNameVoice];
     [config removeActionWithName:kActionNameVideo];
-    [config removeActionWithName:kActionNameFile];
     UIViewController *rootController = [[UStylistChatController alloc]initWithChatter:chatter conversationType:eConversationTypeChat config:config];
     self.window.rootViewController = [[UINavigationController alloc]initWithRootViewController:rootController];
     [self.window makeKeyAndVisible];

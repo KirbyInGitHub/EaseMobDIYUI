@@ -61,8 +61,8 @@ typedef NS_ENUM(NSInteger, Emoji_Type) {
         latelyButton = [[UIButton alloc]init];
         latelyButton.backgroundColor = self.backgroundColor;
         [latelyButton setTitle:[EM_ChatResourcesUtils stringWithName:@"common.lately"] forState:UIControlStateNormal];
-        [latelyButton setTitleColor:[UIColor colorWithHEX:TEXT_NORMAL_COLOR alpha:1.0] forState:UIControlStateNormal];
-        [latelyButton setTitleColor:[UIColor colorWithHEX:TEXT_SELECT_COLOR alpha:1.0] forState:UIControlStateSelected];
+        [latelyButton setTitleColor:[UIColor colorWithHexRGB:TEXT_NORMAL_COLOR] forState:UIControlStateNormal];
+        [latelyButton setTitleColor:[UIColor colorWithHexRGB:TEXT_SELECT_COLOR] forState:UIControlStateSelected];
         [latelyButton addTarget:self action:@selector(emojiLatelyClicked:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:latelyButton];
         
@@ -70,8 +70,8 @@ typedef NS_ENUM(NSInteger, Emoji_Type) {
         emojiButton.backgroundColor = [UIColor colorWithHEX:LINE_COLOR alpha:1.0];
         emojiButton.selected = YES;
         [emojiButton setTitle:@"Emoji" forState:UIControlStateNormal];
-        [emojiButton setTitleColor:[UIColor colorWithHEX:TEXT_NORMAL_COLOR alpha:1.0] forState:UIControlStateNormal];
-        [emojiButton setTitleColor:[UIColor colorWithHEX:TEXT_SELECT_COLOR alpha:1.0] forState:UIControlStateSelected];
+        [emojiButton setTitleColor:[UIColor colorWithHexRGB:TEXT_NORMAL_COLOR] forState:UIControlStateNormal];
+        [emojiButton setTitleColor:[UIColor colorWithHexRGB:TEXT_SELECT_COLOR] forState:UIControlStateSelected];
         [emojiButton addTarget:self action:@selector(emojiActionClicked:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:emojiButton];
         
@@ -79,8 +79,8 @@ typedef NS_ENUM(NSInteger, Emoji_Type) {
         sendButton.backgroundColor = [UIColor colorWithHEX:@"#A4D3EE" alpha:1.0];
         sendButton.selected = YES;
         [sendButton setTitle:[EM_ChatResourcesUtils stringWithName:@"common.send"] forState:UIControlStateNormal];
-        [sendButton setTitleColor:[UIColor colorWithHEX:TEXT_NORMAL_COLOR alpha:1.0] forState:UIControlStateNormal];
-        [sendButton setTitleColor:[UIColor colorWithHEX:TEXT_SELECT_COLOR alpha:1.0] forState:UIControlStateSelected];
+        [sendButton setTitleColor:[UIColor colorWithHexRGB:TEXT_NORMAL_COLOR] forState:UIControlStateNormal];
+        [sendButton setTitleColor:[UIColor colorWithHexRGB:TEXT_SELECT_COLOR] forState:UIControlStateSelected];
         [sendButton addTarget:self action:@selector(emojiSendClicked:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:sendButton];
         

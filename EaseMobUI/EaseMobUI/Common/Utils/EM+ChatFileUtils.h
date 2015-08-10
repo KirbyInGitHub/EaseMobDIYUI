@@ -31,6 +31,14 @@
 #define kChatFileFolderName     @"EM_Chat_File"
 #define kChatFileFolderPath     [NSString stringWithFormat:@"%@/%@",kChatFolderPath,kChatFileFolderName]
 
+//文档
+#define kChatFileDocumentFolderName    @"Document"
+#define kChatFileDocumentFolderPath    [NSString stringWithFormat:@"%@/%@",kChatFileFolderPath,kChatFileDocumentFolderName]
+
+//视频
+#define kChatFileVideoFolderName    @"Video"
+#define kChatFileVideoFolderPath    [NSString stringWithFormat:@"%@/%@",kChatFileFolderPath,kChatFileVideoFolderName]
+
 //图片
 #define kChatFileImageFolderName    @"Image"
 #define kChatFileImageFolderPath    [NSString stringWithFormat:@"%@/%@",kChatFileFolderPath,kChatFileImageFolderName]
@@ -39,18 +47,23 @@
 #define kChatFileAudioFolderName    @"Audio"
 #define kChatFileAudioFolderPath    [NSString stringWithFormat:@"%@/%@",kChatFileFolderPath,kChatFileAudioFolderName]
 
-//文档
-#define kChatFileDocumentFolderName    @"Document"
-#define kChatFileDocumentFolderPath    [NSString stringWithFormat:@"%@/%@",kChatFileFolderPath,kChatFileDocumentFolderName]
-
 //其他
 #define kChatFileOtherFolderName    @"Other"
 #define kChatFileOtherFolderPath    [NSString stringWithFormat:@"%@/%@",kChatFileFolderPath,kChatFileOtherFolderName]
+
+extern NSString * const kFolderTitle;
+extern NSString * const kFolderName;
+extern NSString * const kFolderPath;
+extern NSString * const kFolderContent;
 
 @interface EM_ChatFileUtils : NSObject
 
 + (BOOL)initialize;
 
 + (BOOL)createFolderWithPath:(NSString *)path;
+
++ (NSArray *)folderArray;
+
++ (NSArray *)contentsOfDirectoryAtPath:(NSString *)path;
 
 @end

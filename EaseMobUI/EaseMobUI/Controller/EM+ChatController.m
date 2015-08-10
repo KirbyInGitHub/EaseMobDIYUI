@@ -9,6 +9,7 @@
 #import "EM+ChatController.h"
 
 #import "EM+LocationController.h"
+#import "EM+ExplorerController.h"
 #import "EM+ChatToolBar.h"
 #import "EM+ChatTableView.h"
 #import "EM+ChatInputTool.h"
@@ -426,10 +427,14 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
         locationController.delegate = self;
         [self.navigationController pushViewController:locationController animated:YES];
     }else if ([action isEqualToString:kActionNameFile]){
-        NSData *data = UIImageJPEGRepresentation([EM_ChatResourcesUtils toolImageWithName:@"tool_play"],1.0);
-        EMChatFile *chatFile =  [[EMChatFile alloc]initWithData:data displayName:@"tool_play.png"];
-        EMFileMessageBody *body = [[EMFileMessageBody alloc]initWithChatObject:chatFile];
-        [self sendMessageBody:body];
+//        NSData *data = UIImageJPEGRepresentation([EM_ChatResourcesUtils toolImageWithName:@"tool_play"],1.0);
+//        EMChatFile *chatFile =  [[EMChatFile alloc]initWithData:data displayName:@"tool_play.png"];
+//        EMFileMessageBody *body = [[EMFileMessageBody alloc]initWithChatObject:chatFile];
+//        [self sendMessageBody:body];
+        EM_ExplorerController *explorerController = [[EM_ExplorerController alloc]init];
+        [self presentViewController:[[UINavigationController alloc]initWithRootViewController:explorerController] animated:YES completion:^{
+            
+        }];
     }else{
         if (_delegate && [_delegate respondsToSelector:@selector(didActionSelectedWithName:)]){
             [_delegate didActionSelectedWithName:action];

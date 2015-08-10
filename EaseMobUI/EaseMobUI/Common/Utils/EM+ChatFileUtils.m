@@ -7,9 +7,14 @@
 //
 
 #import "EM+ChatFileUtils.h"
-
+#import "EM+ChatResourcesUtils.h"
 
 @implementation EM_ChatFileUtils
+
+NSString * const kFolderTitle = @"kFolderTitle";
+NSString * const kFolderName = @"kFolderName";
+NSString * const kFolderPath = @"kFolderPath";
+NSString * const kFolderContent = @"kFolderContent";
 
 + (BOOL)initialize{
     BOOL create = [self createFolderWithPath:kChatFolderPath];
@@ -27,8 +32,18 @@
     
     create = [self createFolderWithPath:kChatFileFolderPath];
     if (!create) {
-        NSLog(@"穿件文件目录失败");
+        NSLog(@"创建文件目录失败");
         return NO;
+    }
+    
+    create = [self createFolderWithPath:kChatFileDocumentFolderPath];
+    if (!create) {
+        NSLog(@"创建文档目录失败");
+    }
+    
+    create = [self createFolderWithPath:kChatFileVideoFolderPath];
+    if (!create) {
+        NSLog(@"创建视频目录失败");
     }
     
     create = [self createFolderWithPath:kChatFileImageFolderPath];
@@ -41,10 +56,6 @@
         NSLog(@"创建音频目录失败");
     }
     
-    create = [self createFolderWithPath:kChatFileDocumentFolderPath];
-    if (!create) {
-        NSLog(@"创建文档目录失败");
-    }
     
     create = [self createFolderWithPath:kChatFileOtherFolderPath];
     if (!create) {
@@ -63,6 +74,49 @@
         isCreated = [fileManager createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:nil];
     }
     return isCreated;
+}
+
++ (NSArray *)folderArray{
+    static NSMutableArray *_folderArray;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _folderArray = [[NSMutableArray alloc] init];
+        [_folderArray addObject:@{kFolderTitle : [EM_ChatResourcesUtils stringWithName:@"file.document"],
+                                  kFolderName : kChatFileDocumentFolderName,
+                                  kFolderPath : kChatFileDocumentFolderPath,
+                                  kFolderContent : [self contentsOfDirectoryAtPath:kChatFileDocumentFolderPath]}];
+        
+        [_folderArray addObject:@{kFolderTitle : [EM_ChatResourcesUtils stringWithName:@"file.video"],
+                                  kFolderName : kChatFileVideoFolderName,
+                                  kFolderPath : kChatFileVideoFolderPath,
+                                  kFolderContent : [self contentsOfDirectoryAtPath:kChatFileVideoFolderPath]}];
+        
+        [_folderArray addObject:@{kFolderTitle : [EM_ChatResourcesUtils stringWithName:@"file.image"],
+                                  kFolderName : kChatFileImageFolderName,
+                                  kFolderPath : kChatFileImageFolderPath,
+                                  kFolderContent : [self contentsOfDirectoryAtPath:kChatFileImageFolderPath]}];
+        
+        [_folderArray addObject:@{kFolderTitle : [EM_ChatResourcesUtils stringWithName:@"file.audio"],
+                                  kFolderName : kChatFileAudioFolderName,
+                                  kFolderPath : kChatFileAudioFolderPath,
+                                  kFolderContent : [self contentsOfDirectoryAtPath:kChatFileAudioFolderPath]}];
+        
+        [_folderArray addObject:@{kFolderTitle : [EM_ChatResourcesUtils stringWithName:@"file.other"],
+                                  kFolderName : kChatFileOtherFolderName,
+                                  kFolderPath : kChatFileOtherFolderPath,
+                                  kFolderContent : [self contentsOfDirectoryAtPath:kChatFileOtherFolderPath]}];
+    });
+    return _folderArray;
+}
+
++ (NSArray *)contentsOfDirectoryAtPath:(NSString *)path{
+    NSMutableArray *content = [[NSMutableArray alloc]init];
+    NSError *error = nil;
+    NSArray *contentArray = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:&error];
+    if (contentArray && contentArray.count > 0 && !error) {
+        [content addObjectsFromArray:contentArray];
+    }
+    return content;
 }
 
 @end

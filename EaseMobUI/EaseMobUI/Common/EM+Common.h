@@ -28,9 +28,14 @@
 #define HEIGHT_INPUT_OF_DEFAULT (50)
 #define HEIGHT_INPUT_OF_MAX (IS_PAD ? 320 : 200)
 #define HEIGHT_MORE_TOOL_OF_DEFAULT ((SCREEN_WIDTH - LEFT_PADDING - RIGHT_PADDING) / 2 + HEIGHT_INDICATOR_OF_DEFAULT * 2)
+#define LINE_HEIGHT     (.5)
+#define LINE_WIDTH      (.5)
 
 #define LINE_COLOR (@"#CCCCCC")
-#define TEXT_NORMAL_COLOR (@"#C2C2C2")
-#define TEXT_SELECT_COLOR   (@"#9370DB")
+#define TEXT_NORMAL_COLOR (0x686868)
+#define TEXT_SELECT_COLOR (0x2d88ef)
+
+#define STATUS_BAR_FRAME ([UIApplication sharedApplication].statusBarFrame)
+#define NAVIGATION_BAR_FRAME (self.navigationController.navigationBar.frame)
 
 #endif
