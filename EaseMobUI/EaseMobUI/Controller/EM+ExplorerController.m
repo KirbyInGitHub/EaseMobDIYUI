@@ -12,6 +12,8 @@
 #import "EM+Common.h"
 #import "UIColor+Hex.h"
 
+#import "EM+ChatWifiView.h"
+
 #define HEIGHT_HEADER   (44)
 #define HEIGHT_FOOTER   (44)
 
@@ -99,7 +101,8 @@
 }
 
 - (void)wifiUpload:(id)sender{
-    
+    EM_ChatWifiView *wifiView = [[EM_ChatWifiView alloc]init];
+    [wifiView show:UAlertPosition_Bottom offestY:0];
 }
 
 - (void)folderClicked:(UIButton *)sender{

@@ -37,5 +37,6 @@
 
 #define STATUS_BAR_FRAME ([UIApplication sharedApplication].statusBarFrame)
 #define NAVIGATION_BAR_FRAME (self.navigationController.navigationBar.frame)
+#define ShareWindow ([[UIApplication sharedApplication] keyWindow])
 
 #endif

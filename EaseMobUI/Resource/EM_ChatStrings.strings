@@ -43,7 +43,7 @@ file.video = "视频";
 file.image = "相册";
 file.audio = "音频";
 file.other = "其它";
-file.wifi_upload = "WIFI上传";
+file.wifi_upload = "WiFi上传";
 
 hint.may_phone = "[%@]这可能是一个电话号码，你可以";
 hint.may_link = "[%@]这可能是一个网址，你可以";

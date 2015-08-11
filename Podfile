@@ -16,8 +16,6 @@ pod 'MWPhotoBrowser','2.1.1'
 #Toast
 pod 'MBProgressHUD','0.9.1'
 
-#数据库
-pod 'FMDB','2.5'
 
 #富文本
 pod 'TTTAttributedLabel','1.13.4'
