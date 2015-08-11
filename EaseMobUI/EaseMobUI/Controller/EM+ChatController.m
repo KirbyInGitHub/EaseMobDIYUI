@@ -9,14 +9,16 @@
 #import "EM+ChatController.h"
 
 #import "EM+LocationController.h"
+#import "EM+ExplorerController.h"
 #import "EM+ChatToolBar.h"
 #import "EM+ChatTableView.h"
 #import "EM+ChatInputTool.h"
 #import "EM+ChatMessageModel.h"
 #import "EM+ChatMessageManager.h"
-#import "EM+ChatDBM.h"
 #import "EM+Common.h"
-#import "EM+ChatConversation.h"
+#import "EM+ChatResourcesUtils.h"
+#import "EM+ChatDBUtils.h"
+#import "EM_ChatConversation.h"
 
 #import "UIViewController+HUD.h"
 
@@ -181,27 +183,26 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
 }
 
 - (void)saveEditor{
-    NSString *editor = _chatToolBarView.inputToolView.editor;
+    NSString *editorText = _chatToolBarView.inputToolView.editor;
     
-    EM_ChatConversation *conversation = [[EM_ChatConversation alloc]init];
-    conversation.conversationChatter = self.conversation.chatter;
-    conversation.conversationType = self.conversation.conversationType;
-    conversation.conversationEditor = editor;
-    
-    if (editor && editor > 0) {
-        BOOL update = [EM_ChatDBM updateConversation:conversation];
-        if (!update) {
-            [EM_ChatDBM insertConversation:conversation];
+    EM_ChatConversation *editor = [[EM_ChatDBUtils shared]queryConversationWithChatter:self.conversation.chatter];
+    if (editorText && editorText.length > 0) {
+        if (!editor) {
+            editor = [[EM_ChatDBUtils shared] insertNewConversation];
+            editor.chatter = self.chatter;
+            editor.type = @(self.conversationType);
         }
+        editor.editor = editorText;
     }else{
-        [EM_ChatDBM deleteConversation:conversation];
+        [[EM_ChatDBUtils shared] deleteConversationWithChatter:editor];
     }
+    [[EM_ChatDBUtils shared] saveChat];
 }
 
 - (void)queryEditor{
-    EM_ChatConversation *conversation = [EM_ChatDBM queryConversation:self.conversation.chatter];
-    if (conversation && conversation.conversationEditor && conversation.conversationEditor.length > 0) {
-        _chatToolBarView.inputToolView.editor = conversation.conversationEditor;
+    EM_ChatConversation *editor = [[EM_ChatDBUtils shared]queryConversationWithChatter:self.conversation.chatter];
+    if (editor) {
+        _chatToolBarView.inputToolView.editor = editor.editor;
     }
 }
 
@@ -401,7 +402,7 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
             self.imagePicker.mediaTypes = @[(NSString *)kUTTypeImage];
             [self presentViewController:self.imagePicker animated:YES completion:NULL];
         }else{
-            [self showHint:EM_ChatString(@"error.device.not_support_photo_library")];
+            [self showHint:[EM_ChatResourcesUtils stringWithName:@"error.device.not_support_photo_library"]];
         }
         
     }else if ([action isEqualToString:kActionNameCamera]){
@@ -414,22 +415,26 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
             self.imagePicker.videoMaximumDuration = 180;
             [self presentViewController:self.imagePicker animated:YES completion:NULL];
         }else{
-            [self showHint:EM_ChatString(@"error.device.not_support_camera")];
+            [self showHint:[EM_ChatResourcesUtils stringWithName:@"error.device.not_support_camera"]];
         }
     }else if ([action isEqualToString:kActionNameVoice]){
-        [self showHint:EM_ChatString(@"error.hint.function_null")];
+        [self showHint:[EM_ChatResourcesUtils stringWithName:@"error.hint.function_null"]];
     }else if ([action isEqualToString:kActionNameVideo]){
-        [self showHint:EM_ChatString(@"error.hint.function_null")];
+        [self showHint:[EM_ChatResourcesUtils stringWithName:@"error.hint.function_null"]];
     }else if ([action isEqualToString:kActionNameLocation]){
         
         EM_LocationController *locationController = [[EM_LocationController alloc]init];
         locationController.delegate = self;
         [self.navigationController pushViewController:locationController animated:YES];
     }else if ([action isEqualToString:kActionNameFile]){
-        NSData *data = UIImageJPEGRepresentation([UIImage imageNamed:RES_IMAGE_TOOL(@"tool_play")],1.0);
-        EMChatFile *chatFile =  [[EMChatFile alloc]initWithData:data displayName:@"tool_play.png"];
-        EMFileMessageBody *body = [[EMFileMessageBody alloc]initWithChatObject:chatFile];
-        [self sendMessageBody:body];
+//        NSData *data = UIImageJPEGRepresentation([EM_ChatResourcesUtils toolImageWithName:@"tool_play"],1.0);
+//        EMChatFile *chatFile =  [[EMChatFile alloc]initWithData:data displayName:@"tool_play.png"];
+//        EMFileMessageBody *body = [[EMFileMessageBody alloc]initWithChatObject:chatFile];
+//        [self sendMessageBody:body];
+        EM_ExplorerController *explorerController = [[EM_ExplorerController alloc]init];
+        [self presentViewController:[[UINavigationController alloc]initWithRootViewController:explorerController] animated:YES completion:^{
+            
+        }];
     }else{
         if (_delegate && [_delegate respondsToSelector:@selector(didActionSelectedWithName:)]){
             [_delegate didActionSelectedWithName:action];
@@ -469,9 +474,9 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
 
 - (void)messageToolBar:(EM_ChatToolBar *)toolBar didRecordError:(NSError *)error{
     if (!error) {
-        [self showHint:EM_ChatString(@"error.record.too_short")];
+        [self showHint:[EM_ChatResourcesUtils stringWithName:@"error.record.too_short"]];
     }else{
-        [self showHint:EM_ChatString(@"error.record.failure")];
+        [self showHint:[EM_ChatResourcesUtils stringWithName:@"error.record.failure"]];
     }
 }
 
@@ -499,7 +504,7 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
         [[UIApplication sharedApplication] openURL:url];
     }else if ([handleAction isEqualToString:HANDLE_ACTION_PHONE]){
         NSString *phone = userInfo[kHandleActionValue];
-        UIActionSheet *sheet = [[UIActionSheet alloc]initWithTitle:[NSString stringWithFormat:EM_ChatString(@"hint.may_phone"),phone] delegate:self cancelButtonTitle:EM_ChatString(@"common.cancel") destructiveButtonTitle:nil otherButtonTitles:EM_ChatString(@"common.call"),EM_ChatString(@"common.copy"),nil];
+        UIActionSheet *sheet = [[UIActionSheet alloc]initWithTitle:[NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"hint.may_phone"],phone] delegate:self cancelButtonTitle:[EM_ChatResourcesUtils stringWithName:@"common.cancel"] destructiveButtonTitle:nil otherButtonTitles:[EM_ChatResourcesUtils stringWithName:@"common.call"],[EM_ChatResourcesUtils stringWithName:@"common.copy"],nil];
         sheet.tag = ALERT_ACTION_TAP_PHONE;
         [sheet showInView:self.view];
     }else if ([handleAction isEqualToString:HANDLE_ACTION_TEXT]){
@@ -552,12 +557,12 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
     NSString *handleAction = userInfo[kHandleActionName];
     if ([handleAction isEqualToString:HANDLE_ACTION_URL]) {
         NSURL *url = userInfo[kHandleActionValue];
-        UIActionSheet *sheet = [[UIActionSheet alloc]initWithTitle:[NSString stringWithFormat:EM_ChatString(@"hint.may_link"),url] delegate:self cancelButtonTitle:EM_ChatString(@"common.cancel") destructiveButtonTitle:nil otherButtonTitles:EM_ChatString(@"common.open"),EM_ChatString(@"common.copy"),nil];
+        UIActionSheet *sheet = [[UIActionSheet alloc]initWithTitle:[NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"hint.may_link"],url] delegate:self cancelButtonTitle:[EM_ChatResourcesUtils stringWithName:@"common.cancel"] destructiveButtonTitle:nil otherButtonTitles:[EM_ChatResourcesUtils stringWithName:@"common.open"],[EM_ChatResourcesUtils stringWithName:@"common.copy"],nil];
         sheet.tag = ALERT_ACTION_PRESS_URL;
         [sheet showInView:self.view];
     }else if ([handleAction isEqualToString:HANDLE_ACTION_PHONE]){
         NSString *phone = userInfo[kHandleActionValue];
-        UIActionSheet *sheet = [[UIActionSheet alloc]initWithTitle:[NSString stringWithFormat:EM_ChatString(@"hint.may_phone"),phone] delegate:self cancelButtonTitle:EM_ChatString(@"common.cancel") destructiveButtonTitle:nil otherButtonTitles:EM_ChatString(@"common.call"),EM_ChatString(@"common.copy"),nil];
+        UIActionSheet *sheet = [[UIActionSheet alloc]initWithTitle:[NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"hint.may_phone"],phone] delegate:self cancelButtonTitle:[EM_ChatResourcesUtils stringWithName:@"common.cancel"] destructiveButtonTitle:nil otherButtonTitles:[EM_ChatResourcesUtils stringWithName:@"common.call"],[EM_ChatResourcesUtils stringWithName:@"common.copy"],nil];
         sheet.tag = ALERT_ACTION_PRESS_PHONE;
         [sheet showInView:self.view];
     }else{
@@ -582,7 +587,7 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
                 [self.chatTableView endUpdates];
                 
             }else{
-                [self showHint:EM_ChatString(@"common.hint.delete.failure")];
+                [self showHint:[EM_ChatResourcesUtils stringWithName:@"common.hint.delete.failure"]];
             }
         }
             break;
@@ -593,11 +598,11 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
         }
             break;
         case EM_MENU_ACTION_FACE:{
-            [self showHint:EM_ChatString(@"error.hint.function_null")];
+            [self showHint:[EM_ChatResourcesUtils stringWithName:@"error.hint.function_null"]];
         }
             break;
         case EM_MENU_ACTION_DOWNLOAD:{
-            [self showHint:EM_ChatString(@"error.hint.function_null")];
+            [self showHint:[EM_ChatResourcesUtils stringWithName:@"error.hint.function_null"]];
         }
             break;
         case EM_MENU_ACTION_COLLECT:{
@@ -606,7 +611,7 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
         }
             break;
         case EM_MENU_ACTION_FORWARD:{
-            [self showHint:EM_ChatString(@"error.hint.function_null")];
+            [self showHint:[EM_ChatResourcesUtils stringWithName:@"error.hint.function_null"]];
         }
             break;
     }

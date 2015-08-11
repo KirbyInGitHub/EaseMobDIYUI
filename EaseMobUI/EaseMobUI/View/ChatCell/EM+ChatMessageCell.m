@@ -12,6 +12,7 @@
 #import "EM+ChatDataUtils.h"
 #import "UIButton+WebCache.h"
 #import "EM+ChatUIConfig.h"
+#import "EM+ChatResourcesUtils.h"
 
 #import "EM+ChatMessageTextBubble.h"
 #import "EM+ChatMessageImageBubble.h"
@@ -145,7 +146,7 @@ NSString * const REUSE_IDENTIFIER_UNKNOWN = @"REUSE_IDENTIFIER_UNKNOWN";
         _avatarView = [[UIButton alloc]init];
         _avatarView.layer.cornerRadius = CELL_AVATAR_SIZE / 2;
         _avatarView.layer.masksToBounds = YES;
-        [_avatarView setImage:[UIImage imageNamed:RES_IMAGE_CELL(@"avatar_default")] forState:UIControlStateNormal];
+        [_avatarView setImage:[EM_ChatResourcesUtils cellImageWithName:@"avatar_default"] forState:UIControlStateNormal];
         [_avatarView addTarget:self action:@selector(avatarClicked:) forControlEvents:UIControlEventTouchUpInside];
         [self.contentView addSubview:_avatarView];
         

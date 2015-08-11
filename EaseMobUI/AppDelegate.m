@@ -59,7 +59,6 @@
     EM_ChatUIConfig *config = [EM_ChatUIConfig defaultConfig];
     [config removeActionWithName:kActionNameVoice];
     [config removeActionWithName:kActionNameVideo];
-    [config removeActionWithName:kActionNameFile];
     UIViewController *rootController = [[UStylistChatController alloc]initWithChatter:chatter conversationType:eConversationTypeChat config:config];
     self.window.rootViewController = [[UINavigationController alloc]initWithRootViewController:rootController];
     [self.window makeKeyAndVisible];
@@ -82,15 +81,15 @@
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
-    [[EaseMob sharedInstance] applicationDidEnterBackground:application];
+    [[EaseMobUIClient sharedInstance] applicationDidEnterBackground:application];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
-    [[EaseMob sharedInstance] applicationWillEnterForeground:application];
+    [[EaseMobUIClient sharedInstance] applicationWillEnterForeground:application];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
-    [[EaseMob sharedInstance] applicationWillTerminate:application];
+    [[EaseMobUIClient sharedInstance] applicationWillTerminate:application];
 }
 
 @end

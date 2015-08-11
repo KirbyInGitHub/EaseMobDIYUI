@@ -8,6 +8,7 @@
 
 #import "EM+ChatMessageBaseBubble.h"
 #import "UIColor+Hex.h"
+#import "EM+ChatResourcesUtils.h"
 #import "EM+Common.h"
 
 #import "EM+ChatMessageModel.h"
@@ -60,26 +61,26 @@ NSString * const HANDLE_ACTION_UNKNOWN = @"HANDLE_ACTION_UNKNOWN";
     
     if (self.message.bodyType == eMessageBodyType_Text) {
         //复制
-        UIMenuItem *copyItme = [[UIMenuItem alloc]initWithTitle:EM_ChatString(@"common.copy") action:@selector(copyEMMessage:)];
+        UIMenuItem *copyItme = [[UIMenuItem alloc]initWithTitle:[EM_ChatResourcesUtils stringWithName:@"common.copy"] action:@selector(copyEMMessage:)];
         [menuItems addObject:copyItme];
     }else if (self.message.bodyType == eMessageBodyType_Image){
         //收藏到表情
-        UIMenuItem *collectFaceItem = [[UIMenuItem alloc]initWithTitle:EM_ChatString(@"common.collect_face") action:@selector(collectEMMessageFace:)];
+        UIMenuItem *collectFaceItem = [[UIMenuItem alloc]initWithTitle:[EM_ChatResourcesUtils stringWithName:@"common.collect_face"] action:@selector(collectEMMessageFace:)];
         [menuItems addObject:collectFaceItem];
     }else if (self.message.bodyType == eMessageBodyType_File){
         //下载,如果未下载
         EMFileMessageBody *messageBody = (EMFileMessageBody *)self.message.messageBody;
         if (messageBody.attachmentDownloadStatus == EMAttachmentNotStarted) {
-            UIMenuItem *downloadItem = [[UIMenuItem alloc]initWithTitle:EM_ChatString(@"common.download") action:@selector(downloadEMMessageFile:)];
+            UIMenuItem *downloadItem = [[UIMenuItem alloc]initWithTitle:[EM_ChatResourcesUtils stringWithName:@"common.download"] action:@selector(downloadEMMessageFile:)];
             [menuItems addObject:downloadItem];
         }
     }
     
     if (self.message.bodyType != eMessageBodyType_Video) {
         //收藏
-        NSString *conllect = EM_ChatString(@"common.collect");
+        NSString *conllect = [EM_ChatResourcesUtils stringWithName:@"common.collect"];
         if (self.message.messageData.collected) {
-            conllect = EM_ChatString(@"common.collect_cancel");
+            conllect = [EM_ChatResourcesUtils stringWithName:@"common.collect_cancel"];
         }
         UIMenuItem *collectItem = [[UIMenuItem alloc]initWithTitle:conllect action:@selector(collectEMMessage:)];
         [menuItems addObject:collectItem];
@@ -88,14 +89,14 @@ NSString * const HANDLE_ACTION_UNKNOWN = @"HANDLE_ACTION_UNKNOWN";
     if (self.message.bodyType != eMessageBodyType_Voice) {
         //转发
         
-        UIMenuItem *forwardItem = [[UIMenuItem alloc]initWithTitle:EM_ChatString(@"common.forward") action:@selector(forwardEMMessage:)];
+        UIMenuItem *forwardItem = [[UIMenuItem alloc]initWithTitle:[EM_ChatResourcesUtils stringWithName:@"common.forward"] action:@selector(forwardEMMessage:)];
         [menuItems addObject:forwardItem];
         
         //转发多条
     }
     
     //删除
-    UIMenuItem *deleteItem = [[UIMenuItem alloc]initWithTitle:EM_ChatString(@"common.delete") action:@selector(deleteEMMessage:)];
+    UIMenuItem *deleteItem = [[UIMenuItem alloc]initWithTitle:[EM_ChatResourcesUtils stringWithName:@"common.delete"] action:@selector(deleteEMMessage:)];
     [menuItems addObject:deleteItem];
     
     return menuItems;

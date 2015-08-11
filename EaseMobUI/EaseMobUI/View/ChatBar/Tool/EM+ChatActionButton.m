@@ -53,8 +53,8 @@
         if (!normalImage && !highlightImage) {
             NSString *text = _actionAttribute[kAttributeText];
             [_actionButton setTitle:text forState:UIControlStateNormal];
-            [_actionButton setTitleColor:[UIColor colorWithHEX:TEXT_NORMAL_COLOR alpha:1.0] forState:UIControlStateNormal];
-            [_actionButton setTitleColor:[UIColor colorWithHEX:TEXT_SELECT_COLOR alpha:1.0] forState:UIControlStateHighlighted];
+            [_actionButton setTitleColor:[UIColor colorWithHexRGB:TEXT_NORMAL_COLOR] forState:UIControlStateNormal];
+            [_actionButton setTitleColor:[UIColor colorWithHexRGB:TEXT_SELECT_COLOR] forState:UIControlStateHighlighted];
         }
         
         UIColor *backgroundColor = _actionAttribute[kAttributeBackgroundColor];

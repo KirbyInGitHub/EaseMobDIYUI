@@ -8,6 +8,7 @@
 
 #import "EM+ChatUIConfig.h"
 #import "EM+Common.h"
+#import "EM+ChatResourcesUtils.h"
 
 @interface EM_ChatUIConfig()
 
@@ -47,92 +48,42 @@ NSString * const kActionNameFile = @"kActionNameFile";
     config.hiddenOfRecord = NO;
     config.hiddenOfEmoji = NO;
     //录音按钮
-    [config setToolName:kButtonNameRecord attributeName:kAttributeNormalImage attribute:[UIImage imageNamed:RES_IMAGE_TOOL(@"tool_record")]];
-    [config setToolName:kButtonNameRecord attributeName:kAttributeHighlightImage attribute:[UIImage imageNamed:RES_IMAGE_TOOL(@"tool_record")]];
-    [config setToolName:kButtonNameRecord attributeName:kAttributeBackgroundColor attribute:[UIColor clearColor]];
-    [config setToolName:kButtonNameRecord attributeName:kAttributeBorderColor attribute:[UIColor clearColor]];
-    [config setToolName:kButtonNameRecord attributeName:kAttributeBorderWidth attribute:@(0)];
-    [config setToolName:kButtonNameRecord attributeName:kAttributeCornerRadius attribute:@(0)];
+    [config setToolName:kButtonNameRecord attributeName:kAttributeNormalImage attribute:[EM_ChatResourcesUtils toolImageWithName:@"tool_record"]];
     
     //键盘
-    [config setToolName:kButtonNameKeyboard attributeName:kAttributeNormalImage attribute:[UIImage imageNamed:RES_IMAGE_TOOL(@"tool_keyboard")]];
-    [config setToolName:kButtonNameKeyboard attributeName:kAttributeHighlightImage attribute:[UIImage imageNamed:RES_IMAGE_TOOL(@"tool_keyboard")]];
-    [config setToolName:kButtonNameKeyboard attributeName:kAttributeBackgroundColor attribute:[UIColor clearColor]];
-    [config setToolName:kButtonNameKeyboard attributeName:kAttributeBorderColor attribute:[UIColor clearColor]];
-    [config setToolName:kButtonNameKeyboard attributeName:kAttributeBorderWidth attribute:@(0)];
-    [config setToolName:kButtonNameKeyboard attributeName:kAttributeCornerRadius attribute:@(0)];
+    [config setToolName:kButtonNameKeyboard attributeName:kAttributeNormalImage attribute:[EM_ChatResourcesUtils toolImageWithName:@"tool_keyboard"]];
     
     //Emoji
-    [config setToolName:kButtonNameEmoji attributeName:kAttributeNormalImage attribute:[UIImage imageNamed:RES_IMAGE_TOOL(@"tool_emoji")]];
-    [config setToolName:kButtonNameEmoji attributeName:kAttributeHighlightImage attribute:[UIImage imageNamed:RES_IMAGE_TOOL(@"tool_emoji")]];
-    [config setToolName:kButtonNameEmoji attributeName:kAttributeBackgroundColor attribute:[UIColor clearColor]];
-    [config setToolName:kButtonNameEmoji attributeName:kAttributeBorderColor attribute:[UIColor clearColor]];
-    [config setToolName:kButtonNameEmoji attributeName:kAttributeBorderWidth attribute:@(0)];
-    [config setToolName:kButtonNameEmoji attributeName:kAttributeCornerRadius attribute:@(0)];
+    [config setToolName:kButtonNameEmoji attributeName:kAttributeNormalImage attribute:[EM_ChatResourcesUtils toolImageWithName:@"tool_emoji"]];
     
     //动作
-    [config setToolName:kButtonNameAction attributeName:kAttributeNormalImage attribute:[UIImage imageNamed:RES_IMAGE_TOOL(@"tool_action")]];
-    [config setToolName:kButtonNameAction attributeName:kAttributeHighlightImage attribute:[UIImage imageNamed:RES_IMAGE_TOOL(@"tool_action")]];
-    [config setToolName:kButtonNameAction attributeName:kAttributeBackgroundColor attribute:[UIColor clearColor]];
-    [config setToolName:kButtonNameAction attributeName:kAttributeBorderColor attribute:[UIColor clearColor]];
-    [config setToolName:kButtonNameAction attributeName:kAttributeBorderWidth attribute:@(0)];
-    [config setToolName:kButtonNameAction attributeName:kAttributeCornerRadius attribute:@(0)];
+    [config setToolName:kButtonNameAction attributeName:kAttributeNormalImage attribute:[EM_ChatResourcesUtils toolImageWithName:@"tool_action"]];
     
     
     //图片
-    [config setActionName:kActionNameImage attributeName:kAttributeTitle attribute:EM_ChatString(@"common.image")];
-    [config setActionName:kActionNameImage attributeName:kAttributeNormalImage attribute:[UIImage imageNamed:RES_IMAGE_ACTION(@"action_image")]];
-    [config setActionName:kActionNameImage attributeName:kAttributeHighlightImage attribute:[UIImage imageNamed:RES_IMAGE_ACTION(@"action_image")]];
-    [config setActionName:kActionNameImage attributeName:kAttributeBackgroundColor attribute:[UIColor clearColor]];
-    [config setActionName:kActionNameImage attributeName:kAttributeBorderColor attribute:[UIColor clearColor]];
-    [config setActionName:kActionNameImage attributeName:kAttributeBorderWidth attribute:@(0)];
-    [config setActionName:kActionNameImage attributeName:kAttributeCornerRadius attribute:@(0)];
+    [config setActionName:kActionNameImage attributeName:kAttributeTitle attribute:[EM_ChatResourcesUtils stringWithName:@"common.image"]];
+    [config setActionName:kActionNameImage attributeName:kAttributeNormalImage attribute:[EM_ChatResourcesUtils actionImageWithName:@"action_image"]];
     
     //相机
-    [config setActionName:kActionNameCamera attributeName:kAttributeTitle attribute:EM_ChatString(@"common.camera")];
-    [config setActionName:kActionNameCamera attributeName:kAttributeNormalImage attribute:[UIImage imageNamed:RES_IMAGE_ACTION(@"action_camera")]];
-    [config setActionName:kActionNameCamera attributeName:kAttributeHighlightImage attribute:[UIImage imageNamed:RES_IMAGE_ACTION(@"action_camera")]];
-    [config setActionName:kActionNameCamera attributeName:kAttributeBackgroundColor attribute:[UIColor clearColor]];
-    [config setActionName:kActionNameCamera attributeName:kAttributeBorderColor attribute:[UIColor clearColor]];
-    [config setActionName:kActionNameCamera attributeName:kAttributeBorderWidth attribute:@(0)];
-    [config setActionName:kActionNameCamera attributeName:kAttributeCornerRadius attribute:@(0)];
+    [config setActionName:kActionNameCamera attributeName:kAttributeTitle attribute:[EM_ChatResourcesUtils stringWithName:@"common.camera"]];
+    [config setActionName:kActionNameCamera attributeName:kAttributeNormalImage attribute:[EM_ChatResourcesUtils actionImageWithName:@"action_camera"]];
     
     //语音
-    [config setActionName:kActionNameVoice attributeName:kAttributeTitle attribute:EM_ChatString(@"common.voice")];
-    [config setActionName:kActionNameVoice attributeName:kAttributeNormalImage attribute:[UIImage imageNamed:RES_IMAGE_ACTION(@"action_phone")]];
-    [config setActionName:kActionNameVoice attributeName:kAttributeHighlightImage attribute:[UIImage imageNamed:RES_IMAGE_ACTION(@"action_phone")]];
-    [config setActionName:kActionNameVoice attributeName:kAttributeBackgroundColor attribute:[UIColor clearColor]];
-    [config setActionName:kActionNameVoice attributeName:kAttributeBorderColor attribute:[UIColor clearColor]];
-    [config setActionName:kActionNameVoice attributeName:kAttributeBorderWidth attribute:@(0)];
-    [config setActionName:kActionNameVoice attributeName:kAttributeCornerRadius attribute:@(0)];
+    [config setActionName:kActionNameVoice attributeName:kAttributeTitle attribute:[EM_ChatResourcesUtils stringWithName:@"common.voice"]];
+    [config setActionName:kActionNameVoice attributeName:kAttributeNormalImage attribute:[EM_ChatResourcesUtils actionImageWithName:@"action_phone"]];
     
     
     //视频
-    [config setActionName:kActionNameVideo attributeName:kAttributeTitle attribute:EM_ChatString(@"common.video")];
-    [config setActionName:kActionNameVideo attributeName:kAttributeNormalImage attribute:[UIImage imageNamed:RES_IMAGE_ACTION(@"action_video")]];
-    [config setActionName:kActionNameVideo attributeName:kAttributeHighlightImage attribute:[UIImage imageNamed:RES_IMAGE_ACTION(@"action_video")]];
-    [config setActionName:kActionNameVideo attributeName:kAttributeBackgroundColor attribute:[UIColor clearColor]];
-    [config setActionName:kActionNameVideo attributeName:kAttributeBorderColor attribute:[UIColor clearColor]];
-    [config setActionName:kActionNameVideo attributeName:kAttributeBorderWidth attribute:@(0)];
-    [config setActionName:kActionNameVideo attributeName:kAttributeCornerRadius attribute:@(0)];
+    [config setActionName:kActionNameVideo attributeName:kAttributeTitle attribute:[EM_ChatResourcesUtils stringWithName:@"common.video"]];
+    [config setActionName:kActionNameVideo attributeName:kAttributeNormalImage attribute:[EM_ChatResourcesUtils actionImageWithName:@"action_video"]];
     
     //位置
-    [config setActionName:kActionNameLocation attributeName:kAttributeTitle attribute:EM_ChatString(@"common.location")];
-    [config setActionName:kActionNameLocation attributeName:kAttributeNormalImage attribute:[UIImage imageNamed:RES_IMAGE_ACTION(@"action_location")]];
-    [config setActionName:kActionNameLocation attributeName:kAttributeHighlightImage attribute:[UIImage imageNamed:RES_IMAGE_ACTION(@"action_location")]];
-    [config setActionName:kActionNameLocation attributeName:kAttributeBackgroundColor attribute:[UIColor clearColor]];
-    [config setActionName:kActionNameLocation attributeName:kAttributeBorderColor attribute:[UIColor clearColor]];
-    [config setActionName:kActionNameLocation attributeName:kAttributeBorderWidth attribute:@(0)];
-    [config setActionName:kActionNameLocation attributeName:kAttributeCornerRadius attribute:@(0)];
+    [config setActionName:kActionNameLocation attributeName:kAttributeTitle attribute:[EM_ChatResourcesUtils stringWithName:@"common.location"]];
+    [config setActionName:kActionNameLocation attributeName:kAttributeNormalImage attribute:[EM_ChatResourcesUtils actionImageWithName:@"action_location"]];
     
     //文件
-    [config setActionName:kActionNameFile attributeName:kAttributeTitle attribute:EM_ChatString(@"common.file")];
-    [config setActionName:kActionNameFile attributeName:kAttributeNormalImage attribute:[UIImage imageNamed:RES_IMAGE_ACTION(@"action_file")]];
-    [config setActionName:kActionNameFile attributeName:kAttributeHighlightImage attribute:[UIImage imageNamed:RES_IMAGE_ACTION(@"action_file")]];
-    [config setActionName:kActionNameFile attributeName:kAttributeBackgroundColor attribute:[UIColor clearColor]];
-    [config setActionName:kActionNameFile attributeName:kAttributeBorderColor attribute:[UIColor clearColor]];
-    [config setActionName:kActionNameFile attributeName:kAttributeBorderWidth attribute:@(0.1)];
-    [config setActionName:kActionNameFile attributeName:kAttributeCornerRadius attribute:@(0)];
+    [config setActionName:kActionNameFile attributeName:kAttributeTitle attribute:[EM_ChatResourcesUtils stringWithName:@"common.file"]];
+    [config setActionName:kActionNameFile attributeName:kAttributeNormalImage attribute:[EM_ChatResourcesUtils actionImageWithName:@"action_file"]];
     
     return config;
 }
