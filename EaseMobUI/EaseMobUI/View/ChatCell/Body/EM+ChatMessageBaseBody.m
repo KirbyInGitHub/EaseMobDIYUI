@@ -6,14 +6,14 @@
 //  Copyright (c) 2015年 周玉震. All rights reserved.
 //
 
-#import "EM+ChatMessageBaseBubble.h"
+#import "EM+ChatMessageBaseBody.h"
 #import "UIColor+Hex.h"
 #import "EM+ChatResourcesUtils.h"
 #import "EM+Common.h"
 
 #import "EM+ChatMessageModel.h"
 
-@implementation EM_ChatMessageBaseBubble{
+@implementation EM_ChatMessageBaseBody{
     UITapGestureRecognizer *tap;
     UILongPressGestureRecognizer *longPress;
 }
@@ -32,10 +32,6 @@ NSString * const HANDLE_ACTION_LOCATION = @"HANDLE_ACTION_LOCATION";
 NSString * const HANDLE_ACTION_FILE = @"HANDLE_ACTION_FILE";
 NSString * const HANDLE_ACTION_UNKNOWN = @"HANDLE_ACTION_UNKNOWN";
 
-+ (CGSize)sizeForBubbleWithMessage:(id)messageBody  maxWithd:(CGFloat)max{
-    return CGSizeMake(CELL_BUBBLE_LEFT_PADDING + CELL_BUBBLE_RIGHT_PADDING, CELL_BUBBLE_TOP_PADDING + CELL_BUBBLE_BOTTOM_PADDING);
-}
-
 - (instancetype)init{
     self = [super init];
     if (self) {
@@ -45,48 +41,42 @@ NSString * const HANDLE_ACTION_UNKNOWN = @"HANDLE_ACTION_UNKNOWN";
     return self;
 }
 
-- (void)layoutSubviews{
-    [super layoutSubviews];
-    if (self.extendView) {
-        self.extendView.bounds = CGRectMake(0, 0, self.message.extendSize.width, self.message.extendSize.height);
-    }
-}
-
 - (NSString *)handleAction{
     return HANDLE_ACTION_UNKNOWN;
 }
 
 - (NSMutableArray *)bubbleMenuItems{
     NSMutableArray *menuItems = [[NSMutableArray alloc]init];
+    id<IEMMessageBody> messageBody = self.message.messageBody;
     
-    if (self.message.bodyType == eMessageBodyType_Text) {
+    if (messageBody.messageBodyType == eMessageBodyType_Text) {
         //复制
         UIMenuItem *copyItme = [[UIMenuItem alloc]initWithTitle:[EM_ChatResourcesUtils stringWithName:@"common.copy"] action:@selector(copyEMMessage:)];
         [menuItems addObject:copyItme];
-    }else if (self.message.bodyType == eMessageBodyType_Image){
+    }else if (messageBody.messageBodyType == eMessageBodyType_Image){
         //收藏到表情
         UIMenuItem *collectFaceItem = [[UIMenuItem alloc]initWithTitle:[EM_ChatResourcesUtils stringWithName:@"common.collect_face"] action:@selector(collectEMMessageFace:)];
         [menuItems addObject:collectFaceItem];
-    }else if (self.message.bodyType == eMessageBodyType_File){
+    }else if (messageBody.messageBodyType == eMessageBodyType_File){
         //下载,如果未下载
-        EMFileMessageBody *messageBody = (EMFileMessageBody *)self.message.messageBody;
-        if (messageBody.attachmentDownloadStatus == EMAttachmentNotStarted) {
+        EMFileMessageBody *fileBody = (EMFileMessageBody *)messageBody;
+        if (fileBody.attachmentDownloadStatus == EMAttachmentNotStarted) {
             UIMenuItem *downloadItem = [[UIMenuItem alloc]initWithTitle:[EM_ChatResourcesUtils stringWithName:@"common.download"] action:@selector(downloadEMMessageFile:)];
             [menuItems addObject:downloadItem];
         }
     }
     
-    if (self.message.bodyType != eMessageBodyType_Video) {
+    if (messageBody.messageBodyType != eMessageBodyType_Video) {
         //收藏
         NSString *conllect = [EM_ChatResourcesUtils stringWithName:@"common.collect"];
-        if (self.message.messageData.collected) {
+        if (self.message.extend.collected) {
             conllect = [EM_ChatResourcesUtils stringWithName:@"common.collect_cancel"];
         }
         UIMenuItem *collectItem = [[UIMenuItem alloc]initWithTitle:conllect action:@selector(collectEMMessage:)];
         [menuItems addObject:collectItem];
     }
     
-    if (self.message.bodyType != eMessageBodyType_Voice) {
+    if (messageBody.messageBodyType != eMessageBodyType_Voice) {
         //转发
         
         UIMenuItem *forwardItem = [[UIMenuItem alloc]initWithTitle:[EM_ChatResourcesUtils stringWithName:@"common.forward"] action:@selector(forwardEMMessage:)];
@@ -134,13 +124,6 @@ NSString * const HANDLE_ACTION_UNKNOWN = @"HANDLE_ACTION_UNKNOWN";
 }
 
 - (void)bubbleTap:(UITapGestureRecognizer *)recognizer{
-    if (self.extendView) {
-        CGPoint point = [recognizer locationInView:self];
-        if (CGRectContainsPoint(self.extendView.frame, point)) {
-            return;
-        }
-    }
-    
     if(_delegate){
         NSDictionary *userInfo = @{kHandleActionName:self.handleAction,kHandleActionMessage:self.message};
         [_delegate bubbleTapWithUserInfo:userInfo];
@@ -148,13 +131,6 @@ NSString * const HANDLE_ACTION_UNKNOWN = @"HANDLE_ACTION_UNKNOWN";
 }
 
 - (void)bubbleLongPress:(UILongPressGestureRecognizer *)recognizer{
-    if (self.extendView) {
-        CGPoint point = [recognizer locationInView:self];
-        if (CGRectContainsPoint(self.extendView.frame, point)) {
-            return;
-        }
-    }
-    
     if (recognizer.state == UIGestureRecognizerStateBegan && _delegate) {
         NSDictionary *userInfo = @{kHandleActionName:self.handleAction,kHandleActionMessage:self.message};
         [_delegate bubbleLongPressWithUserInfo:userInfo];
@@ -221,51 +197,29 @@ NSString * const HANDLE_ACTION_UNKNOWN = @"HANDLE_ACTION_UNKNOWN";
         return YES;
     }
     
-    if (self.message.bodyType == eMessageBodyType_Text && action == @selector(copyEMMessage:)) {
+    id<IEMMessageBody> messageBody = [self.message.message.messageBodies firstObject];
+    
+    if (messageBody.messageBodyType == eMessageBodyType_Text && action == @selector(copyEMMessage:)) {
         return YES;
     }
     
-    if (self.message.bodyType == eMessageBodyType_Image && action == @selector(collectEMMessageFace:)){
+    if (messageBody.messageBodyType == eMessageBodyType_Image && action == @selector(collectEMMessageFace:)){
         return YES;
     }
-    if (self.message.bodyType == eMessageBodyType_File && action == @selector(downloadEMMessageFile:)){
-        return YES;
-    }
-    
-    if (self.message.bodyType != eMessageBodyType_Video && action == @selector(collectEMMessage:)) {
+    if (messageBody.messageBodyType == eMessageBodyType_File && action == @selector(downloadEMMessageFile:)){
         return YES;
     }
     
-    if (self.message.bodyType != eMessageBodyType_Voice && action == @selector(forwardEMMessage:)) {
+    if (messageBody.messageBodyType != eMessageBodyType_Video && action == @selector(collectEMMessage:)) {
+        return YES;
+    }
+    
+    if (messageBody.messageBodyType != eMessageBodyType_Voice && action == @selector(forwardEMMessage:)) {
         return YES;
     }
     return NO;
 }
 
-- (void)setExtendView:(UIView *)extendView{
-    if (_extendView == extendView) {
-        return;
-    }else{
-        if (_extendView) {
-            [_extendView removeFromSuperview];
-        }
-        _extendView = extendView;
-        if (_extendView){
-            [self addSubview:_extendView];
-            if(_extendLine){
-                [_extendLine removeFromSuperview];
-            }else{
-                _extendLine = [[UIView alloc]init];
-                _extendLine.backgroundColor = [UIColor colorWithHEX:LINE_COLOR alpha:1.0];
-            }
-            [self addSubview:_extendLine];
-        }else{
-            if(_extendLine){
-                [_extendLine removeFromSuperview];
-            }
-        }
-    }
-}
 
 - (void)setMessage:(EM_ChatMessageModel *)message{
     _message = message;

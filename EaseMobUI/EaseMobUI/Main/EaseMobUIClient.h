@@ -17,6 +17,8 @@
 
 + (instancetype)sharedInstance;
 
+- (void)registerClassForExtend:(Class)extendClass;
+
 - (void)applicationDidEnterBackground:(UIApplication *)application;
 
 - (void)applicationWillEnterForeground:(UIApplication *)application;

@@ -6,7 +6,7 @@
 //  Copyright (c) 2015年 周玉震. All rights reserved.
 //
 
-#import "EM+ChatMessageTextBubble.h"
+#import "EM+ChatMessageTextBody.h"
 #import "TTTAttributedLabel.h"
 #import "EM+ChatMessageModel.h"
 
@@ -14,41 +14,12 @@
 #define TEXT_FONT_SIZE (16)
 #define TEXT_PADDING (2)
 
-@interface EM_ChatMessageTextBubble()<TTTAttributedLabelDelegate>
+@interface EM_ChatMessageTextBody()<TTTAttributedLabelDelegate>
 
 @end
 
-@implementation EM_ChatMessageTextBubble{
+@implementation EM_ChatMessageTextBody{
     TTTAttributedLabel *textLabel;
-}
-
-+ (CGSize)sizeForBubbleWithMessage:(id)messageBody maxWithd:(CGFloat)max{
-    
-    CGSize superSize = [super sizeForBubbleWithMessage:messageBody maxWithd:max];
-    CGSize maxSize = CGSizeMake(max - CELL_BUBBLE_LEFT_PADDING - CELL_BUBBLE_RIGHT_PADDING, 1000);
-    
-    EMTextMessageBody *textBody = messageBody;
-    
-    CGSize size;
-    static float systemVersion;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        systemVersion = [[[UIDevice currentDevice] systemVersion] floatValue];
-    });
-    
-    NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-    [paragraphStyle setLineSpacing:TEXT_LINE_SPACING];//调整行间距
-    size = [textBody.text boundingRectWithSize:maxSize options:NSStringDrawingUsesLineFragmentOrigin
-                                    attributes:@{
-                                                 NSFontAttributeName:[UIFont systemFontOfSize:TEXT_FONT_SIZE],
-                                                 NSParagraphStyleAttributeName:paragraphStyle
-                                                 }
-                                       context:nil].size;
-    
-    superSize.height += (size.height + TEXT_PADDING * 2);
-    superSize.width += (size.width + TEXT_PADDING * 2);
-    
-    return superSize;
 }
 
 - (instancetype)init{
@@ -59,8 +30,8 @@
         textLabel = [[TTTAttributedLabel alloc]initWithFrame:CGRectZero];
         textLabel.delegate = self;
         textLabel.enabledTextCheckingTypes = NSTextCheckingTypeLink | NSTextCheckingTypePhoneNumber;
+        textLabel.userInteractionEnabled = YES;
         textLabel.numberOfLines = 0;
-        textLabel.lineSpacing = TEXT_LINE_SPACING;
         textLabel.lineBreakMode = NSLineBreakByWordWrapping;
         textLabel.textColor = [UIColor blackColor];
         textLabel.font = [UIFont systemFontOfSize:TEXT_FONT_SIZE];
@@ -73,14 +44,8 @@
     [super layoutSubviews];
     CGSize size = self.frame.size;
     
-    textLabel.frame = CGRectMake(CELL_BUBBLE_LEFT_PADDING, CELL_BUBBLE_TOP_PADDING, size.width - CELL_BUBBLE_LEFT_PADDING - CELL_BUBBLE_RIGHT_PADDING, size.height -  CELL_BUBBLE_TOP_PADDING - CELL_BUBBLE_BOTTOM_PADDING - self.message.extendSize.height - CELL_BUBBLE_EXTEND_PADDING);
-    
-    if (self.extendView) {
-        self.extendView.center = CGPointMake(size.width / 2, size.height - CELL_BUBBLE_BOTTOM_PADDING - self.message.extendSize.height / 2);
-    }
-    if (self.extendLine) {
-        self.extendLine.frame = CGRectMake(0, self.extendView.frame.origin.y + CELL_BUBBLE_EXTEND_PADDING, size.width, CELL_BUBBLE_EXTEND_PADDING);
-    }
+    textLabel.bounds = self.bounds;
+    textLabel.center = CGPointMake(size.width / 2, size.height / 2);
 }
 
 - (NSString *)handleAction{
@@ -89,7 +54,6 @@
 
 - (void)setMessage:(EM_ChatMessageModel *)message{
     [super setMessage:message];
-    
     EMTextMessageBody *textBody = (EMTextMessageBody *)message.messageBody;
     textLabel.text = textBody.text;
 }

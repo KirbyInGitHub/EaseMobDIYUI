@@ -6,11 +6,11 @@
 //  Copyright (c) 2015年 周玉震. All rights reserved.
 //
 
-#import "EM+ChatMessageBaseBubble.h"
+#import "EM+ChatMessageBaseBody.h"
 
-@protocol EM_ChatVoiceBubbleDelegate;
+@protocol EM_ChatVoiceBodyDelegate;
 
-@interface EM_ChatMessageVoiceBubble : EM_ChatMessageBaseBubble
+@interface EM_ChatMessageVoiceBody : EM_ChatMessageBaseBody
 
 @end
 

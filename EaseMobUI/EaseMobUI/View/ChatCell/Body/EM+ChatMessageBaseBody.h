@@ -8,19 +8,6 @@
 
 #import <UIKit/UIKit.h>
 @class EM_ChatMessageModel;
-@class EM_ChatMessageTextBubble;
-@class EM_ChatMessageImageBubble;
-@class EM_ChatMessageVideoBubble;
-@class EM_ChatMessageLocationBubble;
-@class EM_ChatMessageVoiceBubble;
-@class EM_ChatMessageFileBubble;
-
-
-#define CELL_BUBBLE_LEFT_PADDING (12)
-#define CELL_BUBBLE_RIGHT_PADDING (12)
-#define CELL_BUBBLE_TOP_PADDING (8)
-#define CELL_BUBBLE_BOTTOM_PADDING (8)
-#define CELL_BUBBLE_EXTEND_PADDING  (1)
 
 extern NSString * const kHandleActionName;
 extern NSString * const kHandleActionMessage;
@@ -45,25 +32,21 @@ typedef NS_ENUM(NSInteger, EM_MENU_ACTION) {
     EM_MENU_ACTION_FORWARD
 };
 
-@protocol EM_ChatMessageBubbleDelegate;
+@protocol EM_ChatMessageBodyDelegate;
 
-@interface EM_ChatMessageBaseBubble : UIView
+@interface EM_ChatMessageBaseBody : UIView
 
 @property (nonatomic,strong) EM_ChatMessageModel *message;
 @property (nonatomic,assign) BOOL needTap;
 @property (nonatomic,assign) BOOL needLongPress;
-@property (nonatomic,weak)   id<EM_ChatMessageBubbleDelegate> delegate;
+@property (nonatomic,weak)   id<EM_ChatMessageBodyDelegate> delegate;
 @property (nonatomic,copy)   NSString *handleAction;
 
-@property (nonatomic, strong) UIView *extendView;
-@property (nonatomic, strong, readonly) UIView *extendLine;
-
-+ (CGSize)sizeForBubbleWithMessage:(id)messageBody maxWithd:(CGFloat)max;
 - (NSMutableArray *) bubbleMenuItems;
 
 @end
 
-@protocol EM_ChatMessageBubbleDelegate <NSObject>
+@protocol EM_ChatMessageBodyDelegate <NSObject>
 
 @required
 

@@ -14,14 +14,7 @@
 #import "EM+ChatUIConfig.h"
 #import "EM+ChatResourcesUtils.h"
 
-#import "EM+ChatMessageTextBubble.h"
-#import "EM+ChatMessageImageBubble.h"
-#import "EM+ChatMessageVideoBubble.h"
-#import "EM+ChatMessageLocationBubble.h"
-#import "EM+ChatMessageVoiceBubble.h"
-#import "EM+ChatMessageFileBubble.h"
-
-@interface EM_ChatMessageCell()<EM_ChatMessageBubbleDelegate>
+@interface EM_ChatMessageCell()<EM_ChatMessageBodyDelegate>
 
 @property (nonatomic,strong) UILabel *nameLabel;
 @property (nonatomic,strong) UIButton *avatarView;
@@ -34,94 +27,20 @@
 
 @implementation EM_ChatMessageCell
 
-NSString * const REUSE_IDENTIFIER_TEXT = @"REUSE_IDENTIFIER_TEXT";
-NSString * const REUSE_IDENTIFIER_IMAGE = @"REUSE_IDENTIFIER_IMAGE";
-NSString * const REUSE_IDENTIFIER_VIDEO = @"REUSE_IDENTIFIER_VIDEO";
-NSString * const REUSE_IDENTIFIER_LOCATION = @"REUSE_IDENTIFIER_LOCATION";
-NSString * const REUSE_IDENTIFIER_VOICE = @"REUSE_IDENTIFIER_VOICE";
-NSString * const REUSE_IDENTIFIER_IFILE = @"REUSE_IDENTIFIER_IFILE";
-NSString * const REUSE_IDENTIFIER_COMMAND = @"REUSE_IDENTIFIER_COMMAND";
-NSString * const REUSE_IDENTIFIER_UNKNOWN = @"REUSE_IDENTIFIER_UNKNOWN";
-
 + (CGFloat)cellBubbleMaxWidth:(CGFloat)cellMaxWidth{
     CGFloat maxBubbleWidth = cellMaxWidth - CELL_PADDING * 2 - CELL_AVATAR_SIZE * 2 - CELL_BUBBLE_TAIL_WIDTH;
     return maxBubbleWidth;
 }
 
-+ (NSString *)cellIdFormMessageBodyType:(MessageBodyType)type{
-    NSString *cellId = REUSE_IDENTIFIER_UNKNOWN;
-    switch (type) {
-        case eMessageBodyType_Text:{
-            cellId = @"TEXT_REUSE_IDENTIFIER";
-        }
-            break;
-        case eMessageBodyType_Image:{
-            cellId = @"IMAGE_REUSE_IDENTIFIER";
-        }
-            break;
-        case eMessageBodyType_Video:{
-            cellId = @"VIDEO_REUSE_IDENTIFIER";
-        }
-            break;
-        case eMessageBodyType_Location:{
-            cellId = @"LOCATION_REUSE_IDENTIFIER";
-        }
-            break;
-        case eMessageBodyType_Voice:{
-            cellId = @"VOICE_REUSE_IDENTIFIER";
-        }
-            break;
-        case eMessageBodyType_File:{
-            cellId = @"FILE_REUSE_IDENTIFIER";
-        }
-            break;
-        case eMessageBodyType_Command:{
-            cellId = @"COMMAND_REUSE_IDENTIFIER";
-        }
-            break;
-    }
-    return cellId;
-}
-
 + (CGFloat)heightForCellWithMessage:(EM_ChatMessageModel *)message  maxWidth:(CGFloat)max indexPath:(NSIndexPath *)indexPath{
-    id<IEMMessageBody> messageBody = message.messageBody;
-    
     CGFloat contentHeight = CELL_PADDING * 2;
-    if (message.showTime) {
+    if (message.extend.showTime) {
         contentHeight += CELL_TIME_HEIGHT;
     }
     CGFloat maxBubbleWidth = [EM_ChatMessageCell cellBubbleMaxWidth:max];
+    CGSize bubbleSize = [message bubbleSizeFormMaxWidth:maxBubbleWidth];
     
-    switch (message.bodyType) {
-        case eMessageBodyType_Text:{
-            message.bubbleSize = [EM_ChatMessageTextBubble sizeForBubbleWithMessage:messageBody maxWithd:maxBubbleWidth];
-        }
-            break;
-        case eMessageBodyType_Image:{
-            message.bubbleSize = [EM_ChatMessageImageBubble sizeForBubbleWithMessage:messageBody maxWithd:maxBubbleWidth];
-        }
-            break;
-        case eMessageBodyType_Video:{
-            message.bubbleSize = [EM_ChatMessageVideoBubble sizeForBubbleWithMessage:messageBody maxWithd:maxBubbleWidth];
-        }
-            break;
-        case eMessageBodyType_Location:{
-            message.bubbleSize = [EM_ChatMessageLocationBubble sizeForBubbleWithMessage:messageBody maxWithd:maxBubbleWidth];
-        }
-            break;
-        case eMessageBodyType_Voice:{
-            message.bubbleSize = [EM_ChatMessageVoiceBubble sizeForBubbleWithMessage:messageBody maxWithd:maxBubbleWidth];
-        }
-            break;
-        case eMessageBodyType_File:{
-            message.bubbleSize = [EM_ChatMessageFileBubble sizeForBubbleWithMessage:messageBody maxWithd:maxBubbleWidth];
-        }
-            break;
-        default:
-            break;
-    }
-    
-    CGFloat height = message.bubbleSize.height + ( message.messageType == eMessageTypeChat ? 0 : CELL_NAME_HEIGHT);
+    CGFloat height = bubbleSize.height + ( message.message.messageType == eMessageTypeChat ? 0 : CELL_NAME_HEIGHT);
     if (height > CELL_AVATAR_SIZE) {
         contentHeight += height;
     }else{
@@ -131,14 +50,10 @@ NSString * const REUSE_IDENTIFIER_UNKNOWN = @"REUSE_IDENTIFIER_UNKNOWN";
     return contentHeight;
 }
 
-+ (EM_ChatMessageCell *)cellFromMessageBodyType:(MessageBodyType)type reuseIdentifier:(NSString *)reuseIdentifier{
-    EM_ChatMessageCell * cell = [[EM_ChatMessageCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier type:type];
-    return cell;
-}
-
-- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier type:(MessageBodyType)type{
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier message:(EM_ChatMessageModel *)message{
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
+        _message = message;
         _nameLabel = [[UILabel alloc]init];
         _nameLabel.textColor = [UIColor blackColor];
         [self.contentView addSubview:_nameLabel];
@@ -155,39 +70,11 @@ NSString * const REUSE_IDENTIFIER_UNKNOWN = @"REUSE_IDENTIFIER_UNKNOWN";
         _timeLabel.textColor = [UIColor blackColor];
         [self.contentView addSubview:_timeLabel];
         
-        switch (type) {
-            case eMessageBodyType_Text:{
-                _bubbleView = [[EM_ChatMessageTextBubble alloc]init];
-            }
-                break;
-            case eMessageBodyType_Image:{
-                _bubbleView = [[EM_ChatMessageImageBubble alloc]init];
-            }
-                break;
-            case eMessageBodyType_Video:{
-                _bubbleView = [[EM_ChatMessageVideoBubble alloc]init];
-            }
-                break;
-            case eMessageBodyType_Location:{
-                _bubbleView = [[EM_ChatMessageLocationBubble alloc]init];
-            }
-                break;
-            case eMessageBodyType_Voice:{
-                _bubbleView = [[EM_ChatMessageVoiceBubble alloc]init];
-            }
-                break;
-            case eMessageBodyType_File:{
-                _bubbleView = [[EM_ChatMessageFileBubble alloc]init];
-            }
-                break;
-            default:{
-                _bubbleView = [[EM_ChatMessageBaseBubble alloc]init];
-            }
-                break;
-        }
+        _bubbleView = [[EM_ChatMessageBubble alloc]initWithMessage:message];
+        
         _bubbleView.layer.cornerRadius = 6;
         _bubbleView.layer.masksToBounds = YES;
-        _bubbleView.delegate = self;
+        _bubbleView.bodyView.delegate = self;
         [self.contentView addSubview:_bubbleView];
         
         _indicatorView = [[UIActivityIndicatorView alloc]init];
@@ -233,13 +120,8 @@ NSString * const REUSE_IDENTIFIER_UNKNOWN = @"REUSE_IDENTIFIER_UNKNOWN";
     CGFloat _bubbleViewOriginY = _nameLabel.frame.origin.y + _nameLabel.frame.size.height;
     
     
-    CGSize bubbleSize = _message.bubbleSize;
-    if (_message.extendShow) {
-        if (_message.extendSize.width > bubbleSize.width) {
-            bubbleSize.width = _message.extendSize.width;
-        }
-        bubbleSize.height += (_message.extendSize.height + CELL_BUBBLE_EXTEND_PADDING);
-    }
+    CGSize bubbleSize = [_message bubbleSizeFormMaxWidth:[EM_ChatMessageCell cellBubbleMaxWidth:
+                                                          size.width]];
     
     CGFloat centerX;
     
@@ -277,7 +159,7 @@ NSString * const REUSE_IDENTIFIER_UNKNOWN = @"REUSE_IDENTIFIER_UNKNOWN";
     _message = message;
     
     _nameLabel.text = message.nickName;
-    _nameLabel.hidden = message.messageType == eMessageTypeChat;
+    _nameLabel.hidden = message.message.messageType == eMessageTypeChat;
     
     if (_message.avatar) {
         [_avatarView sd_setImageWithURL:[[NSURL alloc] initWithString:_message.avatar] forState:UIControlStateNormal];
@@ -291,8 +173,8 @@ NSString * const REUSE_IDENTIFIER_UNKNOWN = @"REUSE_IDENTIFIER_UNKNOWN";
         _bubbleView.backgroundColor = [UIColor colorWithHEX:@"#B5B5B5" alpha:1.0];
     }
     
-    _timeLabel.text = [EM_ChatDataUtils stringMessageData:message.timestamp / 1000];
-    _timeLabel.hidden = !_message.showTime;
+    _timeLabel.text = [EM_ChatDataUtils stringMessageData:message.message.timestamp / 1000];
+    _timeLabel.hidden = !_message.extend.showTime;
     
     if (_message.message.deliveryState == eMessageDeliveryState_Failure
         || _message.message.deliveryState == eMessageDeliveryState_Delivered) {
@@ -315,16 +197,6 @@ NSString * const REUSE_IDENTIFIER_UNKNOWN = @"REUSE_IDENTIFIER_UNKNOWN";
         }
         _indicatorView.hidden = NO;
     }
-    
-    _bubbleView.message = _message;
-}
-
-- (void)setExtendView:(UIView *)extendView{
-    _bubbleView.extendView = extendView;
-}
-
-- (UIView *)extendView{
-    return _bubbleView.extendView;
 }
 
 #pragma mark - EM_ChatMessageBubbleDelegate

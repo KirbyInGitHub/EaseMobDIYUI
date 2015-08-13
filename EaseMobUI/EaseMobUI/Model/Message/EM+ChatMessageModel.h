@@ -7,36 +7,74 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "EM+ChatMessageData.h"
+#import "EM+ChatMessageExtend.h"
+#import "EaseMob.h"
 
-extern NSString * const kExtendUserData;
-extern NSString * const kExtendMessageData;
+#define CELL_BUBBLE_PADDING (2)
 
 @interface EM_ChatMessageModel : NSObject
+/**
+ *  气泡边框padding
+ */
+@property (nonatomic, assign) CGFloat bubblePadding;
+/**
+ *  文字大小
+ */
+@property (nonatomic, assign) CGFloat textFont;
 
-@property (nonatomic,copy,readonly) NSString *messageId;
-@property (nonatomic,copy,readonly) NSString *chatter;
-@property (nonatomic,copy) NSString *nickName;
-@property (nonatomic, strong) NSString *avatar;
-@property (nonatomic,assign) BOOL sender;
-@property (nonatomic,assign,readonly) long timestamp;
-@property (nonatomic,assign,readonly) MessageBodyType bodyType;
-@property (nonatomic,assign,readonly) EMMessageType messageType;
+/**
+ *  消息发送者的昵称
+ */
+@property (nonatomic, copy) NSString *nickName;
+/**
+ *  消息发送者的头像地址
+ */
+@property (nonatomic, copy) NSString *avatar;
+/**
+ *  是否是自己发送
+ */
+@property (nonatomic, assign) BOOL sender;
+@property (nonatomic, strong) EMMessage *message;
+@property (nonatomic, strong, readonly) id<IEMMessageBody> messageBody;
+@property (nonatomic, strong, readonly) EM_ChatMessageExtend *extend;
 
-@property (nonatomic,strong) EMMessage *message;
-@property (nonatomic,strong,readonly) id<IEMMessageBody> messageBody;
-@property (nonatomic, strong, readonly) NSDictionary *extend;
-@property (nonatomic,strong,readonly) EM_ChatMessageData *messageData;
-
-//额外的字段
-@property (nonatomic,assign) CGSize bubbleSize;
-@property (nonatomic,assign) BOOL showTime;
-@property (nonatomic, assign) CGSize extendSize;
-@property (nonatomic, assign) BOOL extendShow;
-@property (nonatomic, assign) CGFloat progress;
-
+/**
+ *  Cell的reuseIdentifier
+ */
+@property (nonatomic, copy, readonly) NSString *reuseIdentifier;
+/**
+ *  显示内容View的Class
+ */
+@property (nonatomic, assign, readonly) Class classForBuildView;
 
 - (instancetype)initWithMessage:(EMMessage *)message;
 - (BOOL)updateExt;
+
+/**
+ *  根据消息内容获取气泡的大小
+ *
+ *  @param maxWidth 气泡最大宽度
+ *
+ *  @return 气泡大小,由bodySize 和 extendSize共同决定
+ */
+- (CGSize)bubbleSizeFormMaxWidth:(CGFloat)maxWidth;
+
+/**
+ *  根据消息内容获取显示消息内容的body大小
+ *
+ *  @param maxWidth 最大body宽度 = 气泡最大宽度 - bubblePadding * 2
+ *
+ *  @return body大小,由messageBody决定
+ */
+- (CGSize)bodySizeFormMaxWidth:(CGFloat)maxWidth;
+
+/**
+ *  根据自定义扩展获取显示扩展的大小
+ *
+ *  @param maxWidth 最大扩展宽度 = 气泡最大宽度 - bubblePadding * 2
+ *
+ *  @return 扩展宽度,由extend决定
+ */
+- (CGSize)extendSizeFormMaxWidth:(CGFloat)maxWidth;
 
 @end

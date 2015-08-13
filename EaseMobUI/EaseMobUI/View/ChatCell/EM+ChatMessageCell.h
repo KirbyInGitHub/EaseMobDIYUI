@@ -7,8 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "EM+ChatMessageBaseBubble.h"
 #import "EM+ChatMessageModel.h"
+
+#import "EM+ChatMessageBubble.h"
+#import "EM+ChatMessageBubble.h"
+#import "EM+ChatMessageBaseBody.h"
 
 #define CELL_AVATAR_SIZE (50)
 #define CELL_PADDING (15)
@@ -16,15 +19,6 @@
 #define CELL_NAME_HEIGHT (20)
 #define CELL_INDICATOR_SIZE (20)
 #define CELL_BUBBLE_TAIL_WIDTH  (12)
-
-extern NSString * const REUSE_IDENTIFIER_TEXT;
-extern NSString * const REUSE_IDENTIFIER_IMAGE;
-extern NSString * const REUSE_IDENTIFIER_VIDEO;
-extern NSString * const REUSE_IDENTIFIER_LOCATION;
-extern NSString * const REUSE_IDENTIFIER_VOICE;
-extern NSString * const REUSE_IDENTIFIER_IFILE;
-extern NSString * const REUSE_IDENTIFIER_COMMAND;
-extern NSString * const REUSE_IDENTIFIER_UNKNOWN;
 
 @protocol EM_ChatMessageCellDelegate;
 
@@ -34,18 +28,14 @@ extern NSString * const REUSE_IDENTIFIER_UNKNOWN;
 @property (nonatomic,strong) NSIndexPath *indexPath;
 @property (nonatomic,weak) id<EM_ChatMessageCellDelegate> delegate;
 
-@property (nonatomic,strong,readonly) EM_ChatMessageBaseBubble *bubbleView;
+@property (nonatomic,strong,readonly) EM_ChatMessageBubble *bubbleView;
 @property (nonatomic, strong) UIView *extendView;
 
 + (CGFloat)cellBubbleMaxWidth:(CGFloat)cellMaxWidth;
 
-+ (NSString *)cellIdFormMessageBodyType:(MessageBodyType)type;
-
 + (CGFloat)heightForCellWithMessage:(EM_ChatMessageModel *)message maxWidth:(CGFloat)max indexPath:(NSIndexPath *)indexPath;
 
-+ (EM_ChatMessageCell *)cellFromMessageBodyType:(MessageBodyType)type reuseIdentifier:(NSString *)reuseIdentifier;
-
-- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier type:(MessageBodyType)type;
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier message:(EM_ChatMessageModel *)message;
 
 @end
 

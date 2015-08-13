@@ -79,9 +79,6 @@ EMDeviceManagerDelegate>
     dispatch_queue_t _messageQueue;
 }
 
-NSString * const kExtendUserInfo = @"kkExtendUserInfo";
-NSString * const kExtendUserExt = @"kkExtendUserExt";
-
 - (instancetype)initWithChatter:(NSString *)chatter conversationType:(EMConversationType)conversationType config:(EM_ChatUIConfig *)config{
     self = [super init];
     if (self) {
@@ -220,25 +217,11 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
     if (_delegate && [_delegate respondsToSelector:@selector(extendForMessageBody:)]) {
         userInfo = [_delegate extendForMessageBody:messageBody];
     }
+
     
-    NSMutableDictionary *extend = [[NSMutableDictionary alloc]init];
-    
-    NSMutableDictionary *userData = [[NSMutableDictionary alloc]init];
-    if (userInfo) {
-        [userData setObject:userInfo forKey:kExtendUserInfo];
-    }
-    if (userExt) {
-        [userData setObject:userExt forKey:kExtendUserExt];
-    }
-    if (userData.count > 0) {
-        [extend setObject:userData forKey:kExtendUserData];
-    }
-    
-    [extend setObject:[[[EM_ChatMessageData alloc] init] getContentValues] forKey:kExtendMessageData];
     
     EMMessage *retureMsg = [[EMMessage alloc]initWithReceiver:_conversation.chatter bodies:[NSArray arrayWithObject:messageBody]];
     retureMsg.messageType = _messageType;
-    retureMsg.ext = extend;
     
     [self sendMessage:retureMsg];
 }
@@ -246,13 +229,13 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
 - (EM_ChatMessageModel*)formatMessage:(EMMessage *)message{
     EM_ChatMessageModel *messageModel = [[EM_ChatMessageModel alloc]initWithMessage:message];
     NSString *loginChatter = [[EaseMob sharedInstance].chatManager loginInfo][kSDKUsername];
-    messageModel.sender = [messageModel.chatter isEqualToString:loginChatter];
+    messageModel.sender = [messageModel.message.from isEqualToString:loginChatter];
     if (_delegate) {
         if ([_delegate respondsToSelector:@selector(nickNameWithChatter:)]) {
-            messageModel.nickName = [_delegate nickNameWithChatter:messageModel.chatter];
+            messageModel.nickName = [_delegate nickNameWithChatter:messageModel.message.from];
         }
         if ([_delegate respondsToSelector:@selector(avatarWithChatter:)]) {
-            messageModel.avatar = [_delegate avatarWithChatter:messageModel.chatter];
+            messageModel.avatar = [_delegate avatarWithChatter:messageModel.message.from];
         }
     }
     
@@ -263,7 +246,7 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
     EM_ChatMessageModel *messageModel = [self formatMessage:message];
     if (_dataSource.count > 0) {
         EM_ChatMessageModel *preMessage = _dataSource[_dataSource.count - 1];
-        messageModel.showTime = preMessage.timestamp - messageModel.timestamp >= 1000 * 60 * 5;
+        messageModel.extend.showTime = preMessage.message.timestamp - messageModel.message.timestamp >= 1000 * 60 * 5;
     }
     [self continuousMessage:messageModel];
     
@@ -279,9 +262,9 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
 
 //连续播放语音、图片
 - (void)continuousMessage:(EM_ChatMessageModel *)message{
-    if (message.bodyType == eMessageBodyType_Image) {
+    if (message.messageBody.messageBodyType == eMessageBodyType_Image) {
         [_imageDataArray addObject:message];
-    }else if (message.bodyType == eMessageBodyType_Voice){
+    }else if (message.messageBody.messageBodyType == eMessageBodyType_Voice){
         [_voiceDataArray addObject:message];
     }
 }
@@ -305,7 +288,6 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
 
 - (void)reloadMessage:(EMMessage *)message progress:(CGFloat)progress{
     EM_ChatMessageModel *messageModel = [self formatMessage:message];
-    messageModel.progress = progress;
     NSInteger index = [_dataSource indexOfObject:messageModel];
     if (index < 0 || index >= _dataSource.count){
         return;
@@ -326,7 +308,7 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
     long long timestamp = ([NSDate date].timeIntervalSince1970 + 1) * 1000;
     if (_dataSource.count > 0) {
         EM_ChatMessageModel *message = [_dataSource firstObject];
-        timestamp = message.timestamp;
+        timestamp = message.message.timestamp;
     }
     
     dispatch_async(_messageQueue,^{
@@ -338,13 +320,13 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
                 if (i == messages.count - 1) {
                     if (_dataSource.count > 0) {
                         EM_ChatMessageModel *nextMessage = _dataSource[0];
-                        messageModel.showTime = nextMessage.timestamp - messageModel.timestamp >= 1000 * 60 * 5;
+                        messageModel.extend.showTime = nextMessage.message.timestamp - messageModel.message.timestamp >= 1000 * 60 * 5;
                     }else{
-                        messageModel.showTime = [NSDate date].timeIntervalSince1970 * 1000 - messageModel.timestamp >= 1000 * 60 * 5;
+                        messageModel.extend.showTime = [NSDate date].timeIntervalSince1970 * 1000 - messageModel.message.timestamp >= 1000 * 60 * 5;
                     }
                 }else{
                     EM_ChatMessageModel *nextMessage = messages[i + 1];
-                    messageModel.showTime = nextMessage.timestamp - messageModel.timestamp >= 1000 * 60 * 5;
+                    messageModel.extend.showTime = nextMessage.message.timestamp - messageModel.message.timestamp >= 1000 * 60 * 5;
                 }
                 
                 [self continuousMessage:messageModel];
@@ -518,8 +500,8 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
         }
     }else if ([handleAction isEqualToString:HANDLE_ACTION_VOICE]){
         [EM_ChatMessageManager defaultManager].delegate = self;
-        if (messageModel.messageData.checking) {
-            messageModel.messageData.checking = NO;
+        if (messageModel.extend.checking) {
+            messageModel.extend.checking = NO;
             [[EM_ChatMessageManager defaultManager] stopVoice];
             [_chatTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
         }else{
@@ -543,11 +525,11 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
     }
     
     if (!messageModel.sender
-        && !messageModel.messageData.details
+        && !messageModel.extend.details
         && ![handleAction isEqualToString:HANDLE_ACTION_URL]
         && ![handleAction isEqualToString:HANDLE_ACTION_PHONE]
         && ![handleAction isEqualToString:HANDLE_ACTION_TEXT]){
-        messageModel.messageData.details = YES;
+        messageModel.extend.details = YES;
         [messageModel updateExt];
     }
 }
@@ -606,7 +588,7 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
         }
             break;
         case EM_MENU_ACTION_COLLECT:{
-            message.messageData.collected = !message.messageData.collected;
+            message.extend.collected = !message.extend.collected;
             [message updateExt];
         }
             break;
@@ -625,7 +607,7 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
     }
 
     EM_ChatMessageCell *cell = (EM_ChatMessageCell *)[_chatTableView cellForRowAtIndexPath:indexPath];
-    [_menuController setMenuItems:[cell.bubbleView bubbleMenuItems]];
+    [_menuController setMenuItems:[cell.bubbleView.bodyView bubbleMenuItems]];
     UIView *targetView = cell.bubbleView;
     
     if (_chatToolBarView.inputEditing) {
@@ -670,7 +652,7 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
         [_chatTableView reloadRowsAtIndexPaths:reloadArray withRowAnimation:UITableViewRowAnimationNone];
         EM_ChatMessageModel *messageModel = completionMessage;
         if (!messageModel.sender) {
-            messageModel.messageData.details = YES;
+            messageModel.extend.details = YES;
             [messageModel updateExt];
         }
     }
@@ -801,29 +783,13 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     EM_ChatMessageModel *message = _dataSource[indexPath.row];
-    NSDictionary *extend = message.extend;
+    NSString *cellId = [message reuseIdentifier];
     
-    NSString *extendId = nil;
-    if (message.extendShow && _delegate && [_delegate respondsToSelector:@selector(reuseIdentifierForExtendMessage:)]) {
-        extendId = [_delegate reuseIdentifierForExtendMessage:extend];
-    }
-    NSString *cellId = [EM_ChatMessageCell cellIdFormMessageBodyType:message.bodyType];
-    
-    NSMutableString *identifier = [[NSMutableString alloc]initWithString:cellId];
-    if (extendId) {
-        [identifier appendString:@"_"];
-        [identifier appendString:extendId];
-    }
-    
-    EM_ChatMessageCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+    EM_ChatMessageCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];
     if (!cell) {
-        cell = [EM_ChatMessageCell cellFromMessageBodyType:message.bodyType reuseIdentifier:identifier];
+        cell = [[EM_ChatMessageCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellId message:message];
         cell.backgroundColor = [UIColor clearColor];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    }
-    
-    if (message.extendShow && _delegate && [_delegate respondsToSelector:@selector(viewForExtendMessage:reuseView:)]) {
-        cell.extendView = [_delegate viewForExtendMessage:extend reuseView:cell.extendView];
     }
     
     cell.message = message;
@@ -836,20 +802,8 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
 #pragma mark - UITableViewDelegate
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     EM_ChatMessageModel *message = _dataSource[indexPath.row];
-    NSDictionary *extend = message.extend;
     CGFloat max = tableView.bounds.size.width;
-    
     CGFloat height = [EM_ChatMessageCell heightForCellWithMessage:message maxWidth:max indexPath:indexPath];
-    
-    if (extend && _delegate && [_delegate respondsToSelector:@selector(showForExtendMessage:)]) {
-        message.extendShow = [_delegate showForExtendMessage:extend];
-    }
-    
-    if (message.extendShow && _delegate && [_delegate respondsToSelector:@selector(sizeForExtendMessage:maxWidth:)]) {
-        message.extendSize = [_delegate sizeForExtendMessage:message.extend maxWidth:[EM_ChatMessageCell cellBubbleMaxWidth:max]];
-        height += (message.extendSize.height + CELL_BUBBLE_EXTEND_PADDING);
-    }
-    
     return height;
 }
 
