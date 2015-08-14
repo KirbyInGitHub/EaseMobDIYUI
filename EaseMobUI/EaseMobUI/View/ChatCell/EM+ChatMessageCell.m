@@ -6,22 +6,18 @@
 //  Copyright (c) 2015年 周玉震. All rights reserved.
 //
 
-#import "UIColor+Hex.h"
-
 #import "EM+ChatMessageCell.h"
-#import "EM+ChatDataUtils.h"
 #import "UIButton+WebCache.h"
-#import "EM+ChatUIConfig.h"
+#import "EM+ChatMessageBubble.h"
+#import "EM+ChatMessageUIConfig.h"
+#import "EM+ChatDataUtils.h"
 #import "EM+ChatResourcesUtils.h"
 
-#import "EM+ChatMessageTextBubble.h"
-#import "EM+ChatMessageImageBubble.h"
-#import "EM+ChatMessageVideoBubble.h"
-#import "EM+ChatMessageLocationBubble.h"
-#import "EM+ChatMessageVoiceBubble.h"
-#import "EM+ChatMessageFileBubble.h"
+#import "EM+ChatMessageModel.h"
 
-@interface EM_ChatMessageCell()<EM_ChatMessageBubbleDelegate>
+#import "UIColor+Hex.h"
+
+@interface EM_ChatMessageCell()<EM_ChatMessageContentDelegate>
 
 @property (nonatomic,strong) UILabel *nameLabel;
 @property (nonatomic,strong) UIButton *avatarView;
@@ -34,117 +30,37 @@
 
 @implementation EM_ChatMessageCell
 
-NSString * const REUSE_IDENTIFIER_TEXT = @"REUSE_IDENTIFIER_TEXT";
-NSString * const REUSE_IDENTIFIER_IMAGE = @"REUSE_IDENTIFIER_IMAGE";
-NSString * const REUSE_IDENTIFIER_VIDEO = @"REUSE_IDENTIFIER_VIDEO";
-NSString * const REUSE_IDENTIFIER_LOCATION = @"REUSE_IDENTIFIER_LOCATION";
-NSString * const REUSE_IDENTIFIER_VOICE = @"REUSE_IDENTIFIER_VOICE";
-NSString * const REUSE_IDENTIFIER_IFILE = @"REUSE_IDENTIFIER_IFILE";
-NSString * const REUSE_IDENTIFIER_COMMAND = @"REUSE_IDENTIFIER_COMMAND";
-NSString * const REUSE_IDENTIFIER_UNKNOWN = @"REUSE_IDENTIFIER_UNKNOWN";
-
-+ (CGFloat)cellBubbleMaxWidth:(CGFloat)cellMaxWidth{
-    CGFloat maxBubbleWidth = cellMaxWidth - CELL_PADDING * 2 - CELL_AVATAR_SIZE * 2 - CELL_BUBBLE_TAIL_WIDTH;
++ (CGFloat)cellBubbleMaxWidth:(CGFloat)cellMaxWidth config:(EM_ChatMessageUIConfig *)config{
+    CGFloat maxBubbleWidth = cellMaxWidth - config.messagePadding * 2 - config.messageAvatarSize * 2 - config.messageTailWithd;
     return maxBubbleWidth;
 }
 
-+ (NSString *)cellIdFormMessageBodyType:(MessageBodyType)type{
-    NSString *cellId = REUSE_IDENTIFIER_UNKNOWN;
-    switch (type) {
-        case eMessageBodyType_Text:{
-            cellId = @"TEXT_REUSE_IDENTIFIER";
-        }
-            break;
-        case eMessageBodyType_Image:{
-            cellId = @"IMAGE_REUSE_IDENTIFIER";
-        }
-            break;
-        case eMessageBodyType_Video:{
-            cellId = @"VIDEO_REUSE_IDENTIFIER";
-        }
-            break;
-        case eMessageBodyType_Location:{
-            cellId = @"LOCATION_REUSE_IDENTIFIER";
-        }
-            break;
-        case eMessageBodyType_Voice:{
-            cellId = @"VOICE_REUSE_IDENTIFIER";
-        }
-            break;
-        case eMessageBodyType_File:{
-            cellId = @"FILE_REUSE_IDENTIFIER";
-        }
-            break;
-        case eMessageBodyType_Command:{
-            cellId = @"COMMAND_REUSE_IDENTIFIER";
-        }
-            break;
++ (CGFloat)heightForCellWithMessage:(EM_ChatMessageModel *)message  maxWidth:(CGFloat)max indexPath:(NSIndexPath *)indexPath config:(EM_ChatMessageUIConfig *)config{
+    CGFloat contentHeight = config.messageTopPadding;
+    if (message.extend.showTime) {
+        contentHeight += config.messageTimeLabelHeight;
     }
-    return cellId;
-}
-
-+ (CGFloat)heightForCellWithMessage:(EM_ChatMessageModel *)message  maxWidth:(CGFloat)max indexPath:(NSIndexPath *)indexPath{
-    id<IEMMessageBody> messageBody = message.messageBody;
+    CGFloat maxBubbleWidth = [EM_ChatMessageCell cellBubbleMaxWidth:max config:config];
+    CGSize bubbleSize = [message bubbleSizeFormMaxWidth:maxBubbleWidth config:config];
     
-    CGFloat contentHeight = CELL_PADDING * 2;
-    if (message.showTime) {
-        contentHeight += CELL_TIME_HEIGHT;
-    }
-    CGFloat maxBubbleWidth = [EM_ChatMessageCell cellBubbleMaxWidth:max];
-    
-    switch (message.bodyType) {
-        case eMessageBodyType_Text:{
-            message.bubbleSize = [EM_ChatMessageTextBubble sizeForBubbleWithMessage:messageBody maxWithd:maxBubbleWidth];
-        }
-            break;
-        case eMessageBodyType_Image:{
-            message.bubbleSize = [EM_ChatMessageImageBubble sizeForBubbleWithMessage:messageBody maxWithd:maxBubbleWidth];
-        }
-            break;
-        case eMessageBodyType_Video:{
-            message.bubbleSize = [EM_ChatMessageVideoBubble sizeForBubbleWithMessage:messageBody maxWithd:maxBubbleWidth];
-        }
-            break;
-        case eMessageBodyType_Location:{
-            message.bubbleSize = [EM_ChatMessageLocationBubble sizeForBubbleWithMessage:messageBody maxWithd:maxBubbleWidth];
-        }
-            break;
-        case eMessageBodyType_Voice:{
-            message.bubbleSize = [EM_ChatMessageVoiceBubble sizeForBubbleWithMessage:messageBody maxWithd:maxBubbleWidth];
-        }
-            break;
-        case eMessageBodyType_File:{
-            message.bubbleSize = [EM_ChatMessageFileBubble sizeForBubbleWithMessage:messageBody maxWithd:maxBubbleWidth];
-        }
-            break;
-        default:
-            break;
-    }
-    
-    CGFloat height = message.bubbleSize.height + ( message.messageType == eMessageTypeChat ? 0 : CELL_NAME_HEIGHT);
-    if (height > CELL_AVATAR_SIZE) {
+    CGFloat height = bubbleSize.height + ( message.message.messageType == eMessageTypeChat ? 0 : config.messageNameLabelHeight);
+    if (height > config.messageAvatarSize) {
         contentHeight += height;
     }else{
-        contentHeight += CELL_AVATAR_SIZE;
+        contentHeight += config.messageAvatarSize;
     }
     
     return contentHeight;
 }
 
-+ (EM_ChatMessageCell *)cellFromMessageBodyType:(MessageBodyType)type reuseIdentifier:(NSString *)reuseIdentifier{
-    EM_ChatMessageCell * cell = [[EM_ChatMessageCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier type:type];
-    return cell;
-}
-
-- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier type:(MessageBodyType)type{
-    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+- (instancetype)initWithBodyClass:(Class)bodyClass extendClass:(Class)extendClass reuseIdentifier:(NSString *)reuseIdentifier{
+    self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
     if (self) {
         _nameLabel = [[UILabel alloc]init];
         _nameLabel.textColor = [UIColor blackColor];
         [self.contentView addSubview:_nameLabel];
         
         _avatarView = [[UIButton alloc]init];
-        _avatarView.layer.cornerRadius = CELL_AVATAR_SIZE / 2;
         _avatarView.layer.masksToBounds = YES;
         [_avatarView setImage:[EM_ChatResourcesUtils cellImageWithName:@"avatar_default"] forState:UIControlStateNormal];
         [_avatarView addTarget:self action:@selector(avatarClicked:) forControlEvents:UIControlEventTouchUpInside];
@@ -155,44 +71,16 @@ NSString * const REUSE_IDENTIFIER_UNKNOWN = @"REUSE_IDENTIFIER_UNKNOWN";
         _timeLabel.textColor = [UIColor blackColor];
         [self.contentView addSubview:_timeLabel];
         
-        switch (type) {
-            case eMessageBodyType_Text:{
-                _bubbleView = [[EM_ChatMessageTextBubble alloc]init];
-            }
-                break;
-            case eMessageBodyType_Image:{
-                _bubbleView = [[EM_ChatMessageImageBubble alloc]init];
-            }
-                break;
-            case eMessageBodyType_Video:{
-                _bubbleView = [[EM_ChatMessageVideoBubble alloc]init];
-            }
-                break;
-            case eMessageBodyType_Location:{
-                _bubbleView = [[EM_ChatMessageLocationBubble alloc]init];
-            }
-                break;
-            case eMessageBodyType_Voice:{
-                _bubbleView = [[EM_ChatMessageVoiceBubble alloc]init];
-            }
-                break;
-            case eMessageBodyType_File:{
-                _bubbleView = [[EM_ChatMessageFileBubble alloc]init];
-            }
-                break;
-            default:{
-                _bubbleView = [[EM_ChatMessageBaseBubble alloc]init];
-            }
-                break;
-        }
+        _bubbleView = [[EM_ChatMessageBubble alloc]initWithBodyClass:bodyClass withExtendClass:extendClass];
         _bubbleView.layer.cornerRadius = 6;
         _bubbleView.layer.masksToBounds = YES;
-        _bubbleView.delegate = self;
+        _bubbleView.bodyView.delegate = self;
+        _bubbleView.extendView.delegate = self;
         [self.contentView addSubview:_bubbleView];
         
         _indicatorView = [[UIActivityIndicatorView alloc]init];
         _indicatorView.hidden = YES;
-        _indicatorView.bounds = CGRectMake(0, 0, CELL_INDICATOR_SIZE, CELL_INDICATOR_SIZE);
+        _indicatorView.bounds = CGRectMake(0, 0, self.config.messageIndicatorSize, self.config.messageIndicatorSize);
         [self.contentView addSubview:_indicatorView];
         
         _retryButton = [[UIButton alloc]init];
@@ -216,42 +104,37 @@ NSString * const REUSE_IDENTIFIER_UNKNOWN = @"REUSE_IDENTIFIER_UNKNOWN";
     CGSize size = self.frame.size;
     
     if (_timeLabel.hidden) {
-        _timeLabel.frame = CGRectMake(size.width / 4, CELL_PADDING, size.width / 2, 0);
+        _timeLabel.frame = CGRectMake(size.width / 4, self.config.messageTopPadding, size.width / 2, 0);
     }else{
-        _timeLabel.frame = CGRectMake(size.width / 4, CELL_PADDING, size.width / 2, CELL_TIME_HEIGHT);
+        _timeLabel.frame = CGRectMake(size.width / 4, self.config.messageTopPadding, size.width / 2, self.config.messageTimeLabelHeight);
     }
     
     CGFloat _originY = _timeLabel.frame.origin.y + _timeLabel.frame.size.height;
     
-    CGFloat _nameLabelOriginX = CELL_AVATAR_SIZE + CELL_PADDING;
+    CGFloat _nameLabelOriginX = self.config.messageAvatarSize + self.config.messageTopPadding;
     if (_nameLabel.hidden) {
         _nameLabel.frame = CGRectMake(_nameLabelOriginX, _originY, size.width - _nameLabelOriginX * 2, 0);
     }else{
-        _nameLabel.frame = CGRectMake(_nameLabelOriginX, _originY, size.width - _nameLabelOriginX * 2, CELL_NAME_HEIGHT);
+        _nameLabel.frame = CGRectMake(_nameLabelOriginX, _originY, size.width - _nameLabelOriginX * 2, self.config.messageNameLabelHeight);
     }
 
     CGFloat _bubbleViewOriginY = _nameLabel.frame.origin.y + _nameLabel.frame.size.height;
     
     
-    CGSize bubbleSize = _message.bubbleSize;
-    if (_message.extendShow) {
-        if (_message.extendSize.width > bubbleSize.width) {
-            bubbleSize.width = _message.extendSize.width;
-        }
-        bubbleSize.height += (_message.extendSize.height + CELL_BUBBLE_EXTEND_PADDING);
-    }
+    CGSize bubbleSize = [_message bubbleSizeFormMaxWidth:[EM_ChatMessageCell cellBubbleMaxWidth:
+                                                          size.width config:self.config] config:self.config];
     
     CGFloat centerX;
     
     if(_message.sender){
-        _avatarView.frame = CGRectMake(size.width - CELL_AVATAR_SIZE - CELL_PADDING, _originY, CELL_AVATAR_SIZE, CELL_AVATAR_SIZE);
-        _bubbleView.frame = CGRectMake(_avatarView.frame.origin.x - bubbleSize.width - CELL_BUBBLE_TAIL_WIDTH, _bubbleViewOriginY, bubbleSize.width, bubbleSize.height);
+        _avatarView.frame = CGRectMake(size.width - self.config.messageAvatarSize - self.config.messagePadding, _originY, self.config.messageAvatarSize, self.config.messageAvatarSize);
+        _bubbleView.frame = CGRectMake(_avatarView.frame.origin.x - bubbleSize.width - self.config.messageTailWithd, _bubbleViewOriginY, bubbleSize.width, bubbleSize.height);
         
-        centerX = _bubbleView.frame.origin.x - CELL_INDICATOR_SIZE / 2 * 3;
+        centerX = _bubbleView.frame.origin.x - self.config.messageIndicatorSize / 2 * 3;
     }else{
-        _avatarView.frame = CGRectMake(CELL_PADDING, _originY, CELL_AVATAR_SIZE, CELL_AVATAR_SIZE);
-        _bubbleView.frame = CGRectMake(_avatarView.frame.origin.x + _avatarView.frame.size.width + CELL_BUBBLE_TAIL_WIDTH, _bubbleViewOriginY, bubbleSize.width, bubbleSize.height);
-        centerX = _bubbleView.frame.origin.x + _bubbleView.frame.size.width + CELL_INDICATOR_SIZE / 2 * 3;
+        _avatarView.frame = CGRectMake(self.config.messagePadding, _originY, self.config.messageAvatarSize, self.config.messageAvatarSize);
+        _bubbleView.frame = CGRectMake(_avatarView.frame.origin.x + _avatarView.frame.size.width + self.config.messageTailWithd, _bubbleViewOriginY, bubbleSize.width, bubbleSize.height);
+        centerX = _bubbleView.frame.origin.x + _bubbleView.frame.size.width + self.config.messageIndicatorSize / 2 * 3;
     }
     
     _indicatorView.center = CGPointMake(centerX, _bubbleView.frame.origin.y + _bubbleView.frame.size.height / 2);
@@ -273,11 +156,22 @@ NSString * const REUSE_IDENTIFIER_UNKNOWN = @"REUSE_IDENTIFIER_UNKNOWN";
     }
 }
 
+- (void)setConfig:(EM_ChatMessageUIConfig *)config{
+    _config = config;
+    _bubbleView.config = _config;
+    if (config.avatarStyle == EM_AVATAR_STYLE_CIRCULAR) {
+        _avatarView.layer.cornerRadius = self.config.messageAvatarSize / 2;
+    }else{
+        _avatarView.layer.cornerRadius = 0;
+    }
+    
+}
+
 - (void)setMessage:(EM_ChatMessageModel *)message{
     _message = message;
-    
+
     _nameLabel.text = message.nickName;
-    _nameLabel.hidden = message.messageType == eMessageTypeChat;
+    _nameLabel.hidden = message.message.messageType == eMessageTypeChat;
     
     if (_message.avatar) {
         [_avatarView sd_setImageWithURL:[[NSURL alloc] initWithString:_message.avatar] forState:UIControlStateNormal];
@@ -285,14 +179,15 @@ NSString * const REUSE_IDENTIFIER_UNKNOWN = @"REUSE_IDENTIFIER_UNKNOWN";
     
     if (_message.sender) {
         _nameLabel.textAlignment = NSTextAlignmentRight;
-        _bubbleView.backgroundColor = [UIColor colorWithHEX:@"#EED2EE" alpha:1.0];
+        _bubbleView.backgroundView.backgroundColor = [UIColor colorWithHEX:@"#EED2EE" alpha:1.0];
     }else{
         _nameLabel.textAlignment = NSTextAlignmentLeft;
-        _bubbleView.backgroundColor = [UIColor colorWithHEX:@"#B5B5B5" alpha:1.0];
+        _bubbleView.backgroundView.backgroundColor = [UIColor colorWithHEX:@"#B5B5B5" alpha:1.0];
     }
+    _bubbleView.message = _message;
     
-    _timeLabel.text = [EM_ChatDataUtils stringMessageData:message.timestamp / 1000];
-    _timeLabel.hidden = !_message.showTime;
+    _timeLabel.text = [EM_ChatDataUtils stringMessageData:message.message.timestamp / 1000];
+    _timeLabel.hidden = !_message.extend.showTime;
     
     if (_message.message.deliveryState == eMessageDeliveryState_Failure
         || _message.message.deliveryState == eMessageDeliveryState_Delivered) {
@@ -315,34 +210,24 @@ NSString * const REUSE_IDENTIFIER_UNKNOWN = @"REUSE_IDENTIFIER_UNKNOWN";
         }
         _indicatorView.hidden = NO;
     }
-    
-    _bubbleView.message = _message;
 }
 
-- (void)setExtendView:(UIView *)extendView{
-    _bubbleView.extendView = extendView;
-}
-
-- (UIView *)extendView{
-    return _bubbleView.extendView;
-}
-
-#pragma mark - EM_ChatMessageBubbleDelegate
-- (void)bubbleTapWithUserInfo:(NSDictionary *)userInfo{
-    if (_delegate && [_delegate respondsToSelector:@selector(chatMessageCell:didTapMessageWithUserInfo:indexPath:)]) {
-        [_delegate chatMessageCell:self didTapMessageWithUserInfo:userInfo indexPath:self.indexPath];
+#pragma mark - EM_ChatMessageContentDelegate
+- (void) contentTap:(UIView *)content action:(NSString *)action withUserInfo:(NSDictionary *)userInfo{
+    if (_delegate && [_delegate respondsToSelector:@selector(chatMessageCell:didTapWithUserInfo:indexPath:)]) {
+        [_delegate chatMessageCell:self didTapWithUserInfo:userInfo indexPath:self.indexPath];
     }
 }
 
-- (void)bubbleLongPressWithUserInfo:(NSDictionary *)userInfo{
-    if (_delegate && [_delegate respondsToSelector:@selector(chatMessageCell:didLongPressMessageWithUserInfo:indexPath:)]) {
-        [_delegate chatMessageCell:self didLongPressMessageWithUserInfo:userInfo indexPath:self.indexPath];
+- (void) contentLongPress:(UIView *)content action:(NSString *)action withUserInfo:(NSDictionary *)userInfo{
+    if (_delegate && [_delegate respondsToSelector:@selector(chatMessageCell:didLongPressWithUserInfo:indexPath:)]) {
+        [_delegate chatMessageCell:self didLongPressWithUserInfo:userInfo indexPath:self.indexPath];
     }
 }
 
-- (void)bubbleMenuAction:(EM_MENU_ACTION)action{
-    if (_delegate && [_delegate respondsToSelector:@selector(chatMessageCell:didMenuSelectedWithAction:message:indexPath:)]) {
-        [_delegate chatMessageCell:self didMenuSelectedWithAction:action message:self.message indexPath:self.indexPath];
+- (void) contentMenu:(UIView *)content action:(NSString *)action withUserInfo:(NSDictionary *)userInfo{
+    if (_delegate && [_delegate respondsToSelector:@selector(chatMessageCell:didMenuSelectedWithUserInfo:indexPath:)]) {
+        [_delegate chatMessageCell:self didMenuSelectedWithUserInfo:userInfo indexPath:self.indexPath];
     }
 }
 

@@ -271,8 +271,8 @@
 }
 
 - (BOOL)shouldMessageSend:(NSString *)message{
-    if (_delegate && [_delegate respondsToSelector:@selector(messageToolBar:shouldSeneMessage:)]) {
-        return [_delegate messageToolBar:self shouldSeneMessage:message];
+    if (_delegate && [_delegate respondsToSelector:@selector(messageToolBar:shouldSendMessage:)]) {
+        return [_delegate messageToolBar:self shouldSendMessage:message];
     }
     return YES;
 }
@@ -328,7 +328,7 @@
     
 }
 
-- (void)didRecordEnd:(NSString *)recordName path:recordPath duration:(NSInteger)duration{
+- (void)didRecordEnd:(NSString *)recordName path:(NSString *)recordPath duration:(NSInteger)duration{
     [self.cover removeFromSuperview];
     _inputToolView.avtive = YES;
     if (_delegate && [_delegate respondsToSelector:@selector(messageToolBar:didEndRecord:record:duration:)]) {

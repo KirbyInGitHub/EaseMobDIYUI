@@ -6,24 +6,15 @@
 //  Copyright (c) 2015年 周玉震. All rights reserved.
 //
 
-#import "EM+ChatMessageVoiceBubble.h"
+#import "EM+ChatMessageVoiceBody.h"
 #import "EM+ChatUIConfig.h"
 #import "EM+ChatMessageModel.h"
 #import "EM+ChatResourcesUtils.h"
 
-@implementation EM_ChatMessageVoiceBubble{
+@implementation EM_ChatMessageVoiceBody{
     UIImageView *animationView;
     UILabel *timeLabel;
     UIButton *identifyButton;
-}
-
-+ (CGSize)sizeForBubbleWithMessage:(id)messageBody maxWithd:(CGFloat)max{
-    CGSize superSize = [super sizeForBubbleWithMessage:messageBody maxWithd:max];
-    
-    EMVoiceMessageBody *voiceBody = messageBody;
-    CGSize size = CGSizeMake(voiceBody.duration * 2 + 88, superSize.height + 10);
-    
-    return size;
 }
 
 - (instancetype)init{
@@ -48,7 +39,7 @@
     CGSize size = self.frame.size;
     
     CGSize timeSize = [timeLabel.text sizeWithAttributes:@{NSFontAttributeName:timeLabel.font}];
-    timeSize.height = size.height - self.message.extendSize.height - CELL_BUBBLE_EXTEND_PADDING;
+    timeSize.height = size.height;
     
     if (self.message.sender) {
         timeLabel.frame = CGRectMake(0, 0, timeSize.width, timeSize.height);
@@ -57,17 +48,12 @@
         timeLabel.frame = CGRectMake(size.width - timeSize.width, 0, timeSize.width, timeSize.height);
         animationView.frame = CGRectMake(0, 0, timeSize.height, timeSize.height);
     }
-    
-    if (self.extendView) {
-        self.extendView.center = CGPointMake(size.width / 2, size.height - self.message.extendSize.height / 2);
-    }
-    if (self.extendLine) {
-        self.extendLine.frame = CGRectMake(0, self.extendView.frame.origin.y + CELL_BUBBLE_EXTEND_PADDING, size.width, CELL_BUBBLE_EXTEND_PADDING);
-    }
 }
 
-- (NSString *)handleAction{
-    return HANDLE_ACTION_VOICE;
+- (NSMutableDictionary *)userInfo{
+    NSMutableDictionary *userInfo = [super userInfo];
+    [userInfo setObject:HANDLE_ACTION_VOICE forKey:kHandleActionName];
+    return userInfo;
 }
 
 - (void)setMessage:(EM_ChatMessageModel *)message{
@@ -77,9 +63,9 @@
 
     NSString *time;
     if (voiceBody.duration < 60) {
-        time = [NSString stringWithFormat:@"%ld\"",voiceBody.duration];
+        time = [NSString stringWithFormat:@"%d\"",voiceBody.duration];
     }else{
-        time = [NSString stringWithFormat:@"%ld\'%ld\"",voiceBody.duration / 60,voiceBody.duration % 60];
+        time = [NSString stringWithFormat:@"%d\'%d\"",voiceBody.duration / 60,voiceBody.duration % 60];
     }
     timeLabel.text = time;
     
@@ -98,7 +84,7 @@
                                             ]];
         animationView.image = [EM_ChatResourcesUtils cellImageWithName:@"voice_left_3"];
     }
-    if (self.message.messageData.checking && !animationView.isAnimating) {
+    if (self.message.extend.checking && !animationView.isAnimating) {
         [animationView startAnimating];
     }else{
         [animationView stopAnimating];

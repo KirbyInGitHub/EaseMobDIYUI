@@ -7,17 +7,17 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <MapKit/MapKit.h>
 
 @protocol EM_LocationControllerDelegate <NSObject>
 
--(void)sendLocationLatitude:(double)latitude longitude:(double)longitude andAddress:(NSString *)address;
+-(void)sendLatitude:(double)latitude longitude:(double)longitude andAddress:(NSString *)address;
+
 @end
 
 @interface EM_LocationController : UIViewController
 
 @property (nonatomic, assign) id<EM_LocationControllerDelegate> delegate;
 
-- (instancetype)initWithLocation:(CLLocationCoordinate2D)locationCoordinate;
+- (instancetype)initWithLatitude:(double)latitude longitude:(double)longitude;
 
 @end

@@ -7,6 +7,7 @@
 //
 
 #import "UStylistChatController.h"
+#import "UserCustomExtend.h"
 
 @interface UStylistChatController ()<EM_ChatControllerDelegate>
 
@@ -14,9 +15,15 @@
 
 @implementation UStylistChatController
 
+- (instancetype)initWithChatter:(NSString *)chatter conversationType:(EMConversationType)conversationType config:(EM_ChatUIConfig *)config{
+    self = [super initWithChatter:chatter conversationType:conversationType config:config];
+    if (self) {
+        self.delegate = self;
+    }
+    return self;
+}
 
 - (void)viewDidLoad {
-    self.delegate = self;
     [super viewDidLoad];
     
 }
@@ -28,38 +35,18 @@
 
 #define mark - EM_ChatControllerDelegate
 - (NSString *)nickNameWithChatter:(NSString *)chatter{
-    return nil;
+    return chatter;
 }
 
 - (NSString *)avatarWithChatter:(NSString *)chatter{
     return nil;
 }
 
-- (NSDictionary *)extendForMessageBody:(id<IEMMessageBody>)messageBody{
-    return @{@"extend":@"extend"};
-}
-
-- (BOOL)showForExtendMessage:(NSDictionary *)ext{
-    return YES;
-}
-
-- (NSString *)reuseIdentifierForExtendMessage:(NSDictionary *)ext{
-    return @"extend";
-}
-
-- (CGSize)sizeForExtendMessage:(NSDictionary *)ext maxWidth:(CGFloat)max{
-    return CGSizeMake(100, 30);
-}
-
-- (UIView *)viewForExtendMessage:(NSDictionary *)ext reuseView:(UIView *)view{
-    UILabel *label = (UILabel *)view;
-    if (!label) {
-        label = [[UILabel alloc]init];
-        label.textColor = [UIColor blackColor];
-        label.textAlignment = NSTextAlignmentCenter;
-        label.text = @"extend";
-    }
-    return label;
+- (EM_ChatMessageExtend *)extendForMessage:(id)body messageType:(MessageBodyType)type{
+    EM_ChatMessageExtend *extend = [[UserCustomExtend alloc]init];
+    extend.showBody = NO;
+    extend.showExtend = YES;
+    return extend;
 }
 
 - (void)didActionSelectedWithName:(NSString *)name{

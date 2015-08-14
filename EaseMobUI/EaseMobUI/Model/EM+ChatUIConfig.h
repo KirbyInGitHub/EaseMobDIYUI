@@ -7,20 +7,70 @@
 //
 
 #import <Foundation/Foundation.h>
+@class EM_ChatMessageUIConfig;
 
 #define RES_FONT_DEFAUT (14)
 
 //属性
+/**
+ *  属性名称
+ */
 extern NSString * const kAttributeName;
+
+/**
+ *  标题
+ */
 extern NSString * const kAttributeTitle;
+
+/**
+ *  一般图片
+ */
 extern NSString * const kAttributeNormalImage;
+
+/**
+ *  高亮图片
+ */
 extern NSString * const kAttributeHighlightImage;
+
+/**
+ *  背景色,输入框工具栏按钮无此属性
+ */
 extern NSString * const kAttributeBackgroundColor;
+
+/**
+ *  边框颜色,输入框工具栏按钮无此属性
+ */
 extern NSString * const kAttributeBorderColor;
+
+/**
+ *  边框宽度,输入框工具栏按钮无此属性
+ */
 extern NSString * const kAttributeBorderWidth;
+
+/**
+ *  圆角,输入框工具栏按钮无此属性
+ */
 extern NSString * const kAttributeCornerRadius;
+
+/**
+ *  图标字体,设置此属性后,kAttributeNormalImage和kAttributeHighlightImage会失效
+ */
 extern NSString * const kAttributeFont;
+
+/**
+ *  图标
+ */
 extern NSString * const kAttributeText;
+
+/**
+ *  图标一般颜色
+ */
+extern NSString * const kAttributeNormalColor;
+
+/**
+ *  图标高亮颜色
+ */
+extern NSString * const kAttributeHighlightColor;
 
 //工具栏按钮Name
 extern NSString * const kButtonNameRecord;
@@ -38,13 +88,14 @@ extern NSString * const kActionNameFile;
 
 @interface EM_ChatUIConfig : NSObject
 
-@property (nonatomic,assign) BOOL hiddenOfRecord;
-@property (nonatomic,assign) BOOL hiddenOfEmoji;
+@property (nonatomic, assign) BOOL hiddenOfRecord;
+@property (nonatomic, assign) BOOL hiddenOfEmoji;
+@property (nonatomic, strong) EM_ChatMessageUIConfig *messageConfig;
 
+@property (nonatomic, strong, readonly) NSMutableDictionary *actionDictionary;
+@property (nonatomic, strong, readonly) NSMutableDictionary *toolDictionary;
+@property (nonatomic, strong, readonly) NSMutableArray *keyArray;
 
-@property (nonatomic,strong,readonly) NSMutableDictionary *actionDictionary;
-@property (nonatomic,strong,readonly) NSMutableDictionary *toolDictionary;
-@property (nonatomic,strong,readonly) NSMutableArray *keyArray;
 
 + (instancetype)defaultConfig;
 

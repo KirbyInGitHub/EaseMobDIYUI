@@ -8,6 +8,7 @@
 
 #import "EM+LocationController.h"
 #import "UIViewController+HUD.h"
+#import <MapKit/MapKit.h>
 
 @interface EM_LocationController ()<MKMapViewDelegate,CLLocationManagerDelegate>
 
@@ -31,11 +32,11 @@
     return self;
 }
 
-- (instancetype)initWithLocation:(CLLocationCoordinate2D)locationCoordinate{
+- (instancetype)initWithLatitude:(double)latitude longitude:(double)longitude{
     self = [super init];
     if (self) {
         _isSendLocation = NO;
-        _currentLocationCoordinate = locationCoordinate;
+        _currentLocationCoordinate = CLLocationCoordinate2DMake(latitude, longitude);
     }
     
     return self;
@@ -111,8 +112,8 @@
 }
 
 - (void)sendLocation{
-    if (_delegate && [_delegate respondsToSelector:@selector(sendLocationLatitude:longitude:andAddress:)]) {
-        [_delegate sendLocationLatitude:_currentLocationCoordinate.latitude longitude:_currentLocationCoordinate.longitude andAddress:_addressString];
+    if (_delegate && [_delegate respondsToSelector:@selector(sendLatitude:longitude:andAddress:)]) {
+        [_delegate sendLatitude:_currentLocationCoordinate.latitude longitude:_currentLocationCoordinate.longitude andAddress:_addressString];
     }
     
     [self.navigationController popViewControllerAnimated:YES];

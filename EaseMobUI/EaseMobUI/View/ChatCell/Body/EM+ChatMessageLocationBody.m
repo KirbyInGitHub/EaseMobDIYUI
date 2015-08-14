@@ -6,18 +6,14 @@
 //  Copyright (c) 2015年 周玉震. All rights reserved.
 //
 
-#import "EM+ChatMessageLocationBubble.h"
+#import "EM+ChatMessageLocationBody.h"
 #import "EM+ChatUIConfig.h"
 #import "EM+ChatMessageModel.h"
 #import "EM+ChatResourcesUtils.h"
 
-@implementation EM_ChatMessageLocationBubble{
+@implementation EM_ChatMessageLocationBody{
     UIImageView *mapView;
     UILabel *addressLabel;
-}
-
-+ (CGSize)sizeForBubbleWithMessage:(id)messageBody maxWithd:(CGFloat)max{
-    return  CGSizeMake(max / 4 * 3, max / 4 * 3);
 }
 
 - (instancetype)init{
@@ -40,20 +36,16 @@
     [super layoutSubviews];
     CGSize size = self.frame.size;
     
-    mapView.frame = CGRectMake(0, 0, size.width, size.height - self.message.extendSize.height - CELL_BUBBLE_EXTEND_PADDING);
-    
+    mapView.bounds = self.bounds;
+    mapView.center = CGPointMake(size.width / 2, size.height);
     addressLabel.frame = CGRectMake(mapView.frame.origin.x, mapView.frame.origin.y + (mapView.frame.size.height - 44), mapView.frame.size.width , 44);
-    
-    if (self.extendView) {
-        self.extendView.center = CGPointMake(size.width / 2, size.height - self.message.extendSize.height / 2);
-    }
-    if (self.extendLine) {
-        self.extendLine.frame = CGRectMake(0, self.extendView.frame.origin.y + CELL_BUBBLE_EXTEND_PADDING, size.width, CELL_BUBBLE_EXTEND_PADDING);
-    }
+
 }
 
-- (NSString *)handleAction{
-    return HANDLE_ACTION_LOCATION;
+- (NSMutableDictionary *)userInfo{
+    NSMutableDictionary *userInfo = [super userInfo];
+    [userInfo setObject:HANDLE_ACTION_LOCATION forKey:kHandleActionName];
+    return userInfo;
 }
 
 - (void)setMessage:(EM_ChatMessageModel *)message{

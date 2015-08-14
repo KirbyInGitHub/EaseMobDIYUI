@@ -14,6 +14,8 @@ static EaseMobUIClient *sharedClient;
 
 @interface EaseMobUIClient()
 
+@property (nonatomic, strong) NSMutableArray *classArray;
+
 @end
 
 @implementation EaseMobUIClient
@@ -34,9 +36,13 @@ static EaseMobUIClient *sharedClient;
 - (instancetype)init{
     self = [super init];
     if (self) {
-        
+        _classArray = [[NSMutableArray alloc]init];
     }
     return self;
+}
+
+- (void)registerClassForExtend:(Class)extendClass{
+    [_classArray addObject:extendClass];
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
