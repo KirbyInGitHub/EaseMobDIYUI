@@ -36,25 +36,36 @@
         [_actionButton addTarget:self action:@selector(actionClick:) forControlEvents:UIControlEventTouchUpInside];
         
         UIFont *font = _actionAttribute[kAttributeFont];
+        
         if (font) {
             _actionButton.titleLabel.font = font;
-        }
-        
-        UIImage *normalImage = _actionAttribute[kAttributeNormalImage];
-        if (normalImage) {
-            [_actionButton setImage:normalImage forState:UIControlStateNormal];
-        }
-        
-        UIImage *highlightImage = _actionAttribute[kAttributeHighlightImage];
-        if (highlightImage){
-            [_actionButton setImage:highlightImage forState:UIControlStateHighlighted];
-        }
-        
-        if (!normalImage && !highlightImage) {
+            
             NSString *text = _actionAttribute[kAttributeText];
             [_actionButton setTitle:text forState:UIControlStateNormal];
-            [_actionButton setTitleColor:[UIColor colorWithHexRGB:TEXT_NORMAL_COLOR] forState:UIControlStateNormal];
-            [_actionButton setTitleColor:[UIColor colorWithHexRGB:TEXT_SELECT_COLOR] forState:UIControlStateHighlighted];
+            
+            UIColor *normalColor = _actionAttribute[kAttributeNormalColor];
+            if (normalColor) {
+                [_actionButton setTitleColor:normalColor forState:UIControlStateNormal];
+            }else{
+                [_actionButton setTitleColor:[UIColor colorWithHexRGB:TEXT_NORMAL_COLOR] forState:UIControlStateNormal];
+            }
+            
+            UIColor *highlightColor = _actionAttribute[kAttributeHighlightColor];
+            if (highlightColor) {
+                [_actionButton setTitleColor:highlightColor forState:UIControlStateHighlighted];
+            }else{
+                [_actionButton setTitleColor:[UIColor colorWithHexRGB:TEXT_SELECT_COLOR] forState:UIControlStateHighlighted];
+            }
+        }else{
+            UIImage *normalImage = _actionAttribute[kAttributeNormalImage];
+            if (normalImage) {
+                [_actionButton setImage:normalImage forState:UIControlStateNormal];
+            }
+            
+            UIImage *highlightImage = _actionAttribute[kAttributeHighlightImage];
+            if (highlightImage){
+                [_actionButton setImage:highlightImage forState:UIControlStateHighlighted];
+            }
         }
         
         UIColor *backgroundColor = _actionAttribute[kAttributeBackgroundColor];

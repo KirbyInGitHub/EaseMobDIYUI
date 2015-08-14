@@ -6,8 +6,8 @@
 //  Copyright (c) 2015年 周玉震. All rights reserved.
 //
 
-#import "EM+ChatMessageBaseBody.h"
+#import "EM+ChatMessageBodyView.h"
 
-@interface EM_ChatMessageLocationBody : EM_ChatMessageBaseBody
+@interface EM_ChatMessageLocationBody : EM_ChatMessageBodyView
 
 @end

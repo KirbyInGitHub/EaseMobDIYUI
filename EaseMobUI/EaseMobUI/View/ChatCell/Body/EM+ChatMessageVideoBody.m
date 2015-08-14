@@ -34,8 +34,10 @@
     imageView.center = CGPointMake(size.width / 2, size.height / 2);
 }
 
-- (NSString *)handleAction{
-    return HANDLE_ACTION_VIDEO;
+- (NSMutableDictionary *)userInfo{
+    NSMutableDictionary *userInfo = [super userInfo];
+    [userInfo setObject:HANDLE_ACTION_VIDEO forKey:kHandleActionName];
+    return userInfo;
 }
 
 - (void)setMessage:(EM_ChatMessageModel *)message{

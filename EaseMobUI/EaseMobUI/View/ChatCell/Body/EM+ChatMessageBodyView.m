@@ -6,47 +6,26 @@
 //  Copyright (c) 2015年 周玉震. All rights reserved.
 //
 
-#import "EM+ChatMessageBaseBody.h"
-#import "UIColor+Hex.h"
+#import "EM+ChatMessageBodyView.h"
+
 #import "EM+ChatResourcesUtils.h"
 #import "EM+Common.h"
 
 #import "EM+ChatMessageModel.h"
 
-@implementation EM_ChatMessageBaseBody{
-    UITapGestureRecognizer *tap;
-    UILongPressGestureRecognizer *longPress;
-}
+#import "UIColor+Hex.h"
 
-NSString * const kHandleActionName = @"kHandleActionName";
-NSString * const kHandleActionMessage = @"kHandleActionMessage";
-NSString * const kHandleActionValue = @"kHandleActionValue";
-
-NSString * const HANDLE_ACTION_URL = @"HANDLE_ACTION_URL";
-NSString * const HANDLE_ACTION_PHONE = @"HANDLE_ACTION_PHONE";
-NSString * const HANDLE_ACTION_TEXT = @"HANDLE_ACTION_TEXT";
-NSString * const HANDLE_ACTION_IMAGE = @"HANDLE_ACTION_IMAGE";
-NSString * const HANDLE_ACTION_VOICE = @"HANDLE_ACTION_VOICE";
-NSString * const HANDLE_ACTION_VIDEO = @"HANDLE_ACTION_VIDEO";
-NSString * const HANDLE_ACTION_LOCATION = @"HANDLE_ACTION_LOCATION";
-NSString * const HANDLE_ACTION_FILE = @"HANDLE_ACTION_FILE";
-NSString * const HANDLE_ACTION_UNKNOWN = @"HANDLE_ACTION_UNKNOWN";
+@implementation EM_ChatMessageBodyView
 
 - (instancetype)init{
     self = [super init];
     if (self) {
-        self.needTap = YES;
-        self.needLongPress = YES;
     }
     return self;
 }
 
-- (NSString *)handleAction{
-    return HANDLE_ACTION_UNKNOWN;
-}
-
-- (NSMutableArray *)bubbleMenuItems{
-    NSMutableArray *menuItems = [[NSMutableArray alloc]init];
+- (NSMutableArray *)menuItems{
+    NSMutableArray *menuItems = [super menuItems];
     id<IEMMessageBody> messageBody = self.message.messageBody;
     
     if (messageBody.messageBodyType == eMessageBodyType_Text) {
@@ -92,95 +71,64 @@ NSString * const HANDLE_ACTION_UNKNOWN = @"HANDLE_ACTION_UNKNOWN";
     return menuItems;
 }
 
-- (void)setNeedTap:(BOOL)needTap{
-    _needTap = needTap;
-    if (tap) {
-        [self removeGestureRecognizer:tap];
-    }
-    if (_needTap) {
-        tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(bubbleTap:)];
-        [self addGestureRecognizer:tap];
-        if (longPress) {
-            [tap requireGestureRecognizerToFail:longPress];
-        }
-    }
-}
-
-- (void)setNeedLongPress:(BOOL)needLongPress{
-    _needLongPress = needLongPress;
-    
-    if (longPress) {
-        [self removeGestureRecognizer:longPress];
-    }
-    
-    if (needLongPress) {
-        longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(bubbleLongPress:)];
-        longPress.minimumPressDuration = .5;
-        [self addGestureRecognizer:longPress];
-        if (tap) {
-            [tap requireGestureRecognizerToFail:longPress];
-        }
-    }
-}
-
-- (void)bubbleTap:(UITapGestureRecognizer *)recognizer{
-    if(_delegate){
-        NSDictionary *userInfo = @{kHandleActionName:self.handleAction,kHandleActionMessage:self.message};
-        [_delegate bubbleTapWithUserInfo:userInfo];
-    }
-}
-
-- (void)bubbleLongPress:(UILongPressGestureRecognizer *)recognizer{
-    if (recognizer.state == UIGestureRecognizerStateBegan && _delegate) {
-        NSDictionary *userInfo = @{kHandleActionName:self.handleAction,kHandleActionMessage:self.message};
-        [_delegate bubbleLongPressWithUserInfo:userInfo];
-    }
+- (NSMutableDictionary *)userInfo{
+    NSMutableDictionary *userInfo = [super userInfo];
+    [userInfo setObject:HANDEL_ACTION_BODY forKey:kHandleActionName];
+    return userInfo;
 }
 
 //复制
 - (void)copyEMMessage:(id)sender{
-    if (_delegate) {
-        [_delegate bubbleMenuAction:EM_MENU_ACTION_COPY];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(contentMenu:action:withUserInfo:)]) {
+        NSMutableDictionary *userInfo = [self userInfo];
+        [userInfo setObject:MENU_ACTION_COPY forKey:kHandleActionName];
+        [self.delegate contentMenu:self action:MENU_ACTION_COPY withUserInfo:userInfo];
     }
 }
 
 //添加到表情
 - (void)collectEMMessageFace:(id)sender{
-    if (_delegate) {
-        [_delegate bubbleMenuAction:EM_MENU_ACTION_FACE];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(contentMenu:action:withUserInfo:)]) {
+        NSMutableDictionary *userInfo = [self userInfo];
+        [userInfo setObject:MENU_ACTION_FACE forKey:kHandleActionName];
+        [self.delegate contentMenu:self action:MENU_ACTION_FACE withUserInfo:userInfo];
     }
 }
 
 //下载
 - (void)downloadEMMessageFile:(id)sender{
-    if (_delegate) {
-        [_delegate bubbleMenuAction:EM_MENU_ACTION_DOWNLOAD];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(contentMenu:action:withUserInfo:)]) {
+        NSMutableDictionary *userInfo = [self userInfo];
+        [userInfo setObject:MENU_ACTION_DOWNLOAD forKey:kHandleActionName];
+        [self.delegate contentMenu:self action:MENU_ACTION_DOWNLOAD withUserInfo:userInfo];
     }
 }
 
 //收藏
 - (void)collectEMMessage:(id)sender{
-    if (_delegate) {
-        [_delegate bubbleMenuAction:EM_MENU_ACTION_COLLECT];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(contentMenu:action:withUserInfo:)]) {
+        NSMutableDictionary *userInfo = [self userInfo];
+        [userInfo setObject:MENU_ACTION_COLLECT forKey:kHandleActionName];
+        [self.delegate contentMenu:self action:MENU_ACTION_COLLECT withUserInfo:userInfo];
     }
 }
 
 //转发
 - (void)forwardEMMessage:(id)sender{
-    if (_delegate) {
-        [_delegate bubbleMenuAction:EM_MENU_ACTION_FORWARD];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(contentMenu:action:withUserInfo:)]) {
+        NSMutableDictionary *userInfo = [self userInfo];
+        [userInfo setObject:MENU_ACTION_FORWARD forKey:kHandleActionName];
+        [self.delegate contentMenu:self action:MENU_ACTION_FORWARD withUserInfo:userInfo];
     }
 }
 
 //删除
 - (void)deleteEMMessage:(id)sender{
-    if (_delegate) {
-        [_delegate bubbleMenuAction:EM_MENU_ACTION_DELETE];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(contentMenu:action:withUserInfo:)]) {
+        NSMutableDictionary *userInfo = [self userInfo];
+        [userInfo setObject:MENU_ACTION_DELETE forKey:kHandleActionName];
+        [self.delegate contentMenu:self action:MENU_ACTION_DELETE withUserInfo:userInfo];
     }
-}
-
-- (BOOL)canBecomeFirstResponder{
-    return YES;
 }
 
 - (BOOL)canPerformAction:(SEL)action withSender:(id)sender{
@@ -218,11 +166,6 @@ NSString * const HANDLE_ACTION_UNKNOWN = @"HANDLE_ACTION_UNKNOWN";
         return YES;
     }
     return NO;
-}
-
-
-- (void)setMessage:(EM_ChatMessageModel *)message{
-    _message = message;
 }
 
 @end

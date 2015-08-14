@@ -9,18 +9,9 @@
 #import <Foundation/Foundation.h>
 #import "EM+ChatMessageExtend.h"
 #import "EaseMob.h"
-
-#define CELL_BUBBLE_PADDING (2)
+@class EM_ChatMessageUIConfig;
 
 @interface EM_ChatMessageModel : NSObject
-/**
- *  气泡边框padding
- */
-@property (nonatomic, assign) CGFloat bubblePadding;
-/**
- *  文字大小
- */
-@property (nonatomic, assign) CGFloat textFont;
 
 /**
  *  消息发送者的昵称
@@ -34,7 +25,7 @@
  *  是否是自己发送
  */
 @property (nonatomic, assign) BOOL sender;
-@property (nonatomic, strong) EMMessage *message;
+@property (nonatomic, strong, readonly) EMMessage *message;
 @property (nonatomic, strong, readonly) id<IEMMessageBody> messageBody;
 @property (nonatomic, strong, readonly) EM_ChatMessageExtend *extend;
 
@@ -42,14 +33,17 @@
  *  Cell的reuseIdentifier
  */
 @property (nonatomic, copy, readonly) NSString *reuseIdentifier;
-/**
- *  显示内容View的Class
- */
-@property (nonatomic, assign, readonly) Class classForBuildView;
 
-- (instancetype)initWithMessage:(EMMessage *)message;
++ (instancetype)fromEMMessage:(EMMessage *)message;
++ (instancetype)fromText:(NSString *)text conversation:(EMConversation *)conversation extend:(EM_ChatMessageExtend *)extend;
++ (instancetype)fromImage:(UIImage *)image conversation:(EMConversation *)conversation extend:(EM_ChatMessageExtend *)extend;
++ (instancetype)fromVoice:(NSString *)path name:(NSString *)name duration:(NSInteger)duration conversation:(EMConversation *)conversation extend:(EM_ChatMessageExtend *)extend;
++ (instancetype)fromVideo:(NSString *)path conversation:(EMConversation *)conversation extend:(EM_ChatMessageExtend *)extend;
++ (instancetype)fromLatitude:(double)latitude longitude:(double)longitude address:(NSString *)address conversation:(EMConversation *)conversation extend:(EM_ChatMessageExtend *)extend;
++ (instancetype)fromFile:(NSString *)path name:(NSString *)name conversation:(EMConversation *)conversation extend:(EM_ChatMessageExtend *)extend;
+
 - (BOOL)updateExt;
-
+- (Class)classForBuildView;
 /**
  *  根据消息内容获取气泡的大小
  *
@@ -57,7 +51,7 @@
  *
  *  @return 气泡大小,由bodySize 和 extendSize共同决定
  */
-- (CGSize)bubbleSizeFormMaxWidth:(CGFloat)maxWidth;
+- (CGSize)bubbleSizeFormMaxWidth:(CGFloat)maxWidth config:(EM_ChatMessageUIConfig *)config;
 
 /**
  *  根据消息内容获取显示消息内容的body大小
@@ -66,7 +60,7 @@
  *
  *  @return body大小,由messageBody决定
  */
-- (CGSize)bodySizeFormMaxWidth:(CGFloat)maxWidth;
+- (CGSize)bodySizeFormMaxWidth:(CGFloat)maxWidth config:(EM_ChatMessageUIConfig *)config;
 
 /**
  *  根据自定义扩展获取显示扩展的大小
@@ -75,6 +69,6 @@
  *
  *  @return 扩展宽度,由extend决定
  */
-- (CGSize)extendSizeFormMaxWidth:(CGFloat)maxWidth;
+- (CGSize)extendSizeFormMaxWidth:(CGFloat)maxWidth config:(EM_ChatMessageUIConfig *)config;
 
 @end

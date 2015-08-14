@@ -10,8 +10,18 @@
 
 @implementation EM_ChatMessageExtendView
 
-+ (NSString *)reuseIdentifier{
-    return @"extendReuseIdentifier";
+- (instancetype)init{
+    self = [super init];
+    if (self) {
+        
+    }
+    return self;
+}
+
+- (NSMutableDictionary *)userInfo{
+    NSMutableDictionary *userInfo = [super userInfo];
+    [userInfo setObject:HANDLE_ACTION_EXTEND forKey:kHandleActionName];
+    return userInfo;
 }
 
 @end

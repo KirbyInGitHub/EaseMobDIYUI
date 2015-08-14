@@ -50,8 +50,10 @@
     }
 }
 
-- (NSString *)handleAction{
-    return HANDLE_ACTION_VOICE;
+- (NSMutableDictionary *)userInfo{
+    NSMutableDictionary *userInfo = [super userInfo];
+    [userInfo setObject:HANDLE_ACTION_VOICE forKey:kHandleActionName];
+    return userInfo;
 }
 
 - (void)setMessage:(EM_ChatMessageModel *)message{
@@ -61,9 +63,9 @@
 
     NSString *time;
     if (voiceBody.duration < 60) {
-        time = [NSString stringWithFormat:@"%ld\"",voiceBody.duration];
+        time = [NSString stringWithFormat:@"%d\"",voiceBody.duration];
     }else{
-        time = [NSString stringWithFormat:@"%ld\'%ld\"",voiceBody.duration / 60,voiceBody.duration % 60];
+        time = [NSString stringWithFormat:@"%d\'%d\"",voiceBody.duration / 60,voiceBody.duration % 60];
     }
     timeLabel.text = time;
     

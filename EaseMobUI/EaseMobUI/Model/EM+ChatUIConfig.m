@@ -7,6 +7,7 @@
 //
 
 #import "EM+ChatUIConfig.h"
+#import "EM+ChatMessageUIConfig.h"
 #import "EM+Common.h"
 #import "EM+ChatResourcesUtils.h"
 
@@ -25,8 +26,11 @@ NSString * const kAttributeBackgroundColor = @"kActionBackgroundColor";
 NSString * const kAttributeBorderColor = @"kAttribuBorderColor";
 NSString * const kAttributeBorderWidth = @"kAttribuBorderWidth";
 NSString * const kAttributeCornerRadius = @"kAttribuCornerRadius";
+
 NSString * const kAttributeFont = @"kAttributeFont";
 NSString * const kAttributeText = @"kAttributeText";
+NSString * const kAttributeNormalColor = @"kAttributeNormalColor";
+NSString * const kAttributeHighlightColor = @"kAttributeHighlightColor";
 
 //工具栏按钮
 NSString * const kButtonNameRecord = @"kButtonNameRecord";
@@ -47,6 +51,7 @@ NSString * const kActionNameFile = @"kActionNameFile";
     
     config.hiddenOfRecord = NO;
     config.hiddenOfEmoji = NO;
+    
     //录音按钮
     [config setToolName:kButtonNameRecord attributeName:kAttributeNormalImage attribute:[EM_ChatResourcesUtils toolImageWithName:@"tool_record"]];
     
@@ -84,6 +89,8 @@ NSString * const kActionNameFile = @"kActionNameFile";
     //文件
     [config setActionName:kActionNameFile attributeName:kAttributeTitle attribute:[EM_ChatResourcesUtils stringWithName:@"common.file"]];
     [config setActionName:kActionNameFile attributeName:kAttributeNormalImage attribute:[EM_ChatResourcesUtils actionImageWithName:@"action_file"]];
+    
+    config.messageConfig = [EM_ChatMessageUIConfig defaultConfig];
     
     return config;
 }

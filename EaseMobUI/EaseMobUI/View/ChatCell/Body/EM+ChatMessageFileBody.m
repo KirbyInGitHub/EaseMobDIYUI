@@ -39,8 +39,10 @@
     nameLabel.frame = CGRectMake(0, fileView.frame.origin.y + (fileView.frame.size.height - 30), fileView.frame.size.width, 30);
 }
 
-- (NSString *)handleAction{
-    return HANDLE_ACTION_FILE;
+- (NSMutableDictionary *)userInfo{
+    NSMutableDictionary *userInfo = [super userInfo];
+    [userInfo setObject:HANDLE_ACTION_FILE forKey:kHandleActionName];
+    return userInfo;
 }
 
 - (void)setMessage:(EM_ChatMessageModel *)message{

@@ -9,15 +9,18 @@
 #import <UIKit/UIKit.h>
 
 @class EM_ChatMessageModel;
-@class EM_ChatMessageBaseBody;
-@class EM_ChatMessageExtendView;
+@class EM_ChatMessageContent;
+@class EM_ChatMessageUIConfig;
 
 @interface EM_ChatMessageBubble : UIView
 
-@property (nonatomic, strong, readonly) EM_ChatMessageModel *message;
-@property (nonatomic, strong, readonly) EM_ChatMessageBaseBody *bodyView;
-@property (nonatomic, strong, readonly) EM_ChatMessageExtendView *extendView;
+@property (nonatomic, strong) EM_ChatMessageModel *message;
+@property (nonatomic, strong) EM_ChatMessageUIConfig *config;
 
-- (instancetype)initWithMessage:(EM_ChatMessageModel *)message;
+@property (nonatomic, strong, readonly) EM_ChatMessageContent *bodyView;
+@property (nonatomic, strong, readonly) EM_ChatMessageContent *extendView;
+@property (nonatomic, strong, readonly) UIImageView *backgroundView;
+
+- (instancetype)initWithBodyClass:(Class)bodyClass withExtendClass:(Class)extendClass;
 
 @end

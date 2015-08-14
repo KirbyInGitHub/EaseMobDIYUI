@@ -10,7 +10,4 @@
 
 @interface EM_ChatBaseView : UIView
 
-@property (nonatomic,strong) UIView *backgroundView;
-@property (nonatomic,strong) UIImage *backgroundImage;
-
 @end

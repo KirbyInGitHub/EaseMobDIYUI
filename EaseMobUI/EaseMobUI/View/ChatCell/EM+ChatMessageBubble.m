@@ -7,14 +7,10 @@
 //
 
 #import "EM+ChatMessageBubble.h"
-#import "EM+ChatMessageTextBody.h"
-#import "EM+ChatMessageImageBody.h"
-#import "EM+ChatMessageVideoBody.h"
-#import "EM+ChatMessageLocationBody.h"
-#import "EM+ChatMessageVoiceBody.h"
-#import "EM+ChatMessageFileBody.h"
+#import "EM+ChatMessageBodyView.h"
 #import "EM+ChatMessageExtendView.h"
 #import "EM+ChatMessageModel.h"
+#import "EM+ChatMessageUIConfig.h"
 
 @interface EM_ChatMessageBubble()
 
@@ -22,44 +18,17 @@
 
 @implementation EM_ChatMessageBubble
 
-- (instancetype)initWithMessage:(EM_ChatMessageModel *)message{
+- (instancetype)initWithBodyClass:(Class)bodyClass withExtendClass:(Class)extendClass{
     self = [super init];
     if (self) {
-        _message = message;
+        self.layer.masksToBounds = YES;
+        _backgroundView = [[UIImageView alloc]init];
+        [self addSubview:_backgroundView];
         
-        switch (_message.messageBody.messageBodyType) {
-            case eMessageBodyType_Text:{
-                _bodyView = [[EM_ChatMessageTextBody alloc]init];
-            }
-                break;
-            case eMessageBodyType_Image:{
-                _bodyView = [[EM_ChatMessageImageBody alloc]init];
-            }
-                break;
-            case eMessageBodyType_Video:{
-                _bodyView = [[EM_ChatMessageVideoBody alloc]init];
-            }
-                break;
-            case eMessageBodyType_Location:{
-                _bodyView = [[EM_ChatMessageLocationBody alloc]init];
-            }
-                break;
-            case eMessageBodyType_Voice:{
-                _bodyView = [[EM_ChatMessageVoiceBody alloc]init];
-            }
-                break;
-            case eMessageBodyType_File:{
-                _bodyView = [[EM_ChatMessageFileBody alloc]init];
-            }
-                break;
-            default:
-                break;
-        }
-        _bodyView.message = _message;
-        
-        if (_message.extend.class != [EM_ChatMessageExtendView class]) {
-            _extendView = [[[_message.extend classForExtendView]alloc]init];
-        }
+        _bodyView = [[bodyClass alloc]init];
+        [self addSubview:_bodyView];
+        _extendView = [[extendClass alloc]init];
+        [self addSubview:_extendView];
     }
     return self;
 }
@@ -67,18 +36,43 @@
 - (void)layoutSubviews{
     [super layoutSubviews];
     CGSize size = self.frame.size;
-    CGSize bodySize = [self.message bodySizeFormMaxWidth:size.width - CELL_BUBBLE_PADDING * 2];
-    CGSize extendSize = [self.message extendSizeFormMaxWidth:size.width - CELL_BUBBLE_PADDING * 2];
-    if (self.message.sender) {
-        _bodyView.frame = CGRectMake(size.width - CELL_BUBBLE_PADDING - bodySize.width, CELL_BUBBLE_PADDING, bodySize.width, bodySize.height);
+    _backgroundView.frame = self.bounds;
+    
+    CGSize bodySize = [self.message bodySizeFormMaxWidth:size.width - self.config.bubblePadding * 2 config:self.config];
+    CGSize extendSize = [self.message extendSizeFormMaxWidth:size.width - self.config.bubblePadding * 2 config:self.config];
+    
+    if (self.message.extend.showBody) {
+        if (self.message.sender) {
+            _bodyView.frame = CGRectMake(size.width - self.config.bubblePadding - bodySize.width, self.config.bubblePadding, bodySize.width, bodySize.height);
+        }else{
+            _bodyView.frame = CGRectMake(self.config.bubblePadding, self.config.bubblePadding, bodySize.width, bodySize.height);
+        }
     }else{
-        _bodyView.frame = CGRectMake(CELL_BUBBLE_PADDING, CELL_BUBBLE_PADDING, bodySize.width, bodySize.height);
+        _bodyView.frame = CGRectZero;
     }
     
-    if (_extendView) {
+    if (self.message.extend.showExtend) {
         _extendView.bounds = CGRectMake(0, 0, extendSize.width, extendSize.height);
         _extendView.center = CGPointMake(size.width / 2, _bodyView.frame.origin.y + _bodyView.frame.size.height + 1 + extendSize.height / 2);
+    }else{
+        _extendView.frame = CGRectZero;
     }
+    
+}
+
+- (void)setConfig:(EM_ChatMessageUIConfig *)config{
+    _config = config;
+    _bodyView.config = _config;
+    _extendView.config = _config;
+}
+
+- (void)setMessage:(EM_ChatMessageModel *)message{
+    _message = message;
+    _bodyView.message = _message;
+    _extendView.message = _message;
+    
+    _bodyView.hidden = !_message.extend.showBody;
+    _extendView.hidden = !_message.extend.showExtend;
 }
 
 @end

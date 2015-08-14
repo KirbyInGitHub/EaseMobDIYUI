@@ -12,8 +12,9 @@
 		B90086C51B7091CC003BC694 /* EM_ChatStrings.strings in Resources */ = {isa = PBXBuildFile; fileRef = B90086C31B7091CC003BC694 /* EM_ChatStrings.strings */; };
 		B90086C61B7091CC003BC694 /* EM_Resource.bundle in Resources */ = {isa = PBXBuildFile; fileRef = B90086C41B7091CC003BC694 /* EM_Resource.bundle */; };
 		B90087141B71AC42003BC694 /* EaseMobUIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = B90087131B71AC42003BC694 /* EaseMobUIClient.m */; };
-		B928ACE31B58E22A00F618BE /* EM+ChatMessageBaseBody.m in Sources */ = {isa = PBXBuildFile; fileRef = B928ACE21B58E22A00F618BE /* EM+ChatMessageBaseBody.m */; };
+		B928ACE31B58E22A00F618BE /* EM+ChatMessageBodyView.m in Sources */ = {isa = PBXBuildFile; fileRef = B928ACE21B58E22A00F618BE /* EM+ChatMessageBodyView.m */; };
 		B94E2CF31B623A1400F7BACE /* EM+ChatInputView.m in Sources */ = {isa = PBXBuildFile; fileRef = B94E2CF21B623A1400F7BACE /* EM+ChatInputView.m */; };
+		B95A28F91B7C9A260084D59F /* EM+ChatMessageUIConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = B95A28F81B7C9A260084D59F /* EM+ChatMessageUIConfig.m */; };
 		B95FC56D1B516B2400804333 /* EM+ChatActionButton.m in Sources */ = {isa = PBXBuildFile; fileRef = B95FC56C1B516B2400804333 /* EM+ChatActionButton.m */; };
 		B965FD8D1B535ADB00B5B23B /* EaseMobLoginController.m in Sources */ = {isa = PBXBuildFile; fileRef = B965FD8C1B535ADB00B5B23B /* EaseMobLoginController.m */; };
 		B965FD9B1B535FD000B5B23B /* Emoji.m in Sources */ = {isa = PBXBuildFile; fileRef = B965FD911B535FD000B5B23B /* Emoji.m */; };
@@ -79,6 +80,8 @@
 		B9BF0E081B42889F0003FF67 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B9BF0E071B42889F0003FF67 /* Images.xcassets */; };
 		B9BF0E0B1B42889F0003FF67 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = B9BF0E091B42889F0003FF67 /* LaunchScreen.xib */; };
 		B9BF0E171B42889F0003FF67 /* EaseMobUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = B9BF0E161B42889F0003FF67 /* EaseMobUITests.m */; };
+		B9C0E4A81B7DADD70036C0CB /* UserCustomExtend.m in Sources */ = {isa = PBXBuildFile; fileRef = B9C0E4A71B7DADD70036C0CB /* UserCustomExtend.m */; };
+		B9C0E4AB1B7DAE010036C0CB /* UserCustomExtendView.m in Sources */ = {isa = PBXBuildFile; fileRef = B9C0E4AA1B7DAE010036C0CB /* UserCustomExtendView.m */; };
 		B9C847121B7B92DB00D4D390 /* EM+ChatMessageContent.m in Sources */ = {isa = PBXBuildFile; fileRef = B9C847111B7B92DB00D4D390 /* EM+ChatMessageContent.m */; };
 		B9D1BF751B59167600C0A3D4 /* UIViewController+HUD.m in Sources */ = {isa = PBXBuildFile; fileRef = B9D1BF741B59167600C0A3D4 /* UIViewController+HUD.m */; };
 		B9D1BF9E1B5A4C3900C0A3D4 /* EMAudioPlayerUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = B9D1BF801B5A4C3900C0A3D4 /* EMAudioPlayerUtil.m */; };
@@ -122,10 +125,12 @@
 		B90086C41B7091CC003BC694 /* EM_Resource.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = EM_Resource.bundle; sourceTree = "<group>"; };
 		B90087121B71AC42003BC694 /* EaseMobUIClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EaseMobUIClient.h; sourceTree = "<group>"; };
 		B90087131B71AC42003BC694 /* EaseMobUIClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EaseMobUIClient.m; sourceTree = "<group>"; };
-		B928ACE11B58E22A00F618BE /* EM+ChatMessageBaseBody.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EM+ChatMessageBaseBody.h"; sourceTree = "<group>"; };
-		B928ACE21B58E22A00F618BE /* EM+ChatMessageBaseBody.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "EM+ChatMessageBaseBody.m"; sourceTree = "<group>"; };
+		B928ACE11B58E22A00F618BE /* EM+ChatMessageBodyView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EM+ChatMessageBodyView.h"; sourceTree = "<group>"; };
+		B928ACE21B58E22A00F618BE /* EM+ChatMessageBodyView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "EM+ChatMessageBodyView.m"; sourceTree = "<group>"; };
 		B94E2CF11B623A1400F7BACE /* EM+ChatInputView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EM+ChatInputView.h"; sourceTree = "<group>"; };
 		B94E2CF21B623A1400F7BACE /* EM+ChatInputView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "EM+ChatInputView.m"; sourceTree = "<group>"; };
+		B95A28F71B7C9A260084D59F /* EM+ChatMessageUIConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EM+ChatMessageUIConfig.h"; sourceTree = "<group>"; };
+		B95A28F81B7C9A260084D59F /* EM+ChatMessageUIConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "EM+ChatMessageUIConfig.m"; sourceTree = "<group>"; };
 		B95FC56B1B516B2400804333 /* EM+ChatActionButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EM+ChatActionButton.h"; sourceTree = "<group>"; };
 		B95FC56C1B516B2400804333 /* EM+ChatActionButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "EM+ChatActionButton.m"; sourceTree = "<group>"; };
 		B965FD8B1B535ADB00B5B23B /* EaseMobLoginController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EaseMobLoginController.h; sourceTree = "<group>"; };
@@ -253,6 +258,10 @@
 		B9BF0E101B42889F0003FF67 /* EaseMobUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EaseMobUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B9BF0E151B42889F0003FF67 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B9BF0E161B42889F0003FF67 /* EaseMobUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EaseMobUITests.m; sourceTree = "<group>"; };
+		B9C0E4A61B7DADD70036C0CB /* UserCustomExtend.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserCustomExtend.h; sourceTree = "<group>"; };
+		B9C0E4A71B7DADD70036C0CB /* UserCustomExtend.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserCustomExtend.m; sourceTree = "<group>"; };
+		B9C0E4A91B7DAE010036C0CB /* UserCustomExtendView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserCustomExtendView.h; sourceTree = "<group>"; };
+		B9C0E4AA1B7DAE010036C0CB /* UserCustomExtendView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserCustomExtendView.m; sourceTree = "<group>"; };
 		B9C847101B7B92DB00D4D390 /* EM+ChatMessageContent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EM+ChatMessageContent.h"; sourceTree = "<group>"; };
 		B9C847111B7B92DB00D4D390 /* EM+ChatMessageContent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "EM+ChatMessageContent.m"; sourceTree = "<group>"; };
 		B9D1BF731B59167600C0A3D4 /* UIViewController+HUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+HUD.h"; sourceTree = "<group>"; };
@@ -368,8 +377,8 @@
 		B928ACE01B58E1AA00F618BE /* Body */ = {
 			isa = PBXGroup;
 			children = (
-				B928ACE11B58E22A00F618BE /* EM+ChatMessageBaseBody.h */,
-				B928ACE21B58E22A00F618BE /* EM+ChatMessageBaseBody.m */,
+				B928ACE11B58E22A00F618BE /* EM+ChatMessageBodyView.h */,
+				B928ACE21B58E22A00F618BE /* EM+ChatMessageBodyView.m */,
 				B9D1BFB41B5DF93300C0A3D4 /* EM+ChatMessageTextBody.h */,
 				B9D1BFB51B5DF93300C0A3D4 /* EM+ChatMessageTextBody.m */,
 				B9D1BFB71B5E16FA00C0A3D4 /* EM+ChatMessageImageBody.h */,
@@ -455,6 +464,10 @@
 				B97829F41B43DF6B00D602F0 /* Login */,
 				B97829F11B43DEE200D602F0 /* UStylistChatController.h */,
 				B97829F21B43DEE200D602F0 /* UStylistChatController.m */,
+				B9C0E4A61B7DADD70036C0CB /* UserCustomExtend.h */,
+				B9C0E4A71B7DADD70036C0CB /* UserCustomExtend.m */,
+				B9C0E4A91B7DAE010036C0CB /* UserCustomExtendView.h */,
+				B9C0E4AA1B7DAE010036C0CB /* UserCustomExtendView.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -579,6 +592,8 @@
 				B94E2CD71B60884D00F7BACE /* DB */,
 				B9782A291B46762300D602F0 /* EM+ChatUIConfig.h */,
 				B9782A2A1B46762300D602F0 /* EM+ChatUIConfig.m */,
+				B95A28F71B7C9A260084D59F /* EM+ChatMessageUIConfig.h */,
+				B95A28F81B7C9A260084D59F /* EM+ChatMessageUIConfig.m */,
 				B98CC2531B57D37A002558D2 /* Message */,
 			);
 			path = Model;
@@ -1003,7 +1018,7 @@
 				B9D1BFC51B5E18A200C0A3D4 /* EM+ChatMessageFileBody.m in Sources */,
 				B9D3D0FE1B7AEAF30064CA8F /* EM+ChatMessageBubble.m in Sources */,
 				B97829F31B43DEE200D602F0 /* UStylistChatController.m in Sources */,
-				B928ACE31B58E22A00F618BE /* EM+ChatMessageBaseBody.m in Sources */,
+				B928ACE31B58E22A00F618BE /* EM+ChatMessageBodyView.m in Sources */,
 				B98FC8261B785533008A95FE /* EM+ChatWifiView.m in Sources */,
 				B9C847121B7B92DB00D4D390 /* EM+ChatMessageContent.m in Sources */,
 				B94E2CF31B623A1400F7BACE /* EM+ChatInputView.m in Sources */,
@@ -1024,6 +1039,7 @@
 				B990CA4F1B5F735300BA25B1 /* EM+ChatMessageManager.m in Sources */,
 				B98FC8E61B788233008A95FE /* DDTTYLogger.m in Sources */,
 				B98FC8B51B788216008A95FE /* HTTPDynamicFileResponse.m in Sources */,
+				B9C0E4AB1B7DAE010036C0CB /* UserCustomExtendView.m in Sources */,
 				B965FD9B1B535FD000B5B23B /* Emoji.m in Sources */,
 				B9BF0E001B42889F0003FF67 /* AppDelegate.m in Sources */,
 				B9782A1F1B4667F600D602F0 /* EM+ChatEmojiView.m in Sources */,
@@ -1040,6 +1056,7 @@
 				B97F05561B7465240096B98D /* EM_ChatConversation.m in Sources */,
 				B98FC8B21B788216008A95FE /* MultipartMessageHeaderField.m in Sources */,
 				B98FC8E81B788233008A95FE /* DispatchQueueLogFormatter.m in Sources */,
+				B95A28F91B7C9A260084D59F /* EM+ChatMessageUIConfig.m in Sources */,
 				B98FC8AA1B788216008A95FE /* DDNumber.m in Sources */,
 				B9782A0F1B44E91C00D602F0 /* EM+ChatToolBar.m in Sources */,
 				B9D1BFB21B5DE8E800C0A3D4 /* EM+ChatMessageModel.m in Sources */,
@@ -1056,6 +1073,7 @@
 				B9D3D0FA1B79F4610064CA8F /* EM+ChatMessageExtend.m in Sources */,
 				B98FC8B61B788216008A95FE /* HTTPErrorResponse.m in Sources */,
 				B9782A0C1B43F31F00D602F0 /* EM+ChatController.m in Sources */,
+				B9C0E4A81B7DADD70036C0CB /* UserCustomExtend.m in Sources */,
 				B965FD8D1B535ADB00B5B23B /* EaseMobLoginController.m in Sources */,
 				B98FC8AB1B788216008A95FE /* DDRange.m in Sources */,
 				B9D1BFA31B5A4C3900C0A3D4 /* EMCDDeviceManager+Remind.m in Sources */,
@@ -1195,7 +1213,7 @@
 					"$(PROJECT_DIR)/EaseMobUI/EaseMobUI/Common/Rdparty/VoiceConvert/opencore-amrwb",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "50f0f1d9-80b8-4742-86e4-7e8ef1a7d34e";
+				PROVISIONING_PROFILE = "09a37cb5-5f2a-4c28-8aba-a63878720d4f";
 			};
 			name = Debug;
 		};
@@ -1215,7 +1233,7 @@
 					"$(PROJECT_DIR)/EaseMobUI/EaseMobUI/Common/Rdparty/VoiceConvert/opencore-amrwb",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "50f0f1d9-80b8-4742-86e4-7e8ef1a7d34e";
+				PROVISIONING_PROFILE = "09a37cb5-5f2a-4c28-8aba-a63878720d4f";
 			};
 			name = Release;
 		};

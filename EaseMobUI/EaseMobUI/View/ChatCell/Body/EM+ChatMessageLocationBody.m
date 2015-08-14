@@ -42,8 +42,10 @@
 
 }
 
-- (NSString *)handleAction{
-    return HANDLE_ACTION_LOCATION;
+- (NSMutableDictionary *)userInfo{
+    NSMutableDictionary *userInfo = [super userInfo];
+    [userInfo setObject:HANDLE_ACTION_LOCATION forKey:kHandleActionName];
+    return userInfo;
 }
 
 - (void)setMessage:(EM_ChatMessageModel *)message{

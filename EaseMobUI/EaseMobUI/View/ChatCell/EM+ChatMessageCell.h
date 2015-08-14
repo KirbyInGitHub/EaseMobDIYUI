@@ -6,36 +6,29 @@
 //  Copyright (c) 2015年 周玉震. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-#import "EM+ChatMessageModel.h"
+#import "EM+ChatMessageContent.h"
 
-#import "EM+ChatMessageBubble.h"
-#import "EM+ChatMessageBubble.h"
-#import "EM+ChatMessageBaseBody.h"
-
-#define CELL_AVATAR_SIZE (50)
-#define CELL_PADDING (15)
-#define CELL_TIME_HEIGHT (20)
-#define CELL_NAME_HEIGHT (20)
-#define CELL_INDICATOR_SIZE (20)
-#define CELL_BUBBLE_TAIL_WIDTH  (12)
+@class EM_ChatMessageBubble;
+@class EM_ChatMessageModel;
+@class EM_ChatMessageUIConfig;
 
 @protocol EM_ChatMessageCellDelegate;
 
 @interface EM_ChatMessageCell : UITableViewCell
 
-@property (nonatomic,strong) EM_ChatMessageModel *message;
-@property (nonatomic,strong) NSIndexPath *indexPath;
 @property (nonatomic,weak) id<EM_ChatMessageCellDelegate> delegate;
 
+@property (nonatomic,strong) EM_ChatMessageModel *message;
+@property (nonatomic,strong) NSIndexPath *indexPath;
+@property (nonatomic, strong) EM_ChatMessageUIConfig *config;
+
 @property (nonatomic,strong,readonly) EM_ChatMessageBubble *bubbleView;
-@property (nonatomic, strong) UIView *extendView;
 
-+ (CGFloat)cellBubbleMaxWidth:(CGFloat)cellMaxWidth;
++ (CGFloat)cellBubbleMaxWidth:(CGFloat)cellMaxWidth config:(EM_ChatMessageUIConfig *)config;
 
-+ (CGFloat)heightForCellWithMessage:(EM_ChatMessageModel *)message maxWidth:(CGFloat)max indexPath:(NSIndexPath *)indexPath;
++ (CGFloat)heightForCellWithMessage:(EM_ChatMessageModel *)message maxWidth:(CGFloat)max indexPath:(NSIndexPath *)indexPath config:(EM_ChatMessageUIConfig *)config;
 
-- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier message:(EM_ChatMessageModel *)message;
+- (instancetype)initWithBodyClass:(Class)bodyClass extendClass:(Class)extendClass reuseIdentifier:(NSString *)reuseIdentifier;
 
 @end
 
@@ -45,14 +38,50 @@
 
 @optional
 
+/**
+ *  头像点击
+ *
+ *  @param cell      当前cell
+ *  @param chatter
+ *  @param indexPath
+ */
 - (void)chatMessageCell:(EM_ChatMessageCell *)cell didTapAvatarWithChatter:(NSString *)chatter indexPath:(NSIndexPath *)indexPath;
 
+/**
+ *  重发消息
+ *
+ *  @param cell      当前cell
+ *  @param message
+ *  @param indexPath
+ */
 - (void)chatMessageCell:(EM_ChatMessageCell *)cell resendMessageWithMessage:(EM_ChatMessageModel *)message indexPath:(NSIndexPath *)indexPath;
 
-- (void)chatMessageCell:(EM_ChatMessageCell *)cell didTapMessageWithUserInfo:(NSDictionary *)userInfo indexPath:(NSIndexPath *)indexPath;
+/**
+ *  点击监听
+ *
+ *  @param cell      当前cell
+ *  @param userInfo  数据
+ *  @param indexPath
+ */
+- (void)chatMessageCell:(EM_ChatMessageCell *)cell didTapWithUserInfo:(NSDictionary *)userInfo indexPath:(NSIndexPath *)indexPath;
 
-- (void)chatMessageCell:(EM_ChatMessageCell *)cell didLongPressMessageWithUserInfo:(NSDictionary *)userInfo indexPath:(NSIndexPath *)indexPath;
+/**
+ *  长按监听
+ *
+ *  @param cell      当前cell
+ *  @param userInfo  数据
+ *  @param indexPath
+ */
+- (void)chatMessageCell:(EM_ChatMessageCell *)cell didLongPressWithUserInfo:(NSDictionary *)userInfo indexPath:(NSIndexPath *)indexPath;
 
-- (void)chatMessageCell:(EM_ChatMessageCell *)cell didMenuSelectedWithAction:(EM_MENU_ACTION)action message:(EM_ChatMessageModel *)message indexPath:(NSIndexPath *)indexPath;
+
+/**
+ *  菜单监听
+ *
+ *  @param cell      当前cell
+ *  @param userInfo  数据
+ *  @param indexPath 
+ */
+- (void)chatMessageCell:(EM_ChatMessageCell *)cell didMenuSelectedWithUserInfo:(NSDictionary *)userInfo indexPath:(NSIndexPath *)indexPath;
 
 @end

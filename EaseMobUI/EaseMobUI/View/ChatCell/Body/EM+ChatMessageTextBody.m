@@ -9,10 +9,7 @@
 #import "EM+ChatMessageTextBody.h"
 #import "TTTAttributedLabel.h"
 #import "EM+ChatMessageModel.h"
-
-#define TEXT_LINE_SPACING (1)
-#define TEXT_FONT_SIZE (16)
-#define TEXT_PADDING (2)
+#import "EM+ChatMessageUIConfig.h"
 
 @interface EM_ChatMessageTextBody()<TTTAttributedLabelDelegate>
 
@@ -31,10 +28,10 @@
         textLabel.delegate = self;
         textLabel.enabledTextCheckingTypes = NSTextCheckingTypeLink | NSTextCheckingTypePhoneNumber;
         textLabel.userInteractionEnabled = YES;
+        textLabel.contentMode = UIViewContentModeCenter;
         textLabel.numberOfLines = 0;
-        textLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        textLabel.lineBreakMode = NSLineBreakByCharWrapping;
         textLabel.textColor = [UIColor blackColor];
-        textLabel.font = [UIFont systemFontOfSize:TEXT_FONT_SIZE];
         [self addSubview:textLabel];
     }
     return self;
@@ -48,8 +45,15 @@
     textLabel.center = CGPointMake(size.width / 2, size.height / 2);
 }
 
-- (NSString *)handleAction{
-    return HANDLE_ACTION_TEXT;
+- (NSMutableDictionary *)userInfo{
+    NSMutableDictionary *userInfo = [super userInfo];
+    [userInfo setObject:HANDLE_ACTION_TEXT forKey:kHandleActionName];
+    return userInfo;
+}
+
+- (void)setConfig:(EM_ChatMessageUIConfig *)config{
+    [super setConfig:config];
+    textLabel.font = [UIFont systemFontOfSize:config.bubbleTextFont];
 }
 
 - (void)setMessage:(EM_ChatMessageModel *)message{
@@ -60,29 +64,39 @@
 
 #pragma mark - TTTAttributedLabelDelegate
 - (void)attributedLabel:(TTTAttributedLabel *)label didSelectLinkWithURL:(NSURL *)url{
-    if (self.delegate) {
-        NSDictionary *userInfo = @{kHandleActionName:HANDLE_ACTION_URL,kHandleActionValue:url,kHandleActionMessage:self.message};
-        [self.delegate bubbleTapWithUserInfo:userInfo];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(contentTap:action:withUserInfo:)]) {
+        NSMutableDictionary *userInfo = [self userInfo];
+        [userInfo setObject:HANDLE_ACTION_URL forKey:kHandleActionName];
+        [userInfo setObject:url forKey:kHandleActionValue];
+        [self.delegate contentTap:self action:HANDLE_ACTION_URL withUserInfo:userInfo];
     }
 }
 
 - (void)attributedLabel:(TTTAttributedLabel *)label didSelectLinkWithPhoneNumber:(NSString *)phoneNumber{
-    if (self.delegate) {
-        NSDictionary *userInfo = @{kHandleActionName:HANDLE_ACTION_PHONE,kHandleActionValue:phoneNumber,kHandleActionMessage:self.message};
-        [self.delegate bubbleTapWithUserInfo:userInfo];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(contentTap:action:withUserInfo:)]) {
+        NSMutableDictionary *userInfo = [self userInfo];
+        [userInfo setObject:HANDLE_ACTION_PHONE forKey:kHandleActionName];
+        [userInfo setObject:phoneNumber forKey:kHandleActionValue];
+        [self.delegate contentTap:self action:HANDLE_ACTION_PHONE withUserInfo:userInfo];
     }
 }
 
 - (void)attributedLabel:(TTTAttributedLabel *)label didLongPressLinkWithURL:(NSURL *)url atPoint:(CGPoint)point{
-    if (self.delegate) {
-        NSDictionary *userInfo = @{kHandleActionName:HANDLE_ACTION_URL,kHandleActionValue:url,kHandleActionMessage:self.message};
-        [self.delegate bubbleLongPressWithUserInfo:userInfo];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(contentLongPress:action:withUserInfo:)]) {
+        NSMutableDictionary *userInfo = [self userInfo];
+        [userInfo setObject:HANDLE_ACTION_URL forKey:kHandleActionName];
+        [userInfo setObject:url forKey:kHandleActionValue];
+        [self.delegate contentLongPress:self action:HANDLE_ACTION_URL withUserInfo:userInfo];
     }
 }
 
 - (void)attributedLabel:(TTTAttributedLabel *)label didLongPressLinkWithPhoneNumber:(NSString *)phoneNumber atPoint:(CGPoint)point{
-    NSDictionary *userInfo = @{kHandleActionName:HANDLE_ACTION_PHONE,kHandleActionValue:phoneNumber,kHandleActionMessage:self.message};
-    [self.delegate bubbleLongPressWithUserInfo:userInfo];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(contentLongPress:action:withUserInfo:)]) {
+        NSMutableDictionary *userInfo = [self userInfo];
+        [userInfo setObject:HANDLE_ACTION_PHONE forKey:kHandleActionName];
+        [userInfo setObject:phoneNumber forKey:kHandleActionValue];
+        [self.delegate contentLongPress:self action:HANDLE_ACTION_PHONE withUserInfo:userInfo];
+    }
 }
 
 @end

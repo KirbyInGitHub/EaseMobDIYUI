@@ -8,6 +8,7 @@
 
 #import "EM+ChatMessageExtend.h"
 #import "EM+ChatMessageExtendView.h"
+#import "EM+ChatMessageModel.h"
 
 @interface EM_ChatMessageExtend()
 
@@ -29,22 +30,13 @@ NSString * const kAttributes = @"kAttributes";
 NSString * const kClassName = @"kClassName";
 
 
-+ (instancetype)createNewExtendFromSender{
-    EM_ChatMessageExtend *extend = [[[self class]alloc]init];
-    extend.sender = YES;
-    return extend;
-}
-
-+ (instancetype)createNewExtendFromMessage:(EMMessage *)message{
-    EM_ChatMessageExtend *extend = [self createNewExtendFromSender];
-    extend.sender = NO;
-    return extend;
-}
-
 - (instancetype)init{
     self = [super init];
     if (self) {
         _attributes = [[NSMutableDictionary alloc]init];
+        _showBody = YES;
+        _showExtend = NO;
+        _showTime = NO;
     }
     return self;
 }
@@ -66,6 +58,48 @@ NSString * const kClassName = @"kClassName";
     [values setObject:@(self.collected) forKey:kCollected];
     [values setObject:self.attributes forKey:kAttributes];
     return values;
+}
+
+- (void)setShowBody:(BOOL)showBody{
+    _showBody = showBody;
+    if (self.message) {
+        [self.message.message.ext setValue:@(_showBody) forKey:kShowBody];
+    }
+}
+
+- (void)setShowExtend:(BOOL)showExtend{
+    _showExtend = showExtend;
+    if (self.message) {
+        [self.message.message.ext setValue:@(_showExtend) forKey:kShowExtend];
+    }
+}
+
+- (void)setShowTime:(BOOL)showTime{
+    _showTime = showTime;
+    if (self.message) {
+        [self.message.message.ext setValue:@(_showTime) forKey:kShowTime];
+    }
+}
+
+- (void)setDetails:(BOOL)details{
+    _details = details;
+    if (self.message) {
+        [self.message.message.ext setValue:@(_details) forKey:kDetails];
+    }
+}
+
+- (void)setChecking:(BOOL)checking{
+    _checking = checking;
+    if (self.message) {
+        [self.message.message.ext setValue:@(_checking) forKey:kChecking];
+    }
+}
+
+- (void)setCollected:(BOOL)collected{
+    _collected = collected;
+    if (self.message) {
+        [self.message.message.ext setValue:@(_collected) forKey:kCollected];
+    }
 }
 
 - (void)getFrom:(NSDictionary *)extend{

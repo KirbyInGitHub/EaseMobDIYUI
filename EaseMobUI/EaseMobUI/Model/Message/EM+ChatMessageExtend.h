@@ -8,11 +8,13 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-@class EMMessage;
+@class EM_ChatMessageModel;
 
 extern NSString * const kClassName;
 
 @interface EM_ChatMessageExtend : NSObject
+
+@property (nonatomic, strong) EM_ChatMessageModel *message;
 
 /**
  *  是否显示消息内容,默认YES
@@ -44,9 +46,6 @@ extern NSString * const kClassName;
  */
 @property (nonatomic, assign) BOOL collected;
 
-+ (instancetype)createNewExtendFromSender;
-+ (instancetype)createNewExtendFromMessage:(EMMessage *)message;
-
 //overwrite
 /**
  *  返回扩展内容绑定View的Class,子类必须重写
@@ -58,7 +57,7 @@ extern NSString * const kClassName;
 /**
  *  将扩展序列化成字典,子类必须重写,且必须通过super获取
  *
- *  @return <#return value description#>
+ *  @return
  */
 - (NSMutableDictionary *)getContentValues;
 
