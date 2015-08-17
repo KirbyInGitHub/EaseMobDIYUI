@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import "EaseMobUIClient.h"
+#import "EM+Common.h"
 
 #import "UStylistChatController.h"
 
@@ -24,7 +25,7 @@
 
 #endif
 
-@interface AppDelegate ()
+@interface AppDelegate ()<EM_ChatUserDelegate>
 
 @end
 
@@ -36,23 +37,20 @@
     self.window.backgroundColor = [UIColor whiteColor];
     
     NSString *chatter = nil;
-    NSString *name = nil;
     NSString *user = nil;
     NSString *password = nil;
     
     if (IS_PAD || TARGET_IPHONE_SIMULATOR) {
         chatter = @"yuanjing";
-        name = @"Jing";
         user = @"zhouyuzhen";
         password = @"123456";
     }else{
         chatter = @"zhouyuzhen";
-        name = @"ZhouYuzhen";
         user = @"yuanjing";
         password = @"123456";
     }
     
-    [EaseMobUIClient sharedInstance];
+    [EaseMobUIClient sharedInstance].userDelegate = self;
     
     EM_ChatUIConfig *config = [EM_ChatUIConfig defaultConfig];
     //[config removeActionWithName:kActionNameVoice];
@@ -88,6 +86,16 @@
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     [[EaseMobUIClient sharedInstance] applicationWillTerminate:application];
+}
+
+#pragma mark - EM_ChatUserDelegate
+- (NSString *)nickNameWithChatter:(NSString *)chatter{
+    if ([chatter isEqualToString:@"zhouyuzhen"]) {
+        return @"周玉震";
+    }else if ([chatter isEqualToString:@"yuanjing"]){
+        return @"袁静";
+    }
+    return nil;
 }
 
 @end

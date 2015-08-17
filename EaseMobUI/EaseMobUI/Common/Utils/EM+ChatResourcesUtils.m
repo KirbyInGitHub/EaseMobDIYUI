@@ -37,4 +37,8 @@
     return [self imageWithName:[NSString stringWithFormat:@"EM_Resource.bundle/images/cell/%@",name]];
 }
 
++ (UIImage *)callImageWithName:(NSString *)name{
+    return [self imageWithName:[NSString stringWithFormat:@"EM_Resource.bundle/images/call/%@",name]];
+}
+
 @end

@@ -6,18 +6,30 @@
 //  Copyright (c) 2015年 周玉震. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import "EM+ChatController.h"
+#import <UIKit/UIKit.h>
 
-#import "EM+Common.h"
-#import "EM+ChatUIConfig.h"
+#import "EM+ChatUserDelegate.h"
+
+extern NSString * const kEMNotificationCallActionIn;
+extern NSString * const kEMNotificationCallActionOut;
+extern NSString * const kEMNotificationCallShow;
+extern NSString * const kEMNotificationCallDismiss;
+
+extern NSString * const kEMCallChatter;
+extern NSString * const kEMCallType;
+
+extern NSString * const kEMCallTypeVoice;
+extern NSString * const kEMCallTypeVideo;
 
 @interface EaseMobUIClient : NSObject
 
+@property (nonatomic, weak) id<EM_ChatUserDelegate> userDelegate;
 
 + (instancetype)sharedInstance;
 
-- (void)registerClassForExtend:(Class)extendClass;
++ (BOOL)canRecord;
+
++ (BOOL)canVideo;
 
 - (void)applicationDidEnterBackground:(UIApplication *)application;
 

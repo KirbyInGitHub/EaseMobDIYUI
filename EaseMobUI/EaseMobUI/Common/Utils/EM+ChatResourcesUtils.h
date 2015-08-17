@@ -17,5 +17,6 @@
 + (UIImage *)toolImageWithName:(NSString *)name;
 + (UIImage *)actionImageWithName:(NSString *)name;
 + (UIImage *)cellImageWithName:(NSString *)name;
++ (UIImage *)callImageWithName:(NSString *)name;
 
 @end

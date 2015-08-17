@@ -18,6 +18,7 @@
 
 #import "EM+ChatMessageModel.h"
 #import "EM+ChatMessageManager.h"
+#import "EaseMobUIClient.h"
 
 #import "EM+Common.h"
 #import "EM+ChatResourcesUtils.h"
@@ -94,8 +95,7 @@ EMDeviceManagerDelegate>
         _dataSource = [[NSMutableArray alloc]init];
         _imageDataArray = [[NSMutableArray alloc]init];
         _voiceDataArray = [[NSMutableArray alloc]init];
-        
-        self.title = chatter;
+    
         self.hidesBottomBarWhenPushed = YES;
         self.navigationController.interactivePopGestureRecognizer.enabled = YES;
     }
@@ -104,6 +104,13 @@ EMDeviceManagerDelegate>
 
 - (void)viewDidLoad{
     [super viewDidLoad];
+    
+    id<EM_ChatUserDelegate> userDelegate = [EaseMobUIClient sharedInstance].userDelegate;
+    if (userDelegate && [userDelegate respondsToSelector:@selector(nickNameWithChatter:)]) {
+        self.title = [[EaseMobUIClient sharedInstance].userDelegate nickNameWithChatter:self.conversation.chatter];
+    }else{
+        self.title = self.conversation.chatter;
+    }
     
     _chatTableView = [[EM_ChatTableView alloc]initWithFrame:self.view.frame];
     _chatTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -209,12 +216,13 @@ EMDeviceManagerDelegate>
     EM_ChatMessageModel *messageModel = [EM_ChatMessageModel fromEMMessage:message];
     NSString *loginChatter = [[EaseMob sharedInstance].chatManager loginInfo][kSDKUsername];
     messageModel.sender = [messageModel.message.from isEqualToString:loginChatter];
-    if (_delegate) {
-        if ([_delegate respondsToSelector:@selector(nickNameWithChatter:)]) {
-            messageModel.nickName = [_delegate nickNameWithChatter:messageModel.message.from];
+    id<EM_ChatUserDelegate> userDelegate = [EaseMobUIClient sharedInstance].userDelegate;
+    if (userDelegate) {
+        if ([userDelegate respondsToSelector:@selector(nickNameWithChatter:)]) {
+            messageModel.nickName = [[EaseMobUIClient sharedInstance].userDelegate nickNameWithChatter:messageModel.message.from];
         }
-        if ([_delegate respondsToSelector:@selector(avatarWithChatter:)]) {
-            messageModel.avatar = [_delegate avatarWithChatter:messageModel.message.from];
+        if ([userDelegate respondsToSelector:@selector(avatarWithChatter:)]) {
+            messageModel.avatar = [[EaseMobUIClient sharedInstance].userDelegate avatarWithChatter:messageModel.message.from];
         }
     }
     
@@ -368,9 +376,9 @@ EMDeviceManagerDelegate>
             [self showHint:[EM_ChatResourcesUtils stringWithName:@"error.device.not_support_camera"]];
         }
     }else if ([action isEqualToString:kActionNameVoice]){
-        [self showHint:[EM_ChatResourcesUtils stringWithName:@"error.hint.function_null"]];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kEMNotificationCallActionOut object:nil userInfo:@{kEMCallChatter:self.conversation.chatter,kEMCallType:kEMCallTypeVoice}];
     }else if ([action isEqualToString:kActionNameVideo]){
-        [self showHint:[EM_ChatResourcesUtils stringWithName:@"error.hint.function_null"]];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kEMNotificationCallActionOut object:nil userInfo:@{kEMCallChatter:self.conversation.chatter,kEMCallType:kEMCallTypeVideo}];
     }else if ([action isEqualToString:kActionNameLocation]){
         
         EM_LocationController *locationController = [[EM_LocationController alloc]init];
@@ -378,9 +386,7 @@ EMDeviceManagerDelegate>
         [self.navigationController pushViewController:locationController animated:YES];
     }else if ([action isEqualToString:kActionNameFile]){
         EM_ExplorerController *explorerController = [[EM_ExplorerController alloc]init];
-        [self presentViewController:[[UINavigationController alloc]initWithRootViewController:explorerController] animated:YES completion:^{
-            
-        }];
+        [self presentViewController:[[UINavigationController alloc]initWithRootViewController:explorerController] animated:YES completion:nil];
     }else{
         if (_delegate && [_delegate respondsToSelector:@selector(didActionSelectedWithName:)]){
             [_delegate didActionSelectedWithName:action];

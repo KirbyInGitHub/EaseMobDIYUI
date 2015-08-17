@@ -39,24 +39,6 @@
 @optional
 
 /**
- *  根据用户名获取昵称
- *
- *  @param chatter 用户名
- *
- *  @return 昵称
- */
-- (NSString *)nickNameWithChatter:(NSString *)chatter;
-
-/**
- *  根据用户名获取头像网络地址
- *
- *  @param chatter 用户名
- *
- *  @return 头像网络地址
- */
-- (NSString *)avatarWithChatter:(NSString *)chatter;
-
-/**
  *  为要发送的消息添加扩展
  *
  *  @param body 消息内容

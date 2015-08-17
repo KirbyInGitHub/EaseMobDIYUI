@@ -38,6 +38,18 @@ record.will_audition = "松开试听";
 record.normal_record = "按住说话";
 record.will_record = "准备中...";
 
+call.in = "%@\n\n正在呼叫您...";
+call.out = "%@\n\n正在等待接听...";
+call.ongoing = "%@\n\n正在通话\n%@";
+call.end = "%@\n\n通话结束\n%@";
+call.hangup = "%@\n\n对方已挂断";
+call.reject = "%@\n\n对方已拒绝";
+call.interrupt = "%@\n\n您已挂断";
+call.offline = "%@\n\n对方不在线,请稍后再拨";
+call.no_response = "%@\n\n对方未接听,请稍后再拨";
+call.busy = "%@\n\n对方正忙,请稍后再拨";
+call.no_answer = "%@\n\n您未接听";
+
 file.document = "文档";
 file.video = "视频";
 file.image = "相册";
@@ -54,3 +66,5 @@ error.record.too_short = "录音时间太短";
 error.record.failure = "录音失败";
 
 error.hint.function_null = "功能未实现";
+error.hint.vioce = "无法开始实时语音";
+error.hint.video = "无法喀什实时视频";
