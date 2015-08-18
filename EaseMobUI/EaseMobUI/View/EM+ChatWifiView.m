@@ -8,6 +8,7 @@
 
 #import "EM+ChatWifiView.h"
 #import "HTTPServer.h"
+#import "EM+ChatExplorerConnection.h"
 
 #include <ifaddrs.h>
 #include <arpa/inet.h>
@@ -72,6 +73,7 @@
         [_httpServer setPort:8080];
         [_httpServer setName:@"EaseMobUI"];
         [_httpServer setDocumentRoot:webPath];
+        [_httpServer setConnectionClass:[EM_ChatExplorerConnection class]];
         [_httpServer start:nil];
         
         serveAddressLabel.text = [NSString stringWithFormat:@"http://%@:%d",[self deviceIPAdress],_httpServer.port];

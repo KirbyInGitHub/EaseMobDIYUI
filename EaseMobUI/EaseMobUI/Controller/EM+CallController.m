@@ -84,6 +84,7 @@
     [self.view addSubview:_backgroundView];
     
     if (self.callType == EMChatCallTypeVideo) {
+        [UIApplication sharedApplication].idleTimerDisabled = YES;
         _oppositeView = [[OpenGLView20 alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
         _oppositeView.backgroundColor = [UIColor clearColor];
         _oppositeView.sessionPreset = AVCaptureSessionPreset640x480;
@@ -223,6 +224,7 @@
 }
 
 - (void)dealloc{
+    [UIApplication sharedApplication].idleTimerDisabled = NO;
     [self timerInvalidate];
     if (_ringPlayer) {
         [_ringPlayer stop];

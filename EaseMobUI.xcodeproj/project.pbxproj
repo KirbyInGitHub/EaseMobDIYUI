@@ -22,6 +22,7 @@
 		B965FD9D1B535FD000B5B23B /* EmojiMapSymbols.m in Sources */ = {isa = PBXBuildFile; fileRef = B965FD951B535FD000B5B23B /* EmojiMapSymbols.m */; };
 		B965FD9E1B535FD000B5B23B /* EmojiPictographs.m in Sources */ = {isa = PBXBuildFile; fileRef = B965FD971B535FD000B5B23B /* EmojiPictographs.m */; };
 		B965FD9F1B535FD000B5B23B /* EmojiTransport.m in Sources */ = {isa = PBXBuildFile; fileRef = B965FD991B535FD000B5B23B /* EmojiTransport.m */; };
+		B96A55E41B82CEA900ABBE1E /* EM+ChatExplorerConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = B96A55E31B82CEA900ABBE1E /* EM+ChatExplorerConnection.m */; };
 		B97829F31B43DEE200D602F0 /* UStylistChatController.m in Sources */ = {isa = PBXBuildFile; fileRef = B97829F21B43DEE200D602F0 /* UStylistChatController.m */; };
 		B9782A051B43F05F00D602F0 /* UIColor+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = B9782A041B43F05F00D602F0 /* UIColor+Hex.m */; };
 		B9782A0C1B43F31F00D602F0 /* EM+ChatController.m in Sources */ = {isa = PBXBuildFile; fileRef = B9782A0B1B43F31F00D602F0 /* EM+ChatController.m */; };
@@ -146,6 +147,8 @@
 		B965FD971B535FD000B5B23B /* EmojiPictographs.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EmojiPictographs.m; sourceTree = "<group>"; };
 		B965FD981B535FD000B5B23B /* EmojiTransport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmojiTransport.h; sourceTree = "<group>"; };
 		B965FD991B535FD000B5B23B /* EmojiTransport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EmojiTransport.m; sourceTree = "<group>"; };
+		B96A55E21B82CEA900ABBE1E /* EM+ChatExplorerConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EM+ChatExplorerConnection.h"; sourceTree = "<group>"; };
+		B96A55E31B82CEA900ABBE1E /* EM+ChatExplorerConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "EM+ChatExplorerConnection.m"; sourceTree = "<group>"; };
 		B97829F11B43DEE200D602F0 /* UStylistChatController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UStylistChatController.h; sourceTree = "<group>"; };
 		B97829F21B43DEE200D602F0 /* UStylistChatController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UStylistChatController.m; sourceTree = "<group>"; };
 		B9782A031B43F05F00D602F0 /* UIColor+Hex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+Hex.h"; sourceTree = "<group>"; };
@@ -552,6 +555,8 @@
 				B990CA4D1B5F735300BA25B1 /* EM+ChatMessageManager.h */,
 				B990CA4E1B5F735300BA25B1 /* EM+ChatMessageManager.m */,
 				B9C0E4B51B7DF0C00036C0CB /* EM+ChatUserDelegate.h */,
+				B96A55E21B82CEA900ABBE1E /* EM+ChatExplorerConnection.h */,
+				B96A55E31B82CEA900ABBE1E /* EM+ChatExplorerConnection.m */,
 			);
 			path = Class;
 			sourceTree = "<group>";
@@ -1018,6 +1023,7 @@
 				B9D1BFA11B5A4C3900C0A3D4 /* EMCDDeviceManager+Microphone.m in Sources */,
 				B97F05531B7465230096B98D /* EM_ChatEmoji.m in Sources */,
 				B9D1BF9F1B5A4C3900C0A3D4 /* EMAudioRecorderUtil.m in Sources */,
+				B96A55E41B82CEA900ABBE1E /* EM+ChatExplorerConnection.m in Sources */,
 				B9D3D0F11B79D33D0064CA8F /* EM+ChatMessageExtendView.m in Sources */,
 				B965FD9F1B535FD000B5B23B /* EmojiTransport.m in Sources */,
 				B98FC8AC1B788216008A95FE /* HTTPAuthenticationRequest.m in Sources */,

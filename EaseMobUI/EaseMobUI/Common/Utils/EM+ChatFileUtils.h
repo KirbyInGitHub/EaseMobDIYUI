@@ -56,6 +56,10 @@ extern NSString * const kFolderName;
 extern NSString * const kFolderPath;
 extern NSString * const kFolderContent;
 
+extern NSString * const kFileName;
+extern NSString * const kFilePath;
+extern NSString * const kFileAttributes;
+
 @interface EM_ChatFileUtils : NSObject
 
 + (BOOL)initialize;
@@ -64,6 +68,12 @@ extern NSString * const kFolderContent;
 
 + (NSArray *)folderArray;
 
-+ (NSArray *)contentsOfDirectoryAtPath:(NSString *)path;
++ (NSArray *)filesInfoAtPath:(NSString *)path;
+
++ (long long)fileSizeAtPath:(NSString *)path;
+
++ (NSString *)stringFileSizeAtPath:(NSString *)path;
+
++ (NSString *)stringFileSize:(long long)fileSize;
 
 @end
