@@ -10,7 +10,7 @@
 
 
 typedef void (^AlertDismissBlcok)();
-typedef void (^AlertSelectedBlcok)(id sender);
+typedef void (^AlertShowCompletedBlcok)();
 
 typedef NS_ENUM(NSUInteger, UAlertPosition) {
     UAlertPosition_Top = 0,
@@ -40,6 +40,6 @@ typedef NS_ENUM(NSUInteger, UAlertPosition) {
 
 - (void)setAlertDismissBlcok:(AlertDismissBlcok)block;
 
-- (void)setAlertSelectedBlcok:(AlertSelectedBlcok)block;
+- (void)setAlertShowCompletedBlcok:(AlertShowCompletedBlcok)block;
 
 @end

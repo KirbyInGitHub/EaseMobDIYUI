@@ -17,8 +17,8 @@
 //    
 //}mydateState;
 
-@interface EM_ChatDataUtils : NSObject
+@interface EM_ChatDateUtils : NSObject
 
-+ (NSString *)stringMessageData:(int64_t)ndate;
++ (NSString *)stringMessageDate:(int64_t)ndate;
 
 @end

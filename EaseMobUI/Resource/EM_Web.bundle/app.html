@@ -1,7 +1,6 @@
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-    <title>%title%</title>
+    <title></title>
     <link href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
     <link href="//cdn.bootcss.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="css/AdminLTE.min.css">
@@ -28,28 +27,28 @@
                 <div class="nav-tabs-custom">
                     <ul class="nav nav-tabs pull-right" id="file-panel">
                         <li class="active">
-                            <a href="#image" data-toggle="tab">图片</a>
-                            <input type="hidden" value="image">
+                        	<a href="#image" data-toggle="tab">图片</a>
+                        	<input type="hidden" value="image">
                         </li>
                         <li>
-                            <a href="#doc" data-toggle="tab">文档</a>
-                            <input type="hidden" value="doc">
+                        	<a href="#doc" data-toggle="tab">文档</a>
+                        	<input type="hidden" value="doc">
                         </li>
                         <li>
-                            <a href="#video" data-toggle="tab">视频</a>
-                            <input type="hidden" value="video">
+                        	<a href="#video" data-toggle="tab">视频</a>
+                        	<input type="hidden" value="video">
                         </li>
                         <li>
-                            <a href="#audio" data-toggle="tab">音频</a>
-                            <input type="hidden" value="audio">
+                        	<a href="#audio" data-toggle="tab">音频</a>
+                        	<input type="hidden" value="audio">
                         </li>
                         <li>
-                            <a href="#other" data-toggle="tab">其他</a>
-                            <input type="hidden" value="other">
+                        	<a href="#other" data-toggle="tab">其他</a>
+                        	<input type="hidden" value="other">
                         </li>
                     </ul>
                     <div class="tab-content">
-                        <div class="tab-pane active" id="image">
+                    	<div class="tab-pane active" id="image">
                             <table class="table table-hover">
                                 <tr>
                                     <th>文件名</th>
@@ -66,7 +65,18 @@
                                     <th>大小</th>
                                     <th>操作</th>
                                 </tr>
-                                %text%
+                                <tr>
+                                    <td>hello.txt</td>
+                                    <td>12kb</td>
+                                    <td>
+                                        <a href="" download>
+                                        	<i class="fa fa-cloud-download"></i>
+                                        </a>
+                                        <a href="javascript:;">
+                                        	<i class="fa fa-trash-o" data="hello.txt"></i>
+                                        </a>
+                                    </td>
+                                </tr>
                             </table>
                         </div>
                         <div class="tab-pane" id="video">
@@ -76,28 +86,21 @@
                                     <th>大小</th>
                                     <th>操作</th>
                                 </tr>
-                                %video%
+                                <tr>
+                                    <td>hello.txt</td>
+                                    <td>12kb</td>
+                                    <td>
+                                        <i class="fa fa-cloud-download"></i>
+                                        <i class="fa fa-trash-o"></i>
+                                    </td>
+                                </tr>
                             </table>
                         </div>
                         <div class="tab-pane" id="audio">
-                            <table class="table table-hover">
-                                <tr>
-                                    <th>文件名</th>
-                                    <th>大小</th>
-                                    <th>操作</th>
-                                </tr>
-                                %audio%
-                            </table>
+
                         </div>
                         <div class="tab-pane" id="other">
-                            <table class="table table-hover">
-                                <tr>
-                                    <th>文件名</th>
-                                    <th>大小</th>
-                                    <th>操作</th>
-                                </tr>
-                                %other%
-                            </table>
+
                         </div>
                     </div>
                 </div>

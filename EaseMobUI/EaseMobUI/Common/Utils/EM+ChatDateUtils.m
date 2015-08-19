@@ -6,11 +6,11 @@
 //  Copyright (c) 2015年 yjing. All rights reserved.
 //
 
-#import "EM+ChatDataUtils.h"
+#import "EM+ChatDateUtils.h"
 
-@implementation EM_ChatDataUtils
+@implementation EM_ChatDateUtils
 
-+ (NSString *)stringMessageData:(int64_t)ndate
++ (NSString *)stringMessageDate:(int64_t)ndate
 {
     NSString * mydateStr;
     //当前时间

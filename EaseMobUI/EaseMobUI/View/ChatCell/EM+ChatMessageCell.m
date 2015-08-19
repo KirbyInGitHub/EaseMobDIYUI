@@ -10,7 +10,7 @@
 #import "UIButton+WebCache.h"
 #import "EM+ChatMessageBubble.h"
 #import "EM+ChatMessageUIConfig.h"
-#import "EM+ChatDataUtils.h"
+#import "EM+ChatDateUtils.h"
 #import "EM+ChatResourcesUtils.h"
 
 #import "EM+ChatMessageModel.h"
@@ -186,7 +186,7 @@
     }
     _bubbleView.message = _message;
     
-    _timeLabel.text = [EM_ChatDataUtils stringMessageData:message.message.timestamp / 1000];
+    _timeLabel.text = [EM_ChatDateUtils stringMessageDate:message.message.timestamp / 1000];
     _timeLabel.hidden = !_message.extend.showTime;
     
     if (_message.message.deliveryState == eMessageDeliveryState_Failure

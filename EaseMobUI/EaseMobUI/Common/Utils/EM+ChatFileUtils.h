@@ -32,23 +32,23 @@
 #define kChatFileFolderPath     [NSString stringWithFormat:@"%@/%@",kChatFolderPath,kChatFileFolderName]
 
 //文档
-#define kChatFileDocumentFolderName    @"Document"
+#define kChatFileDocumentFolderName    @"text"
 #define kChatFileDocumentFolderPath    [NSString stringWithFormat:@"%@/%@",kChatFileFolderPath,kChatFileDocumentFolderName]
 
 //视频
-#define kChatFileVideoFolderName    @"Video"
+#define kChatFileVideoFolderName    @"video"
 #define kChatFileVideoFolderPath    [NSString stringWithFormat:@"%@/%@",kChatFileFolderPath,kChatFileVideoFolderName]
 
 //图片
-#define kChatFileImageFolderName    @"Image"
+#define kChatFileImageFolderName    @"image"
 #define kChatFileImageFolderPath    [NSString stringWithFormat:@"%@/%@",kChatFileFolderPath,kChatFileImageFolderName]
 
 //音频
-#define kChatFileAudioFolderName    @"Audio"
+#define kChatFileAudioFolderName    @"audio"
 #define kChatFileAudioFolderPath    [NSString stringWithFormat:@"%@/%@",kChatFileFolderPath,kChatFileAudioFolderName]
 
 //其他
-#define kChatFileOtherFolderName    @"Other"
+#define kChatFileOtherFolderName    @"other"
 #define kChatFileOtherFolderPath    [NSString stringWithFormat:@"%@/%@",kChatFileFolderPath,kChatFileOtherFolderName]
 
 extern NSString * const kFolderTitle;
@@ -58,6 +58,7 @@ extern NSString * const kFolderContent;
 
 extern NSString * const kFileName;
 extern NSString * const kFilePath;
+extern NSString * const kFileType;
 extern NSString * const kFileAttributes;
 
 @interface EM_ChatFileUtils : NSObject
@@ -68,7 +69,11 @@ extern NSString * const kFileAttributes;
 
 + (NSArray *)folderArray;
 
++ (NSArray *)fileTypeArray;
+
 + (NSArray *)filesInfoAtPath:(NSString *)path;
+
++ (NSArray *)filesInfoWithType:(NSString *)type;
 
 + (long long)fileSizeAtPath:(NSString *)path;
 

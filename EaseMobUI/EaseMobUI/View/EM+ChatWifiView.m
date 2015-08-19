@@ -7,15 +7,11 @@
 //
 
 #import "EM+ChatWifiView.h"
-#import "HTTPServer.h"
-#import "EM+ChatExplorerConnection.h"
+#import "EM+ChatResourcesUtils.h"
 
-#include <ifaddrs.h>
-#include <arpa/inet.h>
+#define TOP_PADDING (20)
 
 @interface EM_ChatWifiView()
-
-@property (nonatomic, strong) HTTPServer *httpServer;
 
 @end
 
@@ -28,17 +24,17 @@
     UIButton *closeButton;
 }
 
-- (instancetype)init{
+- (instancetype)initWithIPAdress:(NSString *)ipAdress{
     self = [super init];
     if (self) {
         titleLabel = [[UILabel alloc]init];
-        titleLabel.text = @"WIFI服务已开启";
+        titleLabel.text = [EM_ChatResourcesUtils stringWithName:@"wifi.server_title"];
         titleLabel.textColor = [UIColor blackColor];
         [titleLabel sizeToFit];
         [self addSubview:titleLabel];
         
         hintLabel = [[UILabel alloc]init];
-        hintLabel.text = @"上传过程中请勿离开此页或锁屏";
+        hintLabel.text = [EM_ChatResourcesUtils stringWithName:@"wifi.server_warn"];
         hintLabel.textColor = [UIColor blueColor];
         [hintLabel sizeToFit];
         [self addSubview:hintLabel];
@@ -48,7 +44,7 @@
         [self addSubview:iconLabel];
         
         actionHintLabel = [[UILabel alloc]init];
-        actionHintLabel.text = @"在电脑浏览器地址栏中输入";
+        actionHintLabel.text = [EM_ChatResourcesUtils stringWithName:@"wifi.server_hint"];
         actionHintLabel.textColor = [UIColor blackColor];
         [actionHintLabel sizeToFit];
         [self addSubview:actionHintLabel];
@@ -58,25 +54,13 @@
         [self addSubview:serveAddressLabel];
         
         closeButton = [[UIButton alloc]init];
-        [closeButton setTitle:@"关闭" forState:UIControlStateNormal];
+        [closeButton setTitle:[EM_ChatResourcesUtils stringWithName:@"common.close"] forState:UIControlStateNormal];
         [closeButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
         [closeButton addTarget:self action:@selector(close:) forControlEvents:UIControlEventTouchUpInside];
         [closeButton sizeToFit];
         [self addSubview:closeButton];
         
-        NSString *webPath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"EM_Web.bundle"];
-        
-        NSLog(@"webPath - %@",webPath);
-        
-        _httpServer = [[HTTPServer alloc] init];
-        [_httpServer setType:@"_http._tcp."];
-        [_httpServer setPort:8080];
-        [_httpServer setName:@"EaseMobUI"];
-        [_httpServer setDocumentRoot:webPath];
-        [_httpServer setConnectionClass:[EM_ChatExplorerConnection class]];
-        [_httpServer start:nil];
-        
-        serveAddressLabel.text = [NSString stringWithFormat:@"http://%@:%d",[self deviceIPAdress],_httpServer.port];
+        serveAddressLabel.text = ipAdress;
         [serveAddressLabel sizeToFit];
     }
     return self;
@@ -85,7 +69,8 @@
 - (void)layoutSubviews{
     [super layoutSubviews];
     CGSize size = self.frame.size;
-    titleLabel.center = CGPointMake(size.width / 2, titleLabel.bounds.size.height / 2);
+    
+    titleLabel.center = CGPointMake(size.width / 2, TOP_PADDING);
     hintLabel.center = CGPointMake(size.width / 2, titleLabel.frame.origin.y + titleLabel.frame.size.height + hintLabel.frame.size.height / 2);
     iconLabel.center = CGPointMake(size.width / 2, titleLabel.frame.origin.y + titleLabel.bounds.size.height + iconLabel.bounds.size.height / 2);
     
@@ -96,7 +81,7 @@
 }
 
 - (CGFloat)contentHeight{
-    return titleLabel.frame.size.height + hintLabel.frame.size.height + iconLabel.frame.size.height + actionHintLabel.frame.size.height + serveAddressLabel.frame.size.height +  closeButton.frame.size.height;
+    return TOP_PADDING + titleLabel.frame.size.height + hintLabel.frame.size.height + iconLabel.frame.size.height + actionHintLabel.frame.size.height + serveAddressLabel.frame.size.height +  closeButton.frame.size.height;
 }
 
 - (void)completion{
@@ -105,39 +90,10 @@
 
 - (void)dismiss{
     [super dismiss];
-    [_httpServer stop];
 }
 
 - (void)close:(id)sender{
     [self dismiss];
-}
-
-- (NSString *)deviceIPAdress {
-    NSString *address = @"an error occurred when obtaining ip address";
-    struct ifaddrs *interfaces = NULL;
-    struct ifaddrs *temp_addr = NULL;
-    int success = 0;
-    
-    success = getifaddrs(&interfaces);
-    
-    if (success == 0) { // 0 表示获取成功
-        
-        temp_addr = interfaces;
-        while (temp_addr != NULL) {
-            if( temp_addr->ifa_addr->sa_family == AF_INET) {
-                // Check if interface is en0 which is the wifi connection on the iPhone
-                if ([[NSString stringWithUTF8String:temp_addr->ifa_name] isEqualToString:@"en0"]) {
-                    // Get NSString from C String
-                    address = [NSString stringWithUTF8String:inet_ntoa(((struct sockaddr_in *)temp_addr->ifa_addr)->sin_addr)];
-                }
-            }
-            
-            temp_addr = temp_addr->ifa_next;
-        }
-    }
-    
-    freeifaddrs(interfaces);
-    return address;  
 }
 
 @end
