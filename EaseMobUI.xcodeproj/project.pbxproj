@@ -106,6 +106,7 @@
 		B9D3D0F11B79D33D0064CA8F /* EM+ChatMessageExtendView.m in Sources */ = {isa = PBXBuildFile; fileRef = B9D3D0F01B79D33D0064CA8F /* EM+ChatMessageExtendView.m */; };
 		B9D3D0FA1B79F4610064CA8F /* EM+ChatMessageExtend.m in Sources */ = {isa = PBXBuildFile; fileRef = B9D3D0F91B79F4610064CA8F /* EM+ChatMessageExtend.m */; };
 		B9D3D0FE1B7AEAF30064CA8F /* EM+ChatMessageBubble.m in Sources */ = {isa = PBXBuildFile; fileRef = B9D3D0FD1B7AEAF30064CA8F /* EM+ChatMessageBubble.m */; };
+		B9EC4AC81B857BFE008F52BE /* NSString+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = B9EC4AC71B857BFE008F52BE /* NSString+Base64.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -318,6 +319,8 @@
 		B9D3D0F91B79F4610064CA8F /* EM+ChatMessageExtend.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "EM+ChatMessageExtend.m"; sourceTree = "<group>"; };
 		B9D3D0FC1B7AEAF30064CA8F /* EM+ChatMessageBubble.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EM+ChatMessageBubble.h"; sourceTree = "<group>"; };
 		B9D3D0FD1B7AEAF30064CA8F /* EM+ChatMessageBubble.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "EM+ChatMessageBubble.m"; sourceTree = "<group>"; };
+		B9EC4AC61B857BFE008F52BE /* NSString+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Base64.h"; sourceTree = "<group>"; };
+		B9EC4AC71B857BFE008F52BE /* NSString+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Base64.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -582,6 +585,8 @@
 				B9D1BF741B59167600C0A3D4 /* UIViewController+HUD.m */,
 				B9782A031B43F05F00D602F0 /* UIColor+Hex.h */,
 				B9782A041B43F05F00D602F0 /* UIColor+Hex.m */,
+				B9EC4AC61B857BFE008F52BE /* NSString+Base64.h */,
+				B9EC4AC71B857BFE008F52BE /* NSString+Base64.m */,
 			);
 			path = Category;
 			sourceTree = "<group>";
@@ -1080,6 +1085,7 @@
 				B97F05561B7465240096B98D /* EM_ChatConversation.m in Sources */,
 				B98FC8B21B788216008A95FE /* MultipartMessageHeaderField.m in Sources */,
 				B98FC8E81B788233008A95FE /* DispatchQueueLogFormatter.m in Sources */,
+				B9EC4AC81B857BFE008F52BE /* NSString+Base64.m in Sources */,
 				B95A28F91B7C9A260084D59F /* EM+ChatMessageUIConfig.m in Sources */,
 				B98FC8AA1B788216008A95FE /* DDNumber.m in Sources */,
 				B9782A0F1B44E91C00D602F0 /* EM+ChatToolBar.m in Sources */,

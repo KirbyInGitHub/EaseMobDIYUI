@@ -23,7 +23,7 @@ $(function() {
                 }
 
                 up.setOption('headers', {
-                    'filename': files[0].name,
+                    'filename': Base64.encode(files[0].name),
                     'filetype': type
                 });
 
@@ -31,11 +31,11 @@ $(function() {
             },
             UploadProgress: function(up, file) {
 
-                $('#progress').html('正在上传' + file.percent);
+                $('#progress').removeClass('hidden').html('正在上传 ' + file.percent + ' %');
             },
             FileUploaded: function(up, file) {
 
-                $('#progress').hide();
+                $('#progress').addClass('hidden');
 
                 var type = file.type.split('/')[0].toLowerCase();
                 var size = file.size;

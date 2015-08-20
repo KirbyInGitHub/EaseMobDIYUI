@@ -12,6 +12,7 @@
 #import "HTTPDataResponse.h"
 #import "DDNumber.h"
 #import "HTTPLogging.h"
+#import "NSString+Base64.h"
 
 #import "MultipartFormDataParser.h"
 #import "MultipartMessageHeaderField.h"
@@ -136,16 +137,18 @@ NSString * const kEMFIleUploadProgress = @"kEMFIleUploadProgress";
             NSString* indexPagePath = [[config documentRoot] stringByAppendingPathComponent:@"index.html"];
             return [[HTTPDynamicFileResponse alloc] initWithFilePath:indexPagePath forConnection:self separator:@"%" replacementDictionary:replaceData];
         }else if([path hasPrefix:@"/files/"]){
-            NSString *filePath = [NSString stringWithFormat:@"%@/%@",kChatFileFolderPath,[path substringFromIndex:7]];
-            return [[HTTPFileResponse alloc]initWithFilePath:filePath forConnection:self];
+            NSString *filePath = [[path substringFromIndex:7] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            return [[HTTPFileResponse alloc]initWithFilePath:[NSString stringWithFormat:@"%@/%@",kChatFileFolderPath,filePath] forConnection:self];
         }
     }else if([method isEqualToString:@"POST"]){
         if ([path isEqualToString:@"/files"]) {
             NSDictionary *headers = [request allHeaderFields];
             NSString *fileName = [headers objectForKey:@"filename"];
-            if (fileName) {
+            if (fileName && fileName.length > 0) {
+                fileName = [fileName fromBase64WithNative];
                 EM_ChatHttpErrorResponse *response = [self.responseDic objectForKey:fileName];
                 if (response) {
+                    [self.responseDic removeObjectForKey:fileName];
                     return response;
                 }
             }
@@ -156,8 +159,10 @@ NSString * const kEMFIleUploadProgress = @"kEMFIleUploadProgress";
         
     }else if([method isEqualToString:@"DELETE"]){
         if([path hasPrefix:@"/files"]){
+
+            NSString *filePath = [[path substringFromIndex:7] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
             NSError *error;
-            BOOL delete = [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@/%@",kChatFileFolderPath,[path substringFromIndex:7]] error:&error];
+            BOOL delete = [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@/%@",kChatFileFolderPath,filePath] error:&error];
             if (delete && !error) {
                 return [[EM_ChatHttpErrorResponse alloc]initWithErrorCode:200 errorMessage:[EM_ChatResourcesUtils stringWithName:@"wifi.server_file_delete_success"]];
             }else{
@@ -234,7 +239,8 @@ NSString * const kEMFIleUploadProgress = @"kEMFIleUploadProgress";
     if(storeFile) {
         [storeFile writeData:data];
         NSDictionary *headers = [request allHeaderFields];
-        NSString *fileName = [headers objectForKey:@"filename"];
+        MultipartMessageHeaderField* disposition = [header.fields objectForKey:@"Content-Disposition"];
+        NSString *fileName = [[disposition.params objectForKey:@"filename"] lastPathComponent];
         NSString *fileType = [headers objectForKey:@"filetype"];
         
         NSDictionary *userInfo = @{
@@ -251,7 +257,8 @@ NSString * const kEMFIleUploadProgress = @"kEMFIleUploadProgress";
     if (storeFile) {
         [storeFile closeFile];
         NSDictionary *headers = [request allHeaderFields];
-        NSString *fileName = [headers objectForKey:@"filename"];
+        MultipartMessageHeaderField* disposition = [header.fields objectForKey:@"Content-Disposition"];
+        NSString *fileName = [[disposition.params objectForKey:@"filename"] lastPathComponent];
         NSString *fileType = [headers objectForKey:@"filetype"];
         
         [self.responseDic setObject:[[EM_ChatHttpErrorResponse alloc]initWithErrorCode:200 errorMessage:[EM_ChatResourcesUtils stringWithName:@"wifi.server_file_upload_success"]] forKey:fileName];
