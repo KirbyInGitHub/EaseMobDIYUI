@@ -16,6 +16,11 @@ NSString * const kFolderName = @"kFolderName";
 NSString * const kFolderPath = @"kFolderPath";
 NSString * const kFolderContent = @"kFolderContent";
 
+NSString * const kFileName = @"kFileName";
+NSString * const kFilePath = @"kFilePath";
+NSString * const kFileType = @"kFileType";
+NSString * const kFileAttributes = @"kFileAttributes";
+
 + (BOOL)initialize{
     BOOL create = [self createFolderWithPath:kChatFolderPath];
     if (!create) {
@@ -81,42 +86,104 @@ NSString * const kFolderContent = @"kFolderContent";
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         _folderArray = [[NSMutableArray alloc] init];
-        [_folderArray addObject:@{kFolderTitle : [EM_ChatResourcesUtils stringWithName:@"file.document"],
-                                  kFolderName : kChatFileDocumentFolderName,
-                                  kFolderPath : kChatFileDocumentFolderPath,
-                                  kFolderContent : [self contentsOfDirectoryAtPath:kChatFileDocumentFolderPath]}];
+
+        [_folderArray addObject:[[NSMutableDictionary alloc]initWithDictionary:@{
+                                                                                 kFolderTitle : [EM_ChatResourcesUtils stringWithName:@"file.image"],
+                                                                                 kFolderName : kChatFileImageFolderName,
+                                                                                 kFolderPath : kChatFileImageFolderPath,
+                                                                                 kFolderContent : [[NSMutableArray alloc]initWithArray:[[NSFileManager defaultManager] subpathsAtPath:kChatFileImageFolderPath]]
+                                                                                 }]];
         
-        [_folderArray addObject:@{kFolderTitle : [EM_ChatResourcesUtils stringWithName:@"file.video"],
-                                  kFolderName : kChatFileVideoFolderName,
-                                  kFolderPath : kChatFileVideoFolderPath,
-                                  kFolderContent : [self contentsOfDirectoryAtPath:kChatFileVideoFolderPath]}];
+        [_folderArray addObject:[[NSMutableDictionary alloc]initWithDictionary:@{
+                                                                                 kFolderTitle : [EM_ChatResourcesUtils stringWithName:@"file.audio"],
+                                                                                 kFolderName : kChatFileAudioFolderName,
+                                                                                 kFolderPath : kChatFileAudioFolderPath,
+                                                                                 kFolderContent : [[NSMutableArray alloc]initWithArray:[[NSFileManager defaultManager] subpathsAtPath:kChatFileAudioFolderPath]]
+                                                                                 }]];
         
-        [_folderArray addObject:@{kFolderTitle : [EM_ChatResourcesUtils stringWithName:@"file.image"],
-                                  kFolderName : kChatFileImageFolderName,
-                                  kFolderPath : kChatFileImageFolderPath,
-                                  kFolderContent : [self contentsOfDirectoryAtPath:kChatFileImageFolderPath]}];
+        [_folderArray addObject:[[NSMutableDictionary alloc]initWithDictionary:@{
+                                                                                 kFolderTitle : [EM_ChatResourcesUtils stringWithName:@"file.video"],
+                                                                                 kFolderName : kChatFileVideoFolderName,
+                                                                                 kFolderPath : kChatFileVideoFolderPath,
+                                                                                 kFolderContent : [[NSMutableArray alloc]initWithArray:[[NSFileManager defaultManager] subpathsAtPath:kChatFileVideoFolderPath]]
+                                                                                 }]];
         
-        [_folderArray addObject:@{kFolderTitle : [EM_ChatResourcesUtils stringWithName:@"file.audio"],
-                                  kFolderName : kChatFileAudioFolderName,
-                                  kFolderPath : kChatFileAudioFolderPath,
-                                  kFolderContent : [self contentsOfDirectoryAtPath:kChatFileAudioFolderPath]}];
+        [_folderArray addObject:[[NSMutableDictionary alloc]initWithDictionary:@{
+                                                                                 kFolderTitle : [EM_ChatResourcesUtils stringWithName:@"file.document"],
+                                                                                 kFolderName : kChatFileDocumentFolderName,
+                                                                                 kFolderPath : kChatFileDocumentFolderPath,
+                                                                                 kFolderContent : [[NSMutableArray alloc]initWithArray:[[NSFileManager defaultManager] subpathsAtPath:kChatFileDocumentFolderPath]]
+                                                                                 }]];
         
-        [_folderArray addObject:@{kFolderTitle : [EM_ChatResourcesUtils stringWithName:@"file.other"],
-                                  kFolderName : kChatFileOtherFolderName,
-                                  kFolderPath : kChatFileOtherFolderPath,
-                                  kFolderContent : [self contentsOfDirectoryAtPath:kChatFileOtherFolderPath]}];
+        [_folderArray addObject:[[NSMutableDictionary alloc]initWithDictionary:@{
+                                                                                 kFolderTitle : [EM_ChatResourcesUtils stringWithName:@"file.other"],
+                                                                                 kFolderName : kChatFileOtherFolderName,
+                                                                                 kFolderPath : kChatFileOtherFolderPath,
+                                                                                 kFolderContent : [[NSMutableArray alloc]initWithArray:[[NSFileManager defaultManager] subpathsAtPath:kChatFileOtherFolderPath]]
+                                                                                 }]];
     });
     return _folderArray;
 }
 
-+ (NSArray *)contentsOfDirectoryAtPath:(NSString *)path{
-    NSMutableArray *content = [[NSMutableArray alloc]init];
-    NSError *error = nil;
-    NSArray *contentArray = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:&error];
-    if (contentArray && contentArray.count > 0 && !error) {
-        [content addObjectsFromArray:contentArray];
++ (NSArray *)fileTypeArray{
+    return @[kChatFileImageFolderName,kChatFileAudioFolderName,kChatFileVideoFolderName,kChatFileDocumentFolderName,kChatFileOtherFolderName];
+}
+
++ (NSArray *)filesInfoAtPath:(NSString *)path{
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSArray *files = [fileManager subpathsAtPath:path];
+    NSMutableArray *filesInfo = [[NSMutableArray alloc]init];
+    
+    for (NSString *fileName in files) {
+        NSString *filePath = [NSString stringWithFormat:@"%@/%@",path,fileName];
+        NSDictionary *attributes = [fileManager attributesOfItemAtPath:filePath error:nil];
+        NSMutableDictionary *fileInfo = [[NSMutableDictionary alloc]init];
+        [fileInfo setObject:fileName forKey:kFileName];
+        [fileInfo setObject:filePath forKey:kFilePath];
+        [fileInfo setObject:attributes forKey:kFileAttributes];
+        [fileInfo setObject:[path lastPathComponent] forKey:kFileType];
+        [filesInfo addObject:fileInfo];
     }
-    return content;
+    
+    [filesInfo sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+        NSDate *fileModify1 = [[obj1 objectForKey:kFileAttributes] fileModificationDate];
+        NSDate *fileModify2 = [[obj2 objectForKey:kFileAttributes] fileModificationDate];
+        
+        if (fileModify1.timeIntervalSince1970 > fileModify2.timeIntervalSince1970) {
+            return NSOrderedAscending;
+        }else if (fileModify1.timeIntervalSince1970 < fileModify2.timeIntervalSince1970){
+            return NSOrderedDescending;
+        }else{
+            return NSOrderedSame;
+        }
+    }];
+    
+    return filesInfo;
+}
+
++ (NSArray *)filesInfoWithType:(NSString *)type{
+    return [self filesInfoAtPath:[NSString stringWithFormat:@"%@/%@",kChatFileFolderPath,type]];
+}
+
++ (long long)fileSizeAtPath:(NSString *)path{
+    return [[[NSFileManager defaultManager] attributesOfItemAtPath:path error:nil] fileSize];
+}
+
++ (NSString *)stringFileSizeAtPath:(NSString *)path{
+    long long fileSize = [self fileSizeAtPath:path];
+    return  [self stringFileSize:fileSize];
+}
+
++ (NSString *)stringFileSize:(long long)fileSize{
+    if (fileSize > 1024 * 1024 * 1024) {
+        return [NSString stringWithFormat:@"%0.2fG",fileSize / (1024.0 * 1024.0 * 1024.0)];
+    }else if(fileSize > 1024 * 1024){
+        return [NSString stringWithFormat:@"%0.2fM",fileSize / (1024.0 * 1024.0)];
+    }else if (fileSize > 1024){
+        return [NSString stringWithFormat:@"%0.2fK",fileSize / 1024.0];
+    }else{
+        return [NSString stringWithFormat:@"%lldB",fileSize];
+    }
 }
 
 @end

@@ -10,5 +10,6 @@
 
 @interface EM_ChatWifiView : EM_AlertView
 
+- (instancetype)initWithIPAdress:(NSString *)ipAdress;
 
 @end

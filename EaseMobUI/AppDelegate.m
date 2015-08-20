@@ -9,6 +9,8 @@
 #import "AppDelegate.h"
 #import "EaseMobUIClient.h"
 #import "EM+Common.h"
+#import "DDLog.h"
+#import "DDTTYLogger.h"
 
 #import "UStylistChatController.h"
 
@@ -35,6 +37,8 @@
     
     self.window = [[UIWindow alloc]initWithFrame:[UIScreen mainScreen].bounds];
     self.window.backgroundColor = [UIColor whiteColor];
+    
+    [DDLog addLogger:[DDTTYLogger sharedInstance]];
     
     NSString *chatter = nil;
     NSString *user = nil;

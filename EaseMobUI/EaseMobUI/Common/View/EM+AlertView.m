@@ -23,7 +23,7 @@
 
 @implementation EM_AlertView{
     AlertDismissBlcok dismissBlock;
-    AlertSelectedBlcok selectedBlcok;
+    AlertShowCompletedBlcok showBlcok;
     CGRect startFrame;
     CGRect endFrame;
 }
@@ -31,7 +31,7 @@
 - (instancetype)init{
     self = [super init];
     if (self) {
-        self.backgroundColor = [UIColor colorWithHexRGB:0xec6c7b];
+        self.backgroundColor = [UIColor whiteColor];
     }
     return self;
 }
@@ -40,8 +40,8 @@
     dismissBlock = block;
 }
 
-- (void)setAlertSelectedBlcok:(AlertSelectedBlcok)block{
-    selectedBlcok = block;
+- (void)setAlertShowCompletedBlcok:(AlertShowCompletedBlcok)block{
+    showBlcok = block;
 }
 
 - (CGFloat)contentHeight{
@@ -105,6 +105,9 @@
         self.alpha = 1.0;
         self.frame = endFrame;
     } completion:^(BOOL finished) {
+        if (showBlcok) {
+            showBlcok();
+        }
         [self completion];
     }];
 }
