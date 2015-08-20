@@ -58,6 +58,7 @@ file.audio = "音频";
 file.other = "其它";
 file.wifi_upload = "WiFi上传";
 
+wifi.server_web_title = "%@ - WiFi上传";
 wifi.server_title = "WIFI服务已开启";
 wifi.server_warn = "上传过程中请勿离开此页或锁屏";
 wifi.server_hint = "在电脑浏览器地址栏中输入";

@@ -114,7 +114,7 @@ NSString * const kEMFIleUploadProgress = @"kEMFIleUploadProgress";
             NSString *appName = [appInfo objectForKey:@"CFBundleDisplayName"];
             
             NSMutableDictionary *replaceData = [[NSMutableDictionary alloc]init];
-            [replaceData setObject:[NSString stringWithFormat:@"%@ - WiFi上传",appName] forKey:@"title"];
+            [replaceData setObject:[NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"wifi.server_web_title"],appName] forKey:@"title"];
             
             for (NSString *fileType in [EM_ChatFileUtils fileTypeArray]) {
                 
@@ -126,7 +126,7 @@ NSString * const kEMFIleUploadProgress = @"kEMFIleUploadProgress";
                     NSDictionary *fileAttributes = [fileInfo objectForKey:kFileAttributes];
                     long long fileSize = [fileAttributes fileSize];
                     
-                    NSString *html = [NSString stringWithFormat:@"<tr><td>%@</td><td>%@</td><td><a href=\"%@\" download><i class=\"fa fa-cloud-download\"></i></a><a href=\"javascript:;\"><i class=\"fa fa-trash-o\"></i></a></td></tr>",fileName,[EM_ChatFileUtils stringFileSize:fileSize],[NSString stringWithFormat:@"%@/%@",fileType,fileName]];
+                    NSString *html = [NSString stringWithFormat:@"<tr><td>%@</td><td>%@</td><td><a href=\"%@\" download><i class=\"fa fa-cloud-download\"></i></a><a href=\"javascript:;\"><i class=\"fa fa-trash-o\" data=\"%@\"></i></a></td></tr>",fileName,[EM_ChatFileUtils stringFileSize:fileSize],[NSString stringWithFormat:@"files/%@/%@",fileType,fileName],fileName];
                     [replaceHtml appendString:html];
                 }
                 
@@ -135,12 +135,8 @@ NSString * const kEMFIleUploadProgress = @"kEMFIleUploadProgress";
             
             NSString* indexPagePath = [[config documentRoot] stringByAppendingPathComponent:@"index.html"];
             return [[HTTPDynamicFileResponse alloc] initWithFilePath:indexPagePath forConnection:self separator:@"%" replacementDictionary:replaceData];
-        }else if([path hasPrefix:@"/image"]||
-                 [path hasPrefix:@"/text"] ||
-                 [path hasPrefix:@"/video"]||
-                 [path hasPrefix:@"/audio"]||
-                 [path hasPrefix:@"/ohter"]){
-            NSString *filePath = [NSString stringWithFormat:@"%@/%@",kChatFileFolderPath,path];
+        }else if([path hasPrefix:@"/files/"]){
+            NSString *filePath = [NSString stringWithFormat:@"%@/%@",kChatFileFolderPath,[path substringFromIndex:7]];
             return [[HTTPFileResponse alloc]initWithFilePath:filePath forConnection:self];
         }
     }else if([method isEqualToString:@"POST"]){
@@ -160,11 +156,8 @@ NSString * const kEMFIleUploadProgress = @"kEMFIleUploadProgress";
         
     }else if([method isEqualToString:@"DELETE"]){
         if([path hasPrefix:@"/files"]){
-            NSDictionary *headers = [request allHeaderFields];
-            NSString *fileName = [headers objectForKey:@"filename"];
-            NSString *fileType = [headers objectForKey:@"filetype"];
             NSError *error;
-            BOOL delete = [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@/%@/%@",kChatFileFolderPath,fileType,fileName] error:&error];
+            BOOL delete = [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@/%@",kChatFileFolderPath,[path substringFromIndex:7]] error:&error];
             if (delete && !error) {
                 return [[EM_ChatHttpErrorResponse alloc]initWithErrorCode:200 errorMessage:[EM_ChatResourcesUtils stringWithName:@"wifi.server_file_delete_success"]];
             }else{

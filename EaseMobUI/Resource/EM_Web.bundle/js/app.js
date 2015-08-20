@@ -3,7 +3,8 @@ $(function() {
     var uploader = new plupload.Uploader({
         runtimes: 'html5',
         browse_button: 'btn-upload',
-        drop_element: 'drag-area',
+        drop_element: 'drag',
+        dragdrop: true,
         url: "/files",
         init: {
             FilesAdded: function(up, files) {
@@ -15,6 +16,11 @@ $(function() {
                 }
 
                 var type = files[0].type.split('/')[0].toLowerCase();
+
+                if (!type) {
+
+                    type = 'other';
+                }
 
                 up.setOption('headers', {
                     'filename': files[0].name,
@@ -65,31 +71,36 @@ $(function() {
 
                 tmp = tmp.join('');
 
+                $('.tab-pane').removeClass('active');
                 if (type === 'image') {
 
-                    $('#image').find('table').find('tr').prepend(tmp);
+                    $('#image').find('table').find('tbody').prepend(tmp);
                     $('#file-panel').children().removeClass('active').eq(0).addClass('active');
+                    $('#image').addClass('active');
                 } else if (type === 'text') {
 
-                    $('#doc').find('table').find('tr').prepend(tmp);
+                    $('#doc').find('table').find('tbody').prepend(tmp);
                     $('#file-panel').children().removeClass('active').eq(1).addClass('active');
+                    $('#doc').addClass('active');
                 } else if (type === 'video') {
 
-                    $('#video').find('table').find('tr').prepend(tmp);
+                    $('#video').find('table').find('tbody').prepend(tmp);
                     $('#file-panel').children().removeClass('active').eq(2).addClass('active');
+                    $('#video').addClass('active');
                 } else if (type === 'audio') {
 
-                    $('#audio').find('table').find('tr').prepend(tmp);
+                    $('#audio').find('table').find('tbody').prepend(tmp);
                     $('#file-panel').children().removeClass('active').eq(3).addClass('active');
+                    $('#audio').addClass('active');
                 } else {
 
-                    $('#other').find('table').find('tr').prepend(tmp);
+                    $('#other').find('table').find('tbody').prepend(tmp);
                     $('#file-panel').children().removeClass('active').eq(4).addClass('active');
+                    $('#other').addClass('active');
                 }
-
             },
             Error: function(up, err) {
-                alert('Error #' + err.code + ': ' + err.message);
+                alert(err.response);
             }
         }
     });
@@ -98,6 +109,7 @@ $(function() {
 
     $('.tab-content').on('click','.fa-trash-o',function() {
 
+        var that = $(this);
         var flag = confirm('确认删除?');
 
         if (!flag) {
@@ -111,6 +123,9 @@ $(function() {
         $.ajax({
             url: '/files/'+type+'/'+filename,
             type: 'DELETE',
+            data: {
+                random: Math.random()
+            },
             statusCode: {
                 500: function() {
 
@@ -118,7 +133,7 @@ $(function() {
                 },
                 200: function() {
 
-                    $(this).parent().parent().parent().remove();
+                    that.parent().parent().parent().remove();
                 }
             }
         })
