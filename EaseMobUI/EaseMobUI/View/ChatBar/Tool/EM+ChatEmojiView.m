@@ -130,7 +130,10 @@ typedef NS_ENUM(NSInteger, Emoji_Type) {
         
         if (i % pageEmojiCount == pageEmojiCount - 1 || i == array.count - 1) {
             UIButton *deleteButton = [[UIButton alloc]init];
-            [deleteButton setImage:[EM_ChatResourcesUtils toolImageWithName:@"tool_delete"] forState:UIControlStateNormal];
+            deleteButton.titleLabel.font = [EM_ChatResourcesUtils iconFontWithSize:25];
+            [deleteButton setTitle:kEMChatIconMoreRepeal forState:UIControlStateNormal];
+            [deleteButton setTitleColor:[UIColor colorWithHexRGB:TEXT_NORMAL_COLOR] forState:UIControlStateNormal];
+            [deleteButton setTitleColor:[UIColor colorWithHexRGB:TEXT_SELECT_COLOR] forState:UIControlStateHighlighted];
             [deleteButton addTarget:self action:@selector(emojiDeleteClicked:) forControlEvents:UIControlEventTouchUpInside];
             [scroll addSubview:deleteButton];
         }

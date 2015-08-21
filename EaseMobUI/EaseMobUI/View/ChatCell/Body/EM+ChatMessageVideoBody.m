@@ -9,11 +9,15 @@
 #import "EM+ChatMessageVideoBody.h"
 #import "UIImageView+WebCache.h"
 #import "EM+ChatMessageModel.h"
+#import "EM+ChatResourcesUtils.h"
+#import "EM+ChatFileUtils.h"
 
 #define CELL_VIDEO_PADDING (1)
 
 @implementation EM_ChatMessageVideoBody{
     UIImageView *imageView;
+    UILabel *nameLabel;
+    UILabel *sizeLabel;
 }
 
 - (instancetype)init{
@@ -22,6 +26,19 @@
         imageView = [[UIImageView alloc]init];
         imageView.backgroundColor = [UIColor clearColor];
         [self addSubview:imageView];
+        
+        nameLabel = [[UILabel alloc]init];
+        nameLabel.textAlignment = NSTextAlignmentLeft;
+        nameLabel.numberOfLines = 0;
+        nameLabel.lineBreakMode = NSLineBreakByTruncatingMiddle;
+        nameLabel.textColor = [UIColor blackColor];
+        [self addSubview:nameLabel];
+        
+        sizeLabel = [[UILabel alloc]init];
+        sizeLabel.textAlignment = NSTextAlignmentLeft;
+        sizeLabel.textColor = [UIColor grayColor];
+        sizeLabel.font = [UIFont systemFontOfSize:10];
+        [self addSubview:sizeLabel];
     }
     return self;
 }
@@ -30,8 +47,9 @@
     [super layoutSubviews];
     
     CGSize size = self.frame.size;
-    imageView.bounds = self.bounds;
-    imageView.center = CGPointMake(size.width / 2, size.height / 2);
+    imageView.frame = CGRectMake(0, 0, size.height, size.height);
+    nameLabel.frame = CGRectMake(imageView.frame.size.width + 10, 0, size.width - imageView.frame.size.width - 10 , size.height / 3 * 2);
+    sizeLabel.frame = CGRectMake(imageView.frame.size.width + 10, nameLabel.frame.size.height, (size.width - imageView.frame.size.width - 10) / 2 , size.height / 3);
 }
 
 - (NSMutableDictionary *)userInfo{
@@ -44,6 +62,10 @@
     [super setMessage:message];
     
     EMVideoMessageBody *videoBody = (EMVideoMessageBody *)message.messageBody;
+    
+    nameLabel.text = videoBody.displayName;
+    sizeLabel.text = [EM_ChatFileUtils stringFileSize:videoBody.fileLength];
+    
     UIImage *image = [[UIImage alloc]initWithContentsOfFile:videoBody.thumbnailLocalPath];
     if (image) {
         imageView.image = image;

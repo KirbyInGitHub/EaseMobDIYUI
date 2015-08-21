@@ -9,6 +9,7 @@
 #import "EM+ExplorerController.h"
 #import "EM+ChatFileUtils.h"
 #import "EM+ChatResourcesUtils.h"
+#import "EM+ChatDateUtils.h"
 #import "EM+Common.h"
 #import "UIColor+Hex.h"
 
@@ -25,16 +26,18 @@
 @interface EM_ExplorerController ()<UITableViewDataSource,UITableViewDelegate>
 
 @property (nonatomic, strong) HTTPServer *httpServer;
-
+@property (nonatomic, assign) NSInteger currentFolderIndex;;
 @end
 
 @implementation EM_ExplorerController{
     UIScrollView *_headerView;
     UIView *_footerView;
     UITableView *_tableView;
+    UIButton *_enterButton;
+    
     NSArray *_folderArray;
     NSArray *_buttonArray;
-    NSInteger _currentFolderIndex;
+    NSMutableArray *_selectedArray;
 }
 
 - (instancetype)init{
@@ -42,6 +45,7 @@
     if (self) {
         _folderArray = [EM_ChatFileUtils folderArray];
         self.title = [EM_ChatResourcesUtils stringWithName:@"common.file"];
+        _selectedArray = [[NSMutableArray alloc]init];
     }
     return self;
 }
@@ -50,7 +54,6 @@
     [super viewDidLoad];
 
     _tableView = [[UITableView alloc]initWithFrame:self.view.frame];
-    _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     _tableView.dataSource = self;
     _tableView.delegate = self;
     _tableView.contentInset = UIEdgeInsetsMake(HEIGHT_HEADER, 0, HEIGHT_FOOTER, 0);
@@ -84,6 +87,14 @@
     UIView *footerLine = [[UIView alloc]initWithFrame:CGRectMake(0, -LINE_HEIGHT, _headerView.frame.size.width, LINE_HEIGHT)];
     footerLine.backgroundColor = [UIColor colorWithHEX:LINE_COLOR alpha:1.0];
     [_footerView addSubview:footerLine];
+    
+    _enterButton = [[UIButton alloc]initWithFrame:CGRectMake(_footerView.frame.size.width - 80, 2, 60, _footerView.frame.size.height - 4)];
+    _enterButton.backgroundColor = [UIColor blueColor];
+    _enterButton.enabled = NO;
+    [_enterButton setTitle:[EM_ChatResourcesUtils stringWithName:@"common.send"] forState:UIControlStateNormal];
+    [_enterButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [_enterButton addTarget:self action:@selector(sendFile:) forControlEvents:UIControlEventTouchUpInside];
+    [_footerView addSubview:_enterButton];
     [self.view addSubview:_footerView];
     
     UIButton *cancel = [[UIButton alloc]init];
@@ -108,6 +119,16 @@
 
 - (void)dealloc{
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)setCurrentFolderIndex:(NSInteger)currentFolderIndex{
+    if (_currentFolderIndex != currentFolderIndex) {
+        _currentFolderIndex = currentFolderIndex;
+        for (UIButton *button in _buttonArray) {
+            button.selected = _currentFolderIndex == button.tag;
+        }
+        [_tableView reloadData];
+    }
 }
 
 - (HTTPServer *)httpServer{
@@ -164,10 +185,16 @@
                 NSString *folderName = [folder objectForKey:kFolderName];
                 if ([fileType isEqualToString:folderName]) {
                     NSMutableArray *files = [folder objectForKey:kFolderContent];
-                    [files insertObject:fileName atIndex:0];
+                    [files insertObject:[[NSURL alloc]initFileURLWithPath:[NSString stringWithFormat:@"%@/%@/%@",kChatFileFolderPath,fileType,fileName]] atIndex:0];
                     [folder setValue:files forKey:kFolderContent];
-                    _currentFolderIndex = i;
-                    [_tableView reloadData];
+                    MAIN(^{
+                        BOOL needReload = _currentFolderIndex == i;
+                        self.currentFolderIndex = i;
+                        if (needReload) {
+                            [_tableView reloadData];
+                        }
+                    });
+                    
                     break;
                 }
             }
@@ -178,7 +205,7 @@
         }
             break;
         case WiFiFileUploadStateEnd:{
-            
+
         }
             break;
     }
@@ -212,12 +239,18 @@
 }
 
 - (void)folderClicked:(UIButton *)sender{
-    _currentFolderIndex = sender.tag;
-    for (UIButton *button in _buttonArray) {
-        button.selected = _currentFolderIndex == button.tag;
-    }
-    [_tableView reloadData];
+    self.currentFolderIndex = sender.tag;
 }
+
+- (void)sendFile:(id)sender{
+    if (_delegate && [_delegate respondsToSelector:@selector(didFileSelected:)] && _selectedArray.count > 0) {
+        [_delegate didFileSelected:_selectedArray];
+    }
+    [self dismissViewControllerAnimated:YES completion:^{
+        
+    }];
+}
+
 
 #pragma mark - UITableViewDataSource
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
@@ -229,19 +262,64 @@
     static NSString *cellId = @"cellId";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];
     if (!cell) {
-        cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellId];
+        cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellId];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        cell.detailTextLabel.numberOfLines = 0;
+        cell.detailTextLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        cell.detailTextLabel.textColor = [UIColor blueColor];
+        cell.separatorInset = UIEdgeInsetsMake(2, 0, 2, 0);
     }
+    
     NSArray *contentArray = _folderArray[_currentFolderIndex][kFolderContent];
-    NSString *fileName = contentArray[indexPath.row];
-    cell.textLabel.text = fileName;
+    NSURL *fileURL = contentArray[indexPath.row];
+    
+    NSDictionary *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:fileURL.path error:nil];
+    
+    cell.textLabel.text = fileURL.path.lastPathComponent;
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@\n%@",[EM_ChatFileUtils stringFileSize:[attributes fileSize]],[EM_ChatDateUtils dateConvertToString:[attributes fileModificationDate] formatter:@"yyyy-MM-dd HH:mm"]];
+    if (_currentFolderIndex == 0) {
+        cell.imageView.image = [EM_ChatFileUtils thumbImageWithURL:fileURL];
+    }else if(_currentFolderIndex == 1){
+        cell.imageView.image = [EM_ChatFileUtils thumbAudioWithURL:fileURL];
+    }else if(_currentFolderIndex == 2){
+        cell.imageView.image = [EM_ChatFileUtils thumbVideoWithURL:fileURL];
+    }else{
+        cell.imageView.image = nil;
+    }
+    
+    if ([_selectedArray containsObject:fileURL]) {
+        cell.accessoryType = UITableViewCellAccessoryCheckmark;
+    }else{
+        cell.accessoryType = UITableViewCellAccessoryNone;
+    }
     
     return cell;
 }
 
 #pragma mark - UITableViewDelegate
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return 60;
+    return 80;
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    NSArray *contentArray = _folderArray[_currentFolderIndex][kFolderContent];
+    NSURL *fileURL = contentArray[indexPath.row];
+    
+    if ([_selectedArray containsObject:fileURL]) {
+        [_selectedArray removeObject:fileURL];
+    }else{
+        [_selectedArray addObject:fileURL];
+    }
+    
+    _enterButton.enabled = _selectedArray.count > 0;
+    if (_enterButton.enabled) {
+        [_enterButton setTitle:[NSString stringWithFormat:@"%@(%ld)",[EM_ChatResourcesUtils stringWithName:@"common.send"],_selectedArray.count] forState:UIControlStateNormal];
+    }else{
+        [_enterButton setTitle:[NSString stringWithFormat:@"%@",[EM_ChatResourcesUtils stringWithName:@"common.send"]] forState:UIControlStateNormal];
+    }
+    
+    [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+}
 
 @end

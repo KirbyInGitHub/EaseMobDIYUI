@@ -1,12 +1,12 @@
 //
 //  EM+CallController.h
-//  EaseMobUI
+//  EaseMobUI  语音、视频通讯界面
 //
 //  Created by 周玉震 on 15/8/14.
 //  Copyright (c) 2015年 周玉震. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "EM+ChatBaseController.h"
 @class EMCallSession;
 
 /**
@@ -59,7 +59,7 @@ typedef NS_ENUM(NSInteger, EMChatCallState){
     EMChatCallStatePause
 };
 
-@interface EM_CallController : UIViewController
+@interface EM_CallController : EM_ChatBaseController
 
 @property (nonatomic, assign, readonly) EMChatCallType callType;
 @property (nonatomic, assign, readonly) EMChatCallAction callAction;

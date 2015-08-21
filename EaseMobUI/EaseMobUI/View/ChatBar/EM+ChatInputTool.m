@@ -83,8 +83,11 @@
         moreStateButton.hidden = YES;
         moreStateButton.backgroundColor = [UIColor colorWithHexRGB:0xF8F8F8];
         moreStateButton.layer.cornerRadius = 6;
-        [moreStateButton setImage:[EM_ChatResourcesUtils toolImageWithName:@"tool_state_normal"] forState:UIControlStateNormal];
-        [moreStateButton setImage:[EM_ChatResourcesUtils toolImageWithName:@"tool_state_selected"] forState:UIControlStateSelected];
+        moreStateButton.titleLabel.font = [EM_ChatResourcesUtils iconFontWithSize:50];
+        [moreStateButton setTitle:kEMChatIconToolDown forState:UIControlStateNormal];
+        [moreStateButton setTitle:kEMChatIconToolUp forState:UIControlStateSelected];
+        [moreStateButton setTitleColor:[UIColor colorWithHexRGB:TEXT_NORMAL_COLOR] forState:UIControlStateNormal];
+        [moreStateButton setTitleColor:[UIColor colorWithHexRGB:TEXT_SELECT_COLOR] forState:UIControlStateHighlighted];
         [moreStateButton addTarget:self action:@selector(stateClicked:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:moreStateButton];
     }

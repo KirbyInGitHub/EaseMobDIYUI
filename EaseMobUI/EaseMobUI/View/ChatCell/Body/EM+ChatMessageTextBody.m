@@ -22,7 +22,6 @@
 - (instancetype)init{
     self = [super init];
     if (self) {
-        self.needTap = NO;
         
         textLabel = [[TTTAttributedLabel alloc]initWithFrame:CGRectZero];
         textLabel.delegate = self;
@@ -60,6 +59,8 @@
     [super setMessage:message];
     EMTextMessageBody *textBody = (EMTextMessageBody *)message.messageBody;
     textLabel.text = textBody.text;
+    
+    self.needTap = self.message.extend.isCallMessage;
 }
 
 #pragma mark - TTTAttributedLabelDelegate

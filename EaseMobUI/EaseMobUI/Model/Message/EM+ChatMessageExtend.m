@@ -25,6 +25,9 @@ NSString * const kShowTime = @"kShowTime";
 NSString * const kDetails = @"kDetails";
 NSString * const kChecking = @"kChecking";
 NSString * const kCollected = @"kCollected";
+NSString * const kCallMessage = @"kCallMessage";
+NSString * const kMessageFileType = @"kFileType";
+
 NSString * const kAttributes = @"kAttributes";
 
 NSString * const kClassName = @"kClassName";
@@ -57,6 +60,10 @@ NSString * const kClassName = @"kClassName";
     [values setObject:@(self.checking) forKey:kChecking];
     [values setObject:@(self.collected) forKey:kCollected];
     [values setObject:self.attributes forKey:kAttributes];
+    [values setObject:@(self.isCallMessage) forKey:kCallMessage];
+    if (self.fileType) {
+        [values setObject:self.fileType forKey:kMessageFileType];
+    }
     return values;
 }
 
@@ -136,6 +143,16 @@ NSString * const kClassName = @"kClassName";
     id attributes = extend[kAttributes];
     if (attributes && ![attributes isMemberOfClass:[NSNull class]]) {
         _attributes = attributes;
+    }
+    
+    id isCallMessage = extend[kCallMessage];
+    if (isCallMessage && ![isCallMessage isMemberOfClass:[NSNull class]]) {
+        self.isCallMessage = [isCallMessage boolValue];
+    }
+    
+    id fileType = extend[kMessageFileType];
+    if (fileType && ![fileType isMemberOfClass:[NSNull class]]) {
+        self.fileType = fileType;
     }
 }
 

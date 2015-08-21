@@ -63,6 +63,7 @@ UIActionSheetDelegate,
 EM_MessageToolBarDelegate,
 EM_ChatMessageCellDelegate,
 EM_LocationControllerDelegate,
+EM_ExplorerControllerDelegate,
 EM_ChatMessageManagerDelegate,
 EMChatManagerDelegate,
 IEMChatProgressDelegate,
@@ -88,16 +89,17 @@ EMDeviceManagerDelegate>
 - (instancetype)initWithChatter:(NSString *)chatter conversationType:(EMConversationType)conversationType config:(EM_ChatUIConfig *)config{
     self = [super init];
     if (self) {
-        _config = config;
+        if (!config) {
+             _config = [EM_ChatUIConfig defaultConfig];
+        }else{
+            _config = config;
+        }
         _conversation = [[EaseMob sharedInstance].chatManager conversationForChatter:chatter conversationType:conversationType];
         [_conversation markAllMessagesAsRead:YES];
         
         _dataSource = [[NSMutableArray alloc]init];
         _imageDataArray = [[NSMutableArray alloc]init];
         _voiceDataArray = [[NSMutableArray alloc]init];
-    
-        self.hidesBottomBarWhenPushed = YES;
-        self.navigationController.interactivePopGestureRecognizer.enabled = YES;
     }
     return self;
 }
@@ -149,16 +151,6 @@ EMDeviceManagerDelegate>
     [self loadMoreMessage:YES animated:NO];
     
     [self queryEditor];
-}
-
-- (void)viewDidAppear:(BOOL)animated{
-    [super viewDidAppear:animated];
-    _isShow = YES;
-}
-
-- (void)viewDidDisappear:(BOOL)animated{
-    [super viewDidDisappear:animated];
-    _isShow = NO;
 }
 
 - (void)didReceiveMemoryWarning{
@@ -386,6 +378,7 @@ EMDeviceManagerDelegate>
         [self.navigationController pushViewController:locationController animated:YES];
     }else if ([action isEqualToString:kActionNameFile]){
         EM_ExplorerController *explorerController = [[EM_ExplorerController alloc]init];
+        explorerController.delegate = self;
         [self presentViewController:[[UINavigationController alloc]initWithRootViewController:explorerController] animated:YES completion:nil];
     }else{
         if (_delegate && [_delegate respondsToSelector:@selector(didActionSelectedWithName:)]){
@@ -459,7 +452,9 @@ EMDeviceManagerDelegate>
         sheet.tag = ALERT_ACTION_TAP_PHONE;
         [sheet showInView:self.view];
     }else if ([handleAction isEqualToString:HANDLE_ACTION_TEXT]){
-        
+        if (messageModel.extend.isCallMessage) {
+            NSLog(@"重拨");
+        }
     }else if ([handleAction isEqualToString:HANDLE_ACTION_IMAGE]){
         NSInteger index = [_imageDataArray indexOfObject:messageModel];
         if (index >= 0 && index < _imageDataArray.count) {
@@ -654,6 +649,17 @@ EMDeviceManagerDelegate>
         extend = [self.delegate extendForMessage:address messageType:eMessageBodyType_Location];
     }
     [self sendMessage:[EM_ChatMessageModel fromLatitude:latitude longitude:longitude address:address conversation:self.conversation extend:extend]];
+}
+
+#pragma mark - EM_ExplorerControllerDelegate
+- (void)didFileSelected:(NSArray *)files{
+    for (NSURL *url in files) {
+        EM_ChatMessageExtend *extend = nil;
+        if(self.delegate && [self.delegate respondsToSelector:@selector(extendForMessage:messageType:)]){
+            extend = [self.delegate extendForMessage:url messageType:eMessageBodyType_File];
+        }
+        [self sendMessage:[EM_ChatMessageModel fromFile:url.path name:url.path.lastPathComponent conversation:self.conversation extend:extend]];
+    }
 }
 
 #pragma mark - UIImagePickerControllerDelegate

@@ -8,6 +8,9 @@
 
 #import "EM+ChatFileUtils.h"
 #import "EM+ChatResourcesUtils.h"
+#import "EM+Common.h"
+#import <UIKit/UIKit.h>
+#import <AVFoundation/AVFoundation.h>
 
 @implementation EM_ChatFileUtils
 
@@ -50,15 +53,28 @@ NSString * const kFileAttributes = @"kFileAttributes";
     if (!create) {
         NSLog(@"创建视频目录失败");
     }
+    create = [self createFolderWithPath:[NSString stringWithFormat:@"%@Thumb",kChatFileVideoFolderPath]];
+    if (!create) {
+        NSLog(@"创建视频缩略图目录失败");
+    }
+    
     
     create = [self createFolderWithPath:kChatFileImageFolderPath];
     if (!create) {
         NSLog(@"创建图片目录失败");
     }
+    create = [self createFolderWithPath:[NSString stringWithFormat:@"%@Thumb",kChatFileImageFolderPath]];
+    if (!create) {
+        NSLog(@"创建图片缩略图目录失败");
+    }
     
     create = [self createFolderWithPath:kChatFileAudioFolderPath];
     if (!create) {
         NSLog(@"创建音频目录失败");
+    }
+    create = [self createFolderWithPath:[NSString stringWithFormat:@"%@Thumb",kChatFileAudioFolderPath]];
+    if (!create) {
+        NSLog(@"创建音频缩略图目录失败");
     }
     
     
@@ -91,38 +107,49 @@ NSString * const kFileAttributes = @"kFileAttributes";
                                                                                  kFolderTitle : [EM_ChatResourcesUtils stringWithName:@"file.image"],
                                                                                  kFolderName : kChatFileImageFolderName,
                                                                                  kFolderPath : kChatFileImageFolderPath,
-                                                                                 kFolderContent : [[NSMutableArray alloc]initWithArray:[[NSFileManager defaultManager] subpathsAtPath:kChatFileImageFolderPath]]
+                                                                                 kFolderContent : [self filesURLWithDirectory:kChatFileImageFolderPath]
                                                                                  }]];
         
         [_folderArray addObject:[[NSMutableDictionary alloc]initWithDictionary:@{
                                                                                  kFolderTitle : [EM_ChatResourcesUtils stringWithName:@"file.audio"],
                                                                                  kFolderName : kChatFileAudioFolderName,
                                                                                  kFolderPath : kChatFileAudioFolderPath,
-                                                                                 kFolderContent : [[NSMutableArray alloc]initWithArray:[[NSFileManager defaultManager] subpathsAtPath:kChatFileAudioFolderPath]]
+                                                                                 kFolderContent : [self filesURLWithDirectory:kChatFileAudioFolderPath]
                                                                                  }]];
         
         [_folderArray addObject:[[NSMutableDictionary alloc]initWithDictionary:@{
                                                                                  kFolderTitle : [EM_ChatResourcesUtils stringWithName:@"file.video"],
                                                                                  kFolderName : kChatFileVideoFolderName,
                                                                                  kFolderPath : kChatFileVideoFolderPath,
-                                                                                 kFolderContent : [[NSMutableArray alloc]initWithArray:[[NSFileManager defaultManager] subpathsAtPath:kChatFileVideoFolderPath]]
+                                                                                 kFolderContent : [self filesURLWithDirectory:kChatFileVideoFolderPath]
                                                                                  }]];
         
         [_folderArray addObject:[[NSMutableDictionary alloc]initWithDictionary:@{
                                                                                  kFolderTitle : [EM_ChatResourcesUtils stringWithName:@"file.document"],
                                                                                  kFolderName : kChatFileDocumentFolderName,
                                                                                  kFolderPath : kChatFileDocumentFolderPath,
-                                                                                 kFolderContent : [[NSMutableArray alloc]initWithArray:[[NSFileManager defaultManager] subpathsAtPath:kChatFileDocumentFolderPath]]
+                                                                                 kFolderContent : [self filesURLWithDirectory:kChatFileDocumentFolderPath]
                                                                                  }]];
         
         [_folderArray addObject:[[NSMutableDictionary alloc]initWithDictionary:@{
                                                                                  kFolderTitle : [EM_ChatResourcesUtils stringWithName:@"file.other"],
                                                                                  kFolderName : kChatFileOtherFolderName,
                                                                                  kFolderPath : kChatFileOtherFolderPath,
-                                                                                 kFolderContent : [[NSMutableArray alloc]initWithArray:[[NSFileManager defaultManager] subpathsAtPath:kChatFileOtherFolderPath]]
+                                                                                 kFolderContent : [self filesURLWithDirectory:kChatFileOtherFolderPath]
                                                                                  }]];
     });
     return _folderArray;
+}
+
++ (NSMutableArray *)filesURLWithDirectory:(NSString *)directory{
+    NSMutableArray *files = [[NSMutableArray alloc]init];
+    NSArray *fileNames = [[NSFileManager defaultManager] subpathsAtPath:directory];
+    for (NSString *fileName in fileNames) {
+        NSString *filePath =[NSString stringWithFormat:@"%@/%@",directory,fileName];
+        NSURL *fileURL = [[NSURL alloc]initFileURLWithPath:filePath];
+        [files addObject:fileURL];
+    }
+    return files;
 }
 
 + (NSArray *)fileTypeArray{
@@ -183,6 +210,124 @@ NSString * const kFileAttributes = @"kFileAttributes";
         return [NSString stringWithFormat:@"%0.2fK",fileSize / 1024.0];
     }else{
         return [NSString stringWithFormat:@"%lldB",fileSize];
+    }
+}
+
++ (UIImage *)thumbImageFromOriginalImage:(UIImage *)image width:(float)width height:(float)height{
+    if (!image) {
+        return nil;
+    }
+    CGSize size = CGSizeMake(width, height);
+    if (CGSizeEqualToSize(size, CGSizeZero)) {
+        size = CGSizeMake(60, 60);
+    }
+
+    UIGraphicsBeginImageContextWithOptions(size,NO,[UIScreen mainScreen].scale);
+    [image drawInRect:CGRectMake(0, 0, size.width, size.height)];
+    UIImage *thumb = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return thumb;
+}
+
++ (UIImage *)thumbImageWithURL:(NSURL *)url{
+    NSString *path = url.path;
+    NSString *imageName = [path lastPathComponent];
+    NSString *imageDirectory = [path substringToIndex:[path rangeOfString:imageName].location - 1];
+    NSString *thumbPath = [NSString stringWithFormat:@"%@Thumb/%@",imageDirectory,imageName];
+    
+    BOOL isDirectory;
+    BOOL isExists = [[NSFileManager defaultManager] fileExistsAtPath:thumbPath isDirectory:&isDirectory];
+    BOOL isCreated = isExists && !isDirectory;
+    
+    if (isCreated) {
+        return [UIImage imageWithData:[NSData dataWithContentsOfFile:thumbPath]];
+    }else{
+        UIImage *thumbImage = [self thumbImageFromOriginalImage:[UIImage imageWithData:[NSData dataWithContentsOfFile:path]] width:80 height:80];
+        if (thumbImage) {
+            BACK(^{
+                BOOL created = [[NSFileManager defaultManager] createFileAtPath:thumbPath contents:nil attributes:nil];
+                if (created) {
+                    [UIImageJPEGRepresentation(thumbImage, 1.0) writeToFile:thumbPath atomically:YES];
+                }
+            });
+            return thumbImage;
+        }else{
+            return nil;
+        }
+    }
+}
+
++ (UIImage *)thumbAudioWithURL:(NSURL *)url{
+    NSString *path = url.path;
+    NSString *audioName = [path lastPathComponent];
+    NSString *audioDirectory = [path substringToIndex:[path rangeOfString:audioName].location - 1];
+    NSString *thumbPath = [NSString stringWithFormat:@"%@Thumb/%@",audioDirectory,audioName];
+    
+    BOOL isDirectory;
+    BOOL isExists = [[NSFileManager defaultManager] fileExistsAtPath:thumbPath isDirectory:&isDirectory];
+    BOOL isCreated = isExists && !isDirectory;
+    
+    if (isCreated) {
+        return [UIImage imageWithContentsOfFile:thumbPath];
+    }else{
+        NSData *data = nil;
+        AVURLAsset *audioAsset = [AVURLAsset URLAssetWithURL:url options:nil];
+        for (NSString *format in [audioAsset availableMetadataFormats]) {
+            for (AVMetadataItem *metadataItem in [audioAsset metadataForFormat:format]) {
+                if ([metadataItem.commonKey isEqualToString:@"artwork"]) {
+                    data = (NSData *)metadataItem.value;
+                    break;
+                }
+            }
+            if (data) {
+                break;
+            }
+        }
+        if (data) {
+            BACK(^{
+                BOOL created = [[NSFileManager defaultManager] createFileAtPath:thumbPath contents:nil attributes:nil];
+                if (created) {
+                    [data writeToFile:thumbPath atomically:YES];
+                }
+            });
+            return [UIImage imageWithData:data];
+        }
+        return nil;
+    }
+}
+
++ (UIImage *)thumbVideoWithURL:(NSURL *)url{
+    NSString *path = url.path;
+    NSString *videoName = [path lastPathComponent];
+    NSString *videoDirectory = [path substringToIndex:[path rangeOfString:videoName].location - 1];
+    NSString *thumbPath = [NSString stringWithFormat:@"%@Thumb/%@",videoDirectory,videoName];
+    
+    BOOL isDirectory;
+    BOOL isExists = [[NSFileManager defaultManager] fileExistsAtPath:thumbPath isDirectory:&isDirectory];
+    BOOL isCreated = isExists && !isDirectory;
+    if (isCreated) {
+        return [UIImage imageWithContentsOfFile:thumbPath];
+    }else{
+        NSDictionary *opts = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO]
+                                                         forKey:AVURLAssetPreferPreciseDurationAndTimingKey];
+        AVURLAsset *urlAsset = [AVURLAsset URLAssetWithURL:url options:opts];
+        AVAssetImageGenerator *generator = [AVAssetImageGenerator assetImageGeneratorWithAsset:urlAsset];
+        generator.appliesPreferredTrackTransform = YES;
+        generator.maximumSize = CGSizeMake(600, 450);
+        NSError *error = nil;
+        CGImageRef img = [generator copyCGImageAtTime:CMTimeMake(0, 10000) actualTime:NULL error:&error];
+        UIImage *image = [UIImage imageWithCGImage: img];
+        
+        if (image) {
+            BACK(^{
+                BOOL created = [[NSFileManager defaultManager] createFileAtPath:thumbPath contents:nil attributes:nil];
+                if (created) {
+                    [UIImageJPEGRepresentation(image, 1.0) writeToFile:thumbPath atomically:YES];
+                }
+            });
+        }
+        
+        return image;
     }
 }
 

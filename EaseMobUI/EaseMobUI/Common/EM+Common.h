@@ -20,6 +20,8 @@
 #define MAIN(block) dispatch_async(dispatch_get_main_queue(),block)
 
 #define COMMON_PADDING (IS_PAD ? 8 : 5)
+#define TOP_PADDING (2)
+#define BUTTOM_PADDING (2)
 #define LEFT_PADDING (IS_PAD ? 20 : 15)
 #define RIGHT_PADDING (LEFT_PADDING)
 

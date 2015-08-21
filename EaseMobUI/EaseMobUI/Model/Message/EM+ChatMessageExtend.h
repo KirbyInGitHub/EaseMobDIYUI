@@ -46,6 +46,16 @@ extern NSString * const kClassName;
  */
 @property (nonatomic, assign) BOOL collected;
 
+/**
+ *  标记是否是即时语音、即时视频消息,该标记只针对文字消息有效,请不要随意修改
+ */
+@property (nonatomic, assign) BOOL isCallMessage;
+
+/**
+ *  文件类型,只针对文件消息有效,请不要随意修改
+ */
+@property (nonatomic, copy) NSString *fileType;
+
 //overwrite
 /**
  *  返回扩展内容绑定View的Class,子类必须重写

@@ -8,10 +8,12 @@
 
 #import "EM+ChatMessageFileBody.h"
 #import "EM+ChatMessageModel.h"
+#import "EM+ChatFileUtils.h"
 
 @implementation EM_ChatMessageFileBody{
     UIImageView *fileView;
     UILabel *nameLabel;
+    UILabel *sizeLabel;
 }
 
 - (instancetype)init{
@@ -22,9 +24,17 @@
         [self addSubview:fileView];
         
         nameLabel = [[UILabel alloc]init];
+        nameLabel.textAlignment = NSTextAlignmentLeft;
+        nameLabel.numberOfLines = 0;
+        nameLabel.lineBreakMode = NSLineBreakByTruncatingMiddle;
         nameLabel.textColor = [UIColor blackColor];
-        nameLabel.textAlignment = NSTextAlignmentCenter;
         [self addSubview:nameLabel];
+        
+        sizeLabel = [[UILabel alloc]init];
+        sizeLabel.textAlignment = NSTextAlignmentLeft;
+        sizeLabel.textColor = [UIColor grayColor];
+        sizeLabel.font = [UIFont systemFontOfSize:10];
+        [self addSubview:sizeLabel];
     }
     return self;
 }
@@ -33,10 +43,9 @@
     [super layoutSubviews];
     
     CGSize size = self.frame.size;
-    fileView.bounds = self.bounds;
-    fileView.center = CGPointMake(size.width / 2, size.height / 2);
-    
-    nameLabel.frame = CGRectMake(0, fileView.frame.origin.y + (fileView.frame.size.height - 30), fileView.frame.size.width, 30);
+    fileView.frame = CGRectMake(0, 0, size.height, size.height);
+    nameLabel.frame = CGRectMake(fileView.frame.size.width + 10, 0, size.width - fileView.frame.size.width - 10 , size.height / 3 * 2);
+    sizeLabel.frame = CGRectMake(fileView.frame.size.width + 10, nameLabel.frame.size.height, (size.width - fileView.frame.size.width - 10) / 2 , size.height / 3);
 }
 
 - (NSMutableDictionary *)userInfo{
@@ -51,6 +60,7 @@
     EMFileMessageBody *fileBody = (EMFileMessageBody *)message.messageBody;
     
     nameLabel.text = fileBody.displayName;
+    sizeLabel.text = [EM_ChatFileUtils stringFileSize:fileBody.fileLength];
 }
 
 @end

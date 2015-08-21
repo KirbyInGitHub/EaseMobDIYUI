@@ -10,6 +10,8 @@
 @class EM_ChatMessageUIConfig;
 
 #define RES_FONT_DEFAUT (14)
+#define RES_TOOL_ICO_FONT (30)
+#define RES_ACTION_ICO_FONT (30)
 
 //属性
 /**

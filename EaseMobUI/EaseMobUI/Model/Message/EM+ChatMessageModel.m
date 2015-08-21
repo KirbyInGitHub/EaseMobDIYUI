@@ -222,8 +222,8 @@
             }
                 break;
             case eMessageBodyType_Video:{
-                EMVideoMessageBody *videoBody = (EMVideoMessageBody *)messageBody;
-                self.bodySize = videoBody.size;
+                CGFloat width = maxWidth / 5 * 4;
+                self.bodySize = CGSizeMake(width, width / 2);
             }
                 break;
             case eMessageBodyType_Location:{
@@ -232,11 +232,12 @@
                 break;
             case eMessageBodyType_Voice:{
                 EMVoiceMessageBody *voiceBody = (EMVoiceMessageBody *)messageBody;
-                self.bodySize = CGSizeMake(voiceBody.duration * 2 + 88, 15);
+                self.bodySize = CGSizeMake(voiceBody.duration * 4 + 44, 25);
             }
                 break;
             case eMessageBodyType_File:{
-                self.bodySize = CGSizeMake(100, 150);
+                CGFloat width = maxWidth / 5 * 4;
+                self.bodySize = CGSizeMake(width, width / 2);
             }
                 break;
             case eMessageBodyType_Command:{

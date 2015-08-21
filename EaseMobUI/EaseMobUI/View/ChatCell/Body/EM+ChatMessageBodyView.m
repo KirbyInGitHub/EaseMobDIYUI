@@ -27,41 +27,42 @@
 - (NSMutableArray *)menuItems{
     NSMutableArray *menuItems = [super menuItems];
     id<IEMMessageBody> messageBody = self.message.messageBody;
-    
-    if (messageBody.messageBodyType == eMessageBodyType_Text) {
-        //复制
-        UIMenuItem *copyItme = [[UIMenuItem alloc]initWithTitle:[EM_ChatResourcesUtils stringWithName:@"common.copy"] action:@selector(copyEMMessage:)];
-        [menuItems addObject:copyItme];
-    }else if (messageBody.messageBodyType == eMessageBodyType_Image){
-        //收藏到表情
-        UIMenuItem *collectFaceItem = [[UIMenuItem alloc]initWithTitle:[EM_ChatResourcesUtils stringWithName:@"common.collect_face"] action:@selector(collectEMMessageFace:)];
-        [menuItems addObject:collectFaceItem];
-    }else if (messageBody.messageBodyType == eMessageBodyType_File){
-        //下载,如果未下载
-        EMFileMessageBody *fileBody = (EMFileMessageBody *)messageBody;
-        if (fileBody.attachmentDownloadStatus == EMAttachmentNotStarted) {
-            UIMenuItem *downloadItem = [[UIMenuItem alloc]initWithTitle:[EM_ChatResourcesUtils stringWithName:@"common.download"] action:@selector(downloadEMMessageFile:)];
-            [menuItems addObject:downloadItem];
+    if (!self.message.extend.isCallMessage) {
+        if (messageBody.messageBodyType == eMessageBodyType_Text) {
+            //复制
+            UIMenuItem *copyItme = [[UIMenuItem alloc]initWithTitle:[EM_ChatResourcesUtils stringWithName:@"common.copy"] action:@selector(copyEMMessage:)];
+            [menuItems addObject:copyItme];
+        }else if (messageBody.messageBodyType == eMessageBodyType_Image){
+            //收藏到表情
+            UIMenuItem *collectFaceItem = [[UIMenuItem alloc]initWithTitle:[EM_ChatResourcesUtils stringWithName:@"common.collect_face"] action:@selector(collectEMMessageFace:)];
+            [menuItems addObject:collectFaceItem];
+        }else if (messageBody.messageBodyType == eMessageBodyType_File){
+            //下载,如果未下载
+            EMFileMessageBody *fileBody = (EMFileMessageBody *)messageBody;
+            if (fileBody.attachmentDownloadStatus == EMAttachmentNotStarted) {
+                UIMenuItem *downloadItem = [[UIMenuItem alloc]initWithTitle:[EM_ChatResourcesUtils stringWithName:@"common.download"] action:@selector(downloadEMMessageFile:)];
+                [menuItems addObject:downloadItem];
+            }
         }
-    }
-    
-    if (messageBody.messageBodyType != eMessageBodyType_Video) {
-        //收藏
-        NSString *conllect = [EM_ChatResourcesUtils stringWithName:@"common.collect"];
-        if (self.message.extend.collected) {
-            conllect = [EM_ChatResourcesUtils stringWithName:@"common.collect_cancel"];
+        
+        if (messageBody.messageBodyType != eMessageBodyType_Video) {
+            //收藏
+            NSString *conllect = [EM_ChatResourcesUtils stringWithName:@"common.collect"];
+            if (self.message.extend.collected) {
+                conllect = [EM_ChatResourcesUtils stringWithName:@"common.collect_cancel"];
+            }
+            UIMenuItem *collectItem = [[UIMenuItem alloc]initWithTitle:conllect action:@selector(collectEMMessage:)];
+            [menuItems addObject:collectItem];
         }
-        UIMenuItem *collectItem = [[UIMenuItem alloc]initWithTitle:conllect action:@selector(collectEMMessage:)];
-        [menuItems addObject:collectItem];
-    }
-    
-    if (messageBody.messageBodyType != eMessageBodyType_Voice) {
-        //转发
         
-        UIMenuItem *forwardItem = [[UIMenuItem alloc]initWithTitle:[EM_ChatResourcesUtils stringWithName:@"common.forward"] action:@selector(forwardEMMessage:)];
-        [menuItems addObject:forwardItem];
-        
-        //转发多条
+        if (messageBody.messageBodyType != eMessageBodyType_Voice) {
+            //转发
+            
+            UIMenuItem *forwardItem = [[UIMenuItem alloc]initWithTitle:[EM_ChatResourcesUtils stringWithName:@"common.forward"] action:@selector(forwardEMMessage:)];
+            [menuItems addObject:forwardItem];
+            
+            //转发多条
+        }
     }
     
     //删除

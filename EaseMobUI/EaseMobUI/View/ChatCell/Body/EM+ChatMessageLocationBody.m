@@ -37,7 +37,7 @@
     CGSize size = self.frame.size;
     
     mapView.bounds = self.bounds;
-    mapView.center = CGPointMake(size.width / 2, size.height);
+    mapView.center = CGPointMake(size.width / 2, size.height / 2);
     addressLabel.frame = CGRectMake(mapView.frame.origin.x, mapView.frame.origin.y + (mapView.frame.size.height - 44), mapView.frame.size.width , 44);
 
 }

@@ -186,7 +186,7 @@
     }
     _bubbleView.message = _message;
     
-    _timeLabel.text = [EM_ChatDateUtils stringMessageDate:message.message.timestamp / 1000];
+    _timeLabel.text = [EM_ChatDateUtils stringFormatterMessageDateFromTimeInterval:message.message.timestamp / 1000];
     _timeLabel.hidden = !_message.extend.showTime;
     
     if (_message.message.deliveryState == eMessageDeliveryState_Failure

@@ -56,10 +56,7 @@
     
     [EaseMobUIClient sharedInstance].userDelegate = self;
     
-    EM_ChatUIConfig *config = [EM_ChatUIConfig defaultConfig];
-    //[config removeActionWithName:kActionNameVoice];
-    //[config removeActionWithName:kActionNameVideo];
-    UIViewController *rootController = [[UStylistChatController alloc]initWithChatter:chatter conversationType:eConversationTypeChat config:config];
+    UIViewController *rootController = [[UStylistChatController alloc]initWithChatter:chatter conversationType:eConversationTypeChat config:nil];
     self.window.rootViewController = [[UINavigationController alloc]initWithRootViewController:rootController];
     [self.window makeKeyAndVisible];
 

@@ -93,6 +93,7 @@
         _actionLabel = [[UILabel alloc]init];
         _actionLabel.textColor = [UIColor blackColor];
         _actionLabel.font = [UIFont systemFontOfSize:RES_FONT_DEFAUT];
+        _actionLabel.textAlignment = NSTextAlignmentCenter;
         NSString *title = _actionAttribute[kAttributeTitle];
         if (title && title.length > 0 ) {
             _actionLabel.text = title;
@@ -110,13 +111,17 @@
     
     CGSize size = self.frame.size;
     
-    CGSize titleSize = [_actionLabel.text sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:_actionLabel.font,NSFontAttributeName, nil]];
-    
-    _actionLabel.frame = CGRectMake((size.width - titleSize.width) / 2, size.height - COMMON_PADDING - titleSize.height, titleSize.width, titleSize.height);
-    
-    CGFloat actionSize = size.height - titleSize.height - COMMON_PADDING * 2;
-    
-    _actionButton.frame = CGRectMake((size.width - actionSize) / 2, COMMON_PADDING, actionSize, actionSize);
+    if (_actionLabel.hidden) {
+        _actionButton.frame = CGRectMake(COMMON_PADDING * 2, COMMON_PADDING * 2, size.width - COMMON_PADDING * 4, size.height - COMMON_PADDING * 4);
+    }else{
+        CGSize titleSize = [_actionLabel.text sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:_actionLabel.font,NSFontAttributeName, nil]];
+        
+        _actionLabel.frame = CGRectMake((size.width - titleSize.width) / 2, size.height - COMMON_PADDING - titleSize.height, titleSize.width, titleSize.height);
+        
+        CGFloat actionSize = size.height - titleSize.height - COMMON_PADDING * 3;
+        
+        _actionButton.frame = CGRectMake((size.width - actionSize) / 2, COMMON_PADDING, actionSize, actionSize);
+    }
 }
 
 - (void)setEM_ChatActionBlcok:(EM_ChatActionBlcok )block{

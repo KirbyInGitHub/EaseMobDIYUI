@@ -1,28 +1,24 @@
 //
 //  EM+ChatController.h
-//  EaseMobUI
+//  EaseMobUI 聊天界面
 //
 //  Created by 周玉震 on 15/7/1.
 //  Copyright (c) 2015年 周玉震. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "EM+ChatBaseController.h"
 #import "EM+ChatUIConfig.h"
 #import "EM+ChatMessageModel.h"
 
 @protocol EM_ChatControllerDelegate;
 
-@interface EM_ChatController : UIViewController
+@interface EM_ChatController : EM_ChatBaseController
 
 /**
  *  会话对象
  */
 @property (nonatomic, strong, readonly) EMConversation *conversation;
 
-/**
- *  当前界面是否在显示
- */
-@property (nonatomic,assign,readonly) BOOL isShow;
 
 @property (nonatomic,weak) id<EM_ChatControllerDelegate> delegate;
 

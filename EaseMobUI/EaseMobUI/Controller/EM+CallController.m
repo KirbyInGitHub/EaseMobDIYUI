@@ -12,6 +12,7 @@
 #import "UIImageView+WebCache.h"
 #import "EM+Common.h"
 #import "EM+ChatResourcesUtils.h"
+#import "EM+ChatMessageExtend.h"
 
 #import <CoreTelephony/CTCallCenter.h>
 #import <CoreTelephony/CTCall.h>
@@ -252,7 +253,7 @@
                 _rejectButton.hidden = NO;
                 _agreeButton.hidden = NO;
                 NSError *error;
-                NSString *ringPath = [[NSBundle mainBundle] pathForResource:@"callRing" ofType:@"mp3" inDirectory:@"EM_Resource.bundle/file"];
+                NSString *ringPath = [[NSBundle mainBundle] pathForResource:@"callRing" ofType:@"mp3" inDirectory:@"EM_Resource.bundle/media"];
                 _ringPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:[[NSURL alloc] initWithString:ringPath] error:&error];
                 if (_ringPlayer && !error) {
                     _ringPlayer.volume = 0.8;
@@ -297,18 +298,22 @@
             break;
         case EMChatCallStateEnd:{
             NSString *content;
+            NSString *hintMessage;
             //接入
             if (_callAction == EMChatCallActionIn) {
                 if (_callState == EMChatCallStateWait) {
                     if (_reject) {
                         //等待中拒绝
                         content = [NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"call.interrupt"],_nickName];
+                        hintMessage = [EM_ChatResourcesUtils stringWithName:@"call.message.hint.reject"];
                     }else{
                         if (_reason == eCallReason_NoResponse) {
                             content = [NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"call.no_answer"],_nickName];
+                            hintMessage = [EM_ChatResourcesUtils stringWithName:@"call.message.hint.no_response"];
                         }else{
                             //等待中对方挂断
                             content = [NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"call.hangup"],_nickName];
+                            hintMessage = [EM_ChatResourcesUtils stringWithName:@"call.message.hint.opposite_cancel"];
                         }
                     }
                 }else{
@@ -319,6 +324,7 @@
                         //通话中对方挂断
                         content = [NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"call.end"],_nickName,[self stringWithTime]];
                     }
+                    hintMessage = [NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"call.message.hint.end"],[self stringWithTime]];
                 }
                 
             }else{
@@ -326,6 +332,7 @@
                     if (_interrupt) {
                         //等待中挂断
                         content = [NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"call.interrupt"],_nickName];
+                        hintMessage = [EM_ChatResourcesUtils stringWithName:@"call.message.hint.own_cancel"];
                     }else{
                         if (_reason == eCallReason_Offline) {
                             content = [NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"call.offline"],_nickName];
@@ -337,6 +344,7 @@
                             //等待中对方拒绝
                             content = [NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"call.reject"],_nickName];
                         }
+                        hintMessage = [EM_ChatResourcesUtils stringWithName:@"call.message.hint.opposite_no_response"];
                     }
                 }else{
                     if (_interrupt) {
@@ -346,6 +354,7 @@
                         //通话中对方挂断
                         content = [NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"call.end"],_nickName,[self stringWithTime]];
                     }
+                    hintMessage = [NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"call.message.hint.end"],[self stringWithTime]];
                 }
             }
             
@@ -365,6 +374,18 @@
             _ringPlayer = nil;
             
             BACK(^{
+            
+                EM_ChatMessageExtend *extend = [[EM_ChatMessageExtend alloc]init];
+                extend.isCallMessage = YES;
+                
+                EMChatText *chatText = [[EMChatText alloc] initWithText:hintMessage];
+                EMTextMessageBody *textBody = [[EMTextMessageBody alloc] initWithChatObject:chatText];
+                EMMessage *message = [[EMMessage alloc] initWithReceiver:_callSession.sessionChatter bodies:@[textBody]];
+                message.isRead = YES;
+                message.deliveryState = eMessageDeliveryState_Delivered;
+                message.ext = [extend getContentValues];
+                
+                [[EaseMob sharedInstance].chatManager insertMessagesToDB:@[message] forChatter:_callSession.sessionChatter append2Chat:YES];
                 sleep(3);
                 MAIN(^{
                     [self dismissViewControllerAnimated:YES completion:nil];

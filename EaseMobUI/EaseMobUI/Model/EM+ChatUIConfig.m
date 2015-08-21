@@ -10,6 +10,7 @@
 #import "EM+ChatMessageUIConfig.h"
 #import "EM+Common.h"
 #import "EM+ChatResourcesUtils.h"
+#import "UIColor+Hex.h"
 
 @interface EM_ChatUIConfig()
 
@@ -53,42 +54,68 @@ NSString * const kActionNameFile = @"kActionNameFile";
     config.hiddenOfEmoji = NO;
     
     //录音按钮
-    [config setToolName:kButtonNameRecord attributeName:kAttributeNormalImage attribute:[EM_ChatResourcesUtils toolImageWithName:@"tool_record"]];
+    [config setToolName:kButtonNameRecord attributeName:kAttributeFont attribute:[EM_ChatResourcesUtils iconFontWithSize:RES_TOOL_ICO_FONT]];
+    [config setToolName:kButtonNameRecord attributeName:kAttributeText attribute:kEMChatIconToolVoice];
     
     //键盘
-    [config setToolName:kButtonNameKeyboard attributeName:kAttributeNormalImage attribute:[EM_ChatResourcesUtils toolImageWithName:@"tool_keyboard"]];
+    [config setToolName:kButtonNameKeyboard attributeName:kAttributeFont attribute:[EM_ChatResourcesUtils iconFontWithSize:RES_TOOL_ICO_FONT]];
+    [config setToolName:kButtonNameKeyboard attributeName:kAttributeText attribute:kEMChatIconToolKeyboard];
     
     //Emoji
-    [config setToolName:kButtonNameEmoji attributeName:kAttributeNormalImage attribute:[EM_ChatResourcesUtils toolImageWithName:@"tool_emoji"]];
+    [config setToolName:kButtonNameEmoji attributeName:kAttributeFont attribute:[EM_ChatResourcesUtils iconFontWithSize:RES_TOOL_ICO_FONT]];
+    [config setToolName:kButtonNameEmoji attributeName:kAttributeText attribute:kEMChatIconToolFace];
     
     //动作
-    [config setToolName:kButtonNameAction attributeName:kAttributeNormalImage attribute:[EM_ChatResourcesUtils toolImageWithName:@"tool_action"]];
-    
+    [config setToolName:kButtonNameAction attributeName:kAttributeFont attribute:[EM_ChatResourcesUtils iconFontWithSize:RES_TOOL_ICO_FONT]];
+    [config setToolName:kButtonNameAction attributeName:kAttributeText attribute:kEMChatIconToolAction];
     
     //图片
+    [config setActionName:kActionNameImage attributeName:kAttributeFont attribute:[EM_ChatResourcesUtils iconFontWithSize:RES_ACTION_ICO_FONT + 1]];
+    [config setActionName:kActionNameImage attributeName:kAttributeText attribute:kEMChatIconActionImage];
+    [config setActionName:kActionNameImage attributeName:kAttributeBorderColor attribute:[UIColor colorWithHEX:LINE_COLOR alpha:1]];
+    [config setActionName:kActionNameImage attributeName:kAttributeBorderWidth attribute:@(0.5)];
+    [config setActionName:kActionNameImage attributeName:kAttributeCornerRadius attribute:@(6)];
     [config setActionName:kActionNameImage attributeName:kAttributeTitle attribute:[EM_ChatResourcesUtils stringWithName:@"common.image"]];
-    [config setActionName:kActionNameImage attributeName:kAttributeNormalImage attribute:[EM_ChatResourcesUtils actionImageWithName:@"action_image"]];
-    
+
     //相机
+    [config setActionName:kActionNameCamera attributeName:kAttributeFont attribute:[EM_ChatResourcesUtils iconFontWithSize:RES_ACTION_ICO_FONT]];
+    [config setActionName:kActionNameCamera attributeName:kAttributeText attribute:kEMChatIconActionCamera];
+    [config setActionName:kActionNameCamera attributeName:kAttributeBorderColor attribute:[UIColor colorWithHEX:LINE_COLOR alpha:1]];
+    [config setActionName:kActionNameCamera attributeName:kAttributeBorderWidth attribute:@(0.5)];
+    [config setActionName:kActionNameCamera attributeName:kAttributeCornerRadius attribute:@(6)];
     [config setActionName:kActionNameCamera attributeName:kAttributeTitle attribute:[EM_ChatResourcesUtils stringWithName:@"common.camera"]];
-    [config setActionName:kActionNameCamera attributeName:kAttributeNormalImage attribute:[EM_ChatResourcesUtils actionImageWithName:@"action_camera"]];
     
     //语音
+    [config setActionName:kActionNameVoice attributeName:kAttributeFont attribute:[EM_ChatResourcesUtils iconFontWithSize:RES_ACTION_ICO_FONT]];
+    [config setActionName:kActionNameVoice attributeName:kAttributeText attribute:kEMChatIconActionAudio];
+    [config setActionName:kActionNameVoice attributeName:kAttributeBorderColor attribute:[UIColor colorWithHEX:LINE_COLOR alpha:1]];
+    [config setActionName:kActionNameVoice attributeName:kAttributeBorderWidth attribute:@(0.5)];
+    [config setActionName:kActionNameVoice attributeName:kAttributeCornerRadius attribute:@(6)];
     [config setActionName:kActionNameVoice attributeName:kAttributeTitle attribute:[EM_ChatResourcesUtils stringWithName:@"common.voice"]];
-    [config setActionName:kActionNameVoice attributeName:kAttributeNormalImage attribute:[EM_ChatResourcesUtils actionImageWithName:@"action_phone"]];
-    
     
     //视频
+    [config setActionName:kActionNameVideo attributeName:kAttributeFont attribute:[EM_ChatResourcesUtils iconFontWithSize:RES_ACTION_ICO_FONT]];
+    [config setActionName:kActionNameVideo attributeName:kAttributeText attribute:kEMChatIconActionVideo];
+    [config setActionName:kActionNameVideo attributeName:kAttributeBorderColor attribute:[UIColor colorWithHEX:LINE_COLOR alpha:1]];
+    [config setActionName:kActionNameVideo attributeName:kAttributeBorderWidth attribute:@(0.5)];
+    [config setActionName:kActionNameVideo attributeName:kAttributeCornerRadius attribute:@(6)];
     [config setActionName:kActionNameVideo attributeName:kAttributeTitle attribute:[EM_ChatResourcesUtils stringWithName:@"common.video"]];
-    [config setActionName:kActionNameVideo attributeName:kAttributeNormalImage attribute:[EM_ChatResourcesUtils actionImageWithName:@"action_video"]];
     
     //位置
+    [config setActionName:kActionNameLocation attributeName:kAttributeFont attribute:[EM_ChatResourcesUtils iconFontWithSize:RES_ACTION_ICO_FONT + 1]];
+    [config setActionName:kActionNameLocation attributeName:kAttributeText attribute:kEMChatIconActionLocation];
+    [config setActionName:kActionNameLocation attributeName:kAttributeBorderColor attribute:[UIColor colorWithHEX:LINE_COLOR alpha:1]];
+    [config setActionName:kActionNameLocation attributeName:kAttributeBorderWidth attribute:@(0.5)];
+    [config setActionName:kActionNameLocation attributeName:kAttributeCornerRadius attribute:@(6)];
     [config setActionName:kActionNameLocation attributeName:kAttributeTitle attribute:[EM_ChatResourcesUtils stringWithName:@"common.location"]];
-    [config setActionName:kActionNameLocation attributeName:kAttributeNormalImage attribute:[EM_ChatResourcesUtils actionImageWithName:@"action_location"]];
     
     //文件
+    [config setActionName:kActionNameFile attributeName:kAttributeFont attribute:[EM_ChatResourcesUtils iconFontWithSize:RES_ACTION_ICO_FONT]];
+    [config setActionName:kActionNameFile attributeName:kAttributeText attribute:kEMChatIconActionFile];
+    [config setActionName:kActionNameFile attributeName:kAttributeBorderColor attribute:[UIColor colorWithHEX:LINE_COLOR alpha:1]];
+    [config setActionName:kActionNameFile attributeName:kAttributeBorderWidth attribute:@(0.5)];
+    [config setActionName:kActionNameFile attributeName:kAttributeCornerRadius attribute:@(6)];
     [config setActionName:kActionNameFile attributeName:kAttributeTitle attribute:[EM_ChatResourcesUtils stringWithName:@"common.file"]];
-    [config setActionName:kActionNameFile attributeName:kAttributeNormalImage attribute:[EM_ChatResourcesUtils actionImageWithName:@"action_file"]];
     
     config.messageConfig = [EM_ChatMessageUIConfig defaultConfig];
     

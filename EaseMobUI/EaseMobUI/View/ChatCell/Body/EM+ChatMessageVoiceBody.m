@@ -63,9 +63,9 @@
 
     NSString *time;
     if (voiceBody.duration < 60) {
-        time = [NSString stringWithFormat:@"%d\"",voiceBody.duration];
+        time = [NSString stringWithFormat:@"%ld\"",voiceBody.duration];
     }else{
-        time = [NSString stringWithFormat:@"%d\'%d\"",voiceBody.duration / 60,voiceBody.duration % 60];
+        time = [NSString stringWithFormat:@"%ld\'%ld\"",voiceBody.duration / 60,voiceBody.duration % 60];
     }
     timeLabel.text = time;
     

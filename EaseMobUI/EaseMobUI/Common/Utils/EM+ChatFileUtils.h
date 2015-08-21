@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+@class UIImage;
 
 #define kDocumentFolder         [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0]
 #define kCacheFolder            [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0]
@@ -80,5 +81,13 @@ extern NSString * const kFileAttributes;
 + (NSString *)stringFileSizeAtPath:(NSString *)path;
 
 + (NSString *)stringFileSize:(long long)fileSize;
+
++ (UIImage *)thumbImageFromOriginalImage:(UIImage *)image width:(float)width height:(float)height;
+
++ (UIImage *)thumbImageWithURL:(NSURL *)url;
+
++ (UIImage *)thumbAudioWithURL:(NSURL *)url;
+
++ (UIImage *)thumbVideoWithURL:(NSURL *)url;
 
 @end
