@@ -25,7 +25,7 @@
 * [期望](#3)
   
 <h2 id = "1">简介</h2>
-集成环信的即时通讯功能，pod集成，方便管理。简单继承，轻松定制自己的UI界面。当前最新版本```0.1.9```,主要由会话列表(```EM_ConversationListController```)、好友列表(```EM_FriendsController```)和聊天界面(```EM_ChatController```)组成。很多功能和界面都在开发中，聊天界面的UI也没有开发完善，所以现在显示很挫。在```1.0.0```版本之前会完成所有可以使用环信SDK实现的功能，并且加入其它实用的功能，在此之前也不适合使用。当然你也可以参考环信的[Demo](http://www.easemob.com/downloads)。
+集成环信的即时通讯功能，pod集成，方便管理。简单继承，轻松定制自己的UI界面。当前最新版本```0.2.0```,主要由会话列表(```EM_ConversationListController```)、好友列表(```EM_FriendsController```)和聊天界面(```EM_ChatController```)组成。很多功能和界面都在开发中，聊天界面的UI也没有开发完善，所以现在显示很挫。在```1.0.0```版本之前会完成所有可以使用环信SDK实现的功能，并且加入其它实用的功能，在此之前也不适合使用。当然你也可以参考环信的[Demo](http://www.easemob.com/downloads)。
 
 <h3 id = "1.1">环信SDK</h3>
 使用pod集成的[EaseMobSDKFull](https://github.com/dujiepeng/EaseMobSDKFull)，集成版本```2.1.7```。因为pod集成[EaseMobSDK](https://github.com/easemob/sdk-ios-cocoapods)是没有语音和视频通讯功能的。
