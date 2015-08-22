@@ -276,7 +276,6 @@
 		B9C0E4AA1B7DAE010036C0CB /* UserCustomExtendView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserCustomExtendView.m; sourceTree = "<group>"; };
 		B9C0E4AC1B7DE6930036C0CB /* EM+CallController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EM+CallController.h"; sourceTree = "<group>"; };
 		B9C0E4AD1B7DE6930036C0CB /* EM+CallController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "EM+CallController.m"; sourceTree = "<group>"; };
-		B9C0E4B51B7DF0C00036C0CB /* EM+ChatUserDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EM+ChatUserDelegate.h"; sourceTree = "<group>"; };
 		B9C847101B7B92DB00D4D390 /* EM+ChatMessageContent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EM+ChatMessageContent.h"; sourceTree = "<group>"; };
 		B9C847111B7B92DB00D4D390 /* EM+ChatMessageContent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "EM+ChatMessageContent.m"; sourceTree = "<group>"; };
 		B9CFBC6E1B8860B1007D7C0D /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
@@ -578,7 +577,6 @@
 			children = (
 				B990CA4D1B5F735300BA25B1 /* EM+ChatMessageManager.h */,
 				B990CA4E1B5F735300BA25B1 /* EM+ChatMessageManager.m */,
-				B9C0E4B51B7DF0C00036C0CB /* EM+ChatUserDelegate.h */,
 				B96A55E21B82CEA900ABBE1E /* EM+ChatExplorerConnection.h */,
 				B96A55E31B82CEA900ABBE1E /* EM+ChatExplorerConnection.m */,
 				B9A0E0FC1B841835006E5636 /* EM+ChatHttpErrorResponse.h */,

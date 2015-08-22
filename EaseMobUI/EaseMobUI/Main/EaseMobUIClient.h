@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-#import "EM+ChatUserDelegate.h"
+@protocol EM_ChatUserDelegate;
 
 extern NSString * const kEMNotificationCallActionIn;
 extern NSString * const kEMNotificationCallActionOut;
@@ -36,5 +36,30 @@ extern NSString * const kEMCallTypeVideo;
 - (void)applicationWillEnterForeground:(UIApplication *)application;
 
 - (void)applicationWillTerminate:(UIApplication *)application;
+
+@end
+
+@protocol EM_ChatUserDelegate <NSObject>
+
+@required
+
+@optional
+/**
+ *  根据用户名获取昵称
+ *
+ *  @param chatter 用户名
+ *
+ *  @return 昵称
+ */
+- (NSString *)nickNameWithChatter:(NSString *)chatter;
+
+/**
+ *  根据用户名获取头像网络地址
+ *
+ *  @param chatter 用户名
+ *
+ *  @return 头像网络地址
+ */
+- (NSString *)avatarWithChatter:(NSString *)chatter;
 
 @end
