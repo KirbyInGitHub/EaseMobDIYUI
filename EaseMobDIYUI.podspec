@@ -10,7 +10,7 @@ Pod::Spec.new do |s|
 
   # ―――  Spec Metadata  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   s.name         = "EaseMobDIYUI"
-  s.version      = "0.1.9"
+  s.version      = "0.2.0"
   s.summary      = "环信DIY聊天UI"
 
   s.description  = <<-DESC
