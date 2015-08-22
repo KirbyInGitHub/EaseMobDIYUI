@@ -516,7 +516,9 @@ EM_ChatController
 
 <h3 id = "2.8">自定义扩展</h3>
 **自定义扩展**是通过环信```EMMessage```的扩展属性```ext```来实现的，我只是对自定义扩展进行了规范，可以让大家方便扩展的同时实现了自己的一些功能。为了统一iOS和Android，在声明属性的时候请尽量只声明NSString、BOOL和数字类型，因为Android只支持这些类型。
-```EM_ChatMessageExtend```
+```
+EM_ChatMessageExtend
+```
 这里有我自己的一些扩展属性，大家只需要继承就可以了。
 ```
 
