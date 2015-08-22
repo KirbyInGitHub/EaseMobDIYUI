@@ -10,6 +10,7 @@
 #import "EM+ChatInputView.h"
 
 #import "EM+ChatUIConfig.h"
+#import "EM+ChatResourcesUtils.h"
 #import "EM+Common.h"
 #import "UIColor+Hex.h"
 
@@ -46,52 +47,9 @@
         recordButton.contentEdgeInsets = UIEdgeInsetsMake(PADDING, PADDING, PADDING, PADDING);
         [recordButton addTarget:self action:@selector(recordClicked:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:recordButton];
+        
         NSDictionary *recordDictionary = _config.toolDictionary[kButtonNameRecord];
-        if (recordDictionary) {
-            UIFont *font = recordDictionary[kAttributeFont];
-            if (font) {
-                recordButton.titleLabel.font = font;
-            }
-            
-            UIImage *normalImage = recordDictionary[kAttributeNormalImage];
-            if (normalImage) {
-                [recordButton setImage:normalImage forState:UIControlStateNormal];
-            }else{
-                [recordButton setImage:[UIImage imageNamed:RES_IMAGE_TOOL(@"tool_record")] forState:UIControlStateNormal];
-            }
-            
-            UIImage *highlightImage = recordDictionary[kAttributeHighlightImage];
-            if (highlightImage) {
-                [recordButton setImage:highlightImage forState:UIControlStateHighlighted];
-            }
-            
-            if (!normalImage && !highlightImage) {
-                NSString *text = recordDictionary[kAttributeText];
-                [recordButton setTitle:text forState:UIControlStateNormal];
-                [recordButton setTitleColor:[UIColor colorWithHEX:TEXT_NORMAL_COLOR alpha:1.0] forState:UIControlStateNormal];
-                [recordButton setTitleColor:[UIColor colorWithHEX:TEXT_SELECT_COLOR alpha:1.0] forState:UIControlStateHighlighted];
-            }
-            
-            UIColor *backgroundColor = recordDictionary[kAttributeBackgroundColor];
-            if (backgroundColor) {
-                recordButton.backgroundColor = backgroundColor;
-            }
-            
-            UIColor *borderColor = recordDictionary[kAttributeBorderColor];
-            if (borderColor) {
-                recordButton.layer.borderColor = borderColor.CGColor;
-            }
-            
-            id borderWidth = recordDictionary[kAttributeBorderWidth];
-            if (borderWidth) {
-                recordButton.layer.borderWidth = [borderWidth floatValue];
-            }
-            
-            id cornerRadius = recordDictionary[kAttributeCornerRadius];
-            if (cornerRadius) {
-                recordButton.layer.cornerRadius = [cornerRadius floatValue];
-            }
-        }
+        [self setButton:recordButton attribute:recordDictionary];
         
         //表情按钮
         emojiButton = [[UIButton alloc]init];
@@ -100,53 +58,9 @@
         emojiButton.contentEdgeInsets = UIEdgeInsetsMake(PADDING, PADDING, PADDING, PADDING);
         [emojiButton addTarget:self action:@selector(emojiClicked:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:emojiButton];
+        
         NSDictionary *emojiDictionary = _config.toolDictionary[kButtonNameEmoji];
-        if (emojiDictionary) {
-            
-            UIFont *font = emojiDictionary[kAttributeFont];
-            if (font) {
-                emojiButton.titleLabel.font = font;
-            }
-            
-            UIImage *normalImage = emojiDictionary[kAttributeNormalImage];
-            if (normalImage) {
-                [emojiButton setImage:normalImage forState:UIControlStateNormal];
-            }else{
-                [emojiButton setImage:[UIImage imageNamed:RES_IMAGE_TOOL(@"tool_emoji")] forState:UIControlStateNormal];
-            }
-            
-            UIImage *highlightImage = emojiDictionary[kAttributeHighlightImage];
-            if (highlightImage) {
-                [emojiButton setImage:highlightImage forState:UIControlStateHighlighted];
-            }
-            
-            if (!normalImage && !highlightImage) {
-                NSString *text = emojiDictionary[kAttributeText];
-                [emojiButton setTitle:text forState:UIControlStateNormal];
-                [emojiButton setTitleColor:[UIColor colorWithHEX:TEXT_NORMAL_COLOR alpha:1.0] forState:UIControlStateNormal];
-                [emojiButton setTitleColor:[UIColor colorWithHEX:TEXT_SELECT_COLOR alpha:1.0] forState:UIControlStateHighlighted];
-            }
-            
-            UIColor *backgroundColor = emojiDictionary[kAttributeBackgroundColor];
-            if (backgroundColor) {
-                emojiButton.backgroundColor = backgroundColor;
-            }
-            
-            UIColor *borderColor = emojiDictionary[kAttributeBorderColor];
-            if (borderColor) {
-                emojiButton.layer.borderColor = borderColor.CGColor;
-            }
-            
-            id borderWidth = emojiDictionary[kAttributeBorderWidth];
-            if (borderWidth) {
-                emojiButton.layer.borderWidth = [borderWidth floatValue];
-            }
-            
-            id cornerRadius = emojiDictionary[kAttributeCornerRadius];
-            if (cornerRadius) {
-                emojiButton.layer.cornerRadius = [cornerRadius floatValue];
-            }
-        }
+        [self setButton:emojiButton attribute:emojiDictionary];
         
         //动作按钮
         actionButton = [[UIButton alloc]init];
@@ -154,55 +68,10 @@
         actionButton.hidden = _config.actionDictionary.count == 0;
         actionButton.contentEdgeInsets = UIEdgeInsetsMake(PADDING, PADDING, PADDING, PADDING);
         [actionButton addTarget:self action:@selector(actionClicked:) forControlEvents:UIControlEventTouchUpInside];
-        
         [self addSubview:actionButton];
+        
         NSDictionary *actionDictionary = _config.toolDictionary[kButtonNameAction];
-        if (actionDictionary) {
-            
-            UIFont *font = actionDictionary[kAttributeFont];
-            if (font) {
-                actionButton.titleLabel.font = font;
-            }
-            
-            UIImage *normalImage = actionDictionary[kAttributeNormalImage];
-            if (normalImage) {
-                [actionButton setImage:normalImage forState:UIControlStateNormal];
-            }else{
-                [actionButton setImage:[UIImage imageNamed:RES_IMAGE_TOOL(@"tool_action")] forState:UIControlStateNormal];
-            }
-            
-            UIImage *highlightImage = actionDictionary[kAttributeHighlightImage];
-            if (highlightImage) {
-                [actionButton setImage:highlightImage forState:UIControlStateHighlighted];
-            }
-            
-            if (!normalImage && !highlightImage) {
-                NSString *text = actionDictionary[kAttributeText];
-                [actionButton setTitle:text forState:UIControlStateNormal];
-                [actionButton setTitleColor:[UIColor colorWithHEX:TEXT_NORMAL_COLOR alpha:1.0] forState:UIControlStateNormal];
-                [actionButton setTitleColor:[UIColor colorWithHEX:TEXT_SELECT_COLOR alpha:1.0] forState:UIControlStateHighlighted];
-            }
-            
-            UIColor *backgroundColor = actionDictionary[kAttributeBackgroundColor];
-            if (backgroundColor) {
-                actionButton.backgroundColor = backgroundColor;
-            }
-            
-            UIColor *borderColor = actionDictionary[kAttributeBorderColor];
-            if (borderColor) {
-                actionButton.layer.borderColor = borderColor.CGColor;
-            }
-            
-            id borderWidth = actionDictionary[kAttributeBorderWidth];
-            if (borderWidth) {
-                actionButton.layer.borderWidth = [borderWidth floatValue];
-            }
-            
-            id cornerRadius = actionDictionary[kAttributeCornerRadius];
-            if (cornerRadius) {
-                actionButton.layer.cornerRadius = [cornerRadius floatValue];
-            }
-        }
+        [self setButton:actionButton attribute:actionDictionary];
         
         inputView = [[EM_ChatInputView alloc]init];
         inputView.delegate = self;
@@ -214,12 +83,51 @@
         moreStateButton.hidden = YES;
         moreStateButton.backgroundColor = [UIColor colorWithHexRGB:0xF8F8F8];
         moreStateButton.layer.cornerRadius = 6;
-        [moreStateButton setImage:[UIImage imageNamed:RES_IMAGE_TOOL(@"tool_state_normal")] forState:UIControlStateNormal];
-        [moreStateButton setImage:[UIImage imageNamed:RES_IMAGE_TOOL(@"tool_state_selected")] forState:UIControlStateSelected];
+        moreStateButton.titleLabel.font = [EM_ChatResourcesUtils iconFontWithSize:50];
+        [moreStateButton setTitle:kEMChatIconToolDown forState:UIControlStateNormal];
+        [moreStateButton setTitle:kEMChatIconToolUp forState:UIControlStateSelected];
+        [moreStateButton setTitleColor:[UIColor colorWithHexRGB:TEXT_NORMAL_COLOR] forState:UIControlStateNormal];
+        [moreStateButton setTitleColor:[UIColor colorWithHexRGB:TEXT_SELECT_COLOR] forState:UIControlStateHighlighted];
         [moreStateButton addTarget:self action:@selector(stateClicked:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:moreStateButton];
     }
     return self;
+}
+
+- (void)setButton:(UIButton *)button attribute:(NSDictionary *)attribute{
+    if (!attribute || attribute.count == 0) {
+        return;
+    }
+    UIFont *font = attribute[kAttributeFont];
+    if (font) {
+        button.titleLabel.font = font;
+        NSString *text = attribute[kAttributeText];
+        [button setTitle:text forState:UIControlStateNormal];
+        
+        UIColor *normalColor = attribute[kAttributeNormalColor];
+        if (normalColor) {
+            [button setTitleColor:normalColor forState:UIControlStateNormal];
+        }else{
+            [button setTitleColor:[UIColor colorWithHexRGB:TEXT_NORMAL_COLOR] forState:UIControlStateNormal];
+        }
+        
+        UIColor *highlightColor = attribute[kAttributeHighlightColor];
+        if (highlightColor) {
+            [button setTitleColor:highlightColor forState:UIControlStateHighlighted];
+        }else{
+            [button setTitleColor:[UIColor colorWithHexRGB:TEXT_SELECT_COLOR] forState:UIControlStateHighlighted];
+        }
+    }else{
+        UIImage *normalImage = attribute[kAttributeNormalImage];
+        if (normalImage) {
+            [button setImage:normalImage forState:UIControlStateNormal];
+        }
+        
+        UIImage *highlightImage = attribute[kAttributeHighlightImage];
+        if (highlightImage) {
+            [button setImage:highlightImage forState:UIControlStateHighlighted];
+        }
+    }
 }
 
 - (void)setAvtive:(BOOL)avtive{
@@ -349,34 +257,10 @@
     
     if (_stateRecord) {
         NSDictionary *keyboardDictionary = _config.toolDictionary[kButtonNameKeyboard];
-        if (keyboardDictionary) {
-            UIImage *normalImage = keyboardDictionary[kAttributeNormalImage];
-            if (normalImage) {
-                [recordButton setImage:normalImage forState:UIControlStateNormal];
-            }else{
-                [recordButton setImage:[UIImage imageNamed:RES_IMAGE_TOOL(@"tool_keyboard")] forState:UIControlStateNormal];
-            }
-            
-            UIImage *highlightImage = keyboardDictionary[kAttributeHighlightImage];
-            if (highlightImage) {
-                [recordButton setImage:highlightImage forState:UIControlStateHighlighted];
-            }
-        }
+        [self setButton:recordButton attribute:keyboardDictionary];
     }else{
         NSDictionary *recordDictionary = _config.toolDictionary[kButtonNameRecord];
-        if (recordDictionary) {
-            UIImage *normalImage = recordDictionary[kAttributeNormalImage];
-            if (normalImage) {
-                [recordButton setImage:normalImage forState:UIControlStateNormal];
-            }else{
-                [recordButton setImage:[UIImage imageNamed:RES_IMAGE_TOOL(@"tool_record")] forState:UIControlStateNormal];
-            }
-            
-            UIImage *highlightImage = recordDictionary[kAttributeHighlightImage];
-            if (highlightImage) {
-                [recordButton setImage:highlightImage forState:UIControlStateHighlighted];
-            }
-        }
+        [self setButton:recordButton attribute:recordDictionary];
     }
 }
 
@@ -385,34 +269,10 @@
     
     if (_stateEmoji) {
         NSDictionary *keyboardDictionary = _config.toolDictionary[kButtonNameKeyboard];
-        if (keyboardDictionary) {
-            UIImage *normalImage = keyboardDictionary[kAttributeNormalImage];
-            if (normalImage) {
-                [emojiButton setImage:normalImage forState:UIControlStateNormal];
-            }else{
-                [emojiButton setImage:[UIImage imageNamed:RES_IMAGE_TOOL(@"tool_keyboard")] forState:UIControlStateNormal];
-            }
-            
-            UIImage *highlightImage = keyboardDictionary[kAttributeHighlightImage];
-            if (highlightImage) {
-                [emojiButton setImage:highlightImage forState:UIControlStateHighlighted];
-            }
-        }
+        [self setButton:emojiButton attribute:keyboardDictionary];
     }else{
         NSDictionary *emojiDictionary = _config.toolDictionary[kButtonNameEmoji];
-        if (emojiDictionary) {
-            UIImage *normalImage = emojiDictionary[kAttributeNormalImage];
-            if (normalImage) {
-                [emojiButton setImage:normalImage forState:UIControlStateNormal];
-            }else{
-                [emojiButton setImage:[UIImage imageNamed:RES_IMAGE_TOOL(@"tool_emoji")] forState:UIControlStateNormal];
-            }
-            
-            UIImage *highlightImage = emojiDictionary[kAttributeHighlightImage];
-            if (highlightImage) {
-                [emojiButton setImage:highlightImage forState:UIControlStateHighlighted];
-            }
-        }
+        [self setButton:emojiButton attribute:emojiDictionary];
     }
 }
 
@@ -421,34 +281,10 @@
     
     if (_stateAction) {
         NSDictionary *keyboardDictionary = _config.toolDictionary[kButtonNameKeyboard];
-        if (keyboardDictionary) {
-            UIImage *normalImage = keyboardDictionary[kAttributeNormalImage];
-            if (normalImage) {
-                [actionButton setImage:normalImage forState:UIControlStateNormal];
-            }else{
-                [actionButton setImage:[UIImage imageNamed:RES_IMAGE_TOOL(@"tool_keyboard")] forState:UIControlStateNormal];
-            }
-            
-            UIImage *highlightImage = keyboardDictionary[kAttributeHighlightImage];
-            if (highlightImage) {
-                [actionButton setImage:highlightImage forState:UIControlStateHighlighted];
-            }
-        }
+        [self setButton:actionButton attribute:keyboardDictionary];
     }else{
         NSDictionary *actionDictionary = _config.toolDictionary[kButtonNameAction];
-        if (actionDictionary) {
-            UIImage *normalImage = actionDictionary[kAttributeNormalImage];
-            if (normalImage) {
-                [actionButton setImage:normalImage forState:UIControlStateNormal];
-            }else{
-                [actionButton setImage:[UIImage imageNamed:RES_IMAGE_TOOL(@"tool_action")] forState:UIControlStateNormal];
-            }
-            
-            UIImage *highlightImage = actionDictionary[kAttributeHighlightImage];
-            if (highlightImage) {
-                [actionButton setImage:highlightImage forState:UIControlStateHighlighted];
-            }
-        }
+        [self setButton:actionButton attribute:actionDictionary];
     }
 }
 

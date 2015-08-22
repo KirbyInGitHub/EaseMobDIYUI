@@ -7,22 +7,28 @@
 //
 
 #import "EM+ChatController.h"
-
 #import "EM+LocationController.h"
-#import "EM+ChatToolBar.h"
+#import "EM+ExplorerController.h"
+#import "UIViewController+HUD.h"
+
 #import "EM+ChatTableView.h"
+#import "EM+ChatMessageCell.h"
+#import "EM+ChatToolBar.h"
 #import "EM+ChatInputTool.h"
+
 #import "EM+ChatMessageModel.h"
 #import "EM+ChatMessageManager.h"
-#import "EM+ChatDBM.h"
-#import "EM+Common.h"
-#import "EM+ChatConversation.h"
+#import "EaseMobUIClient.h"
 
-#import "UIViewController+HUD.h"
+#import "EM+Common.h"
+#import "EM+ChatResourcesUtils.h"
+#import "EM+ChatDBUtils.h"
+#import "EM_ChatConversation.h"
 
 #import "MJRefresh.h"
 #import "MBProgressHUD.h"
 #import "UIColor+Hex.h"
+#import "DDLog.h"
 
 #import <MediaPlayer/MediaPlayer.h>
 #import <MobileCoreServices/MobileCoreServices.h>
@@ -57,12 +63,12 @@ UIActionSheetDelegate,
 EM_MessageToolBarDelegate,
 EM_ChatMessageCellDelegate,
 EM_LocationControllerDelegate,
+EM_ExplorerControllerDelegate,
 EM_ChatMessageManagerDelegate,
 EMChatManagerDelegate,
 IEMChatProgressDelegate,
 EMDeviceManagerDelegate>
 
-@property (nonatomic, strong) EMConversation *conversation;
 @property (nonatomic, strong) NSMutableArray *dataSource;
 @property (nonatomic, strong) NSMutableArray *imageDataArray;
 @property (nonatomic, strong) NSMutableArray *voiceDataArray;
@@ -71,49 +77,42 @@ EMDeviceManagerDelegate>
 @property (nonatomic, strong) UIImagePickerController *imagePicker;
 @property (nonatomic, strong) UIMenuController *menuController;
 
+@property (nonatomic,strong) EM_ChatTableView *chatTableView;
+@property (nonatomic,strong) EM_ChatToolBar *chatToolBarView;
+
 @end
 
 @implementation EM_ChatController{
     dispatch_queue_t _messageQueue;
 }
 
-NSString * const kExtendUserInfo = @"kkExtendUserInfo";
-NSString * const kExtendUserExt = @"kkExtendUserExt";
-
 - (instancetype)initWithChatter:(NSString *)chatter conversationType:(EMConversationType)conversationType config:(EM_ChatUIConfig *)config{
     self = [super init];
     if (self) {
-        _config = config;
-        _chatter = chatter;
-        _conversationType = conversationType;
-        _conversation = [[EaseMob sharedInstance].chatManager conversationForChatter:_chatter conversationType:_conversationType];
-        [_conversation markAllMessagesAsRead:YES];
-        
-        switch (_conversationType) {
-            case eConversationTypeChat:
-                _messageType = eMessageTypeChat;
-                break;
-            case eConversationTypeGroupChat:
-                _messageType = eMessageTypeGroupChat;
-                break;
-            case eConversationTypeChatRoom:
-                _messageType = eMessageTypeChatRoom;
-                break;
+        if (!config) {
+             _config = [EM_ChatUIConfig defaultConfig];
+        }else{
+            _config = config;
         }
+        _conversation = [[EaseMob sharedInstance].chatManager conversationForChatter:chatter conversationType:conversationType];
+        [_conversation markAllMessagesAsRead:YES];
         
         _dataSource = [[NSMutableArray alloc]init];
         _imageDataArray = [[NSMutableArray alloc]init];
         _voiceDataArray = [[NSMutableArray alloc]init];
-        
-        self.title = _chatter;
-        self.hidesBottomBarWhenPushed = YES;
-        self.navigationController.interactivePopGestureRecognizer.enabled = YES;
     }
     return self;
 }
 
 - (void)viewDidLoad{
     [super viewDidLoad];
+    
+    id<EM_ChatUserDelegate> userDelegate = [EaseMobUIClient sharedInstance].userDelegate;
+    if (userDelegate && [userDelegate respondsToSelector:@selector(nickNameWithChatter:)]) {
+        self.title = [[EaseMobUIClient sharedInstance].userDelegate nickNameWithChatter:self.conversation.chatter];
+    }else{
+        self.title = self.conversation.chatter;
+    }
     
     _chatTableView = [[EM_ChatTableView alloc]initWithFrame:self.view.frame];
     _chatTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -154,16 +153,6 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
     [self queryEditor];
 }
 
-- (void)viewDidAppear:(BOOL)animated{
-    [super viewDidAppear:animated];
-    _isShow = YES;
-}
-
-- (void)viewDidDisappear:(BOOL)animated{
-    [super viewDidDisappear:animated];
-    _isShow = NO;
-}
-
 - (void)didReceiveMemoryWarning{
     [self saveEditor];
 }
@@ -181,77 +170,51 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
 }
 
 - (void)saveEditor{
-    NSString *editor = _chatToolBarView.inputToolView.editor;
+    NSString *editorText = _chatToolBarView.inputToolView.editor;
     
-    EM_ChatConversation *conversation = [[EM_ChatConversation alloc]init];
-    conversation.conversationChatter = self.conversation.chatter;
-    conversation.conversationType = self.conversation.conversationType;
-    conversation.conversationEditor = editor;
-    
-    if (editor && editor > 0) {
-        BOOL update = [EM_ChatDBM updateConversation:conversation];
-        if (!update) {
-            [EM_ChatDBM insertConversation:conversation];
+    EM_ChatConversation *editor = [[EM_ChatDBUtils shared]queryConversationWithChatter:self.conversation.chatter];
+    if (editorText && editorText.length > 0) {
+        if (!editor) {
+            editor = [[EM_ChatDBUtils shared] insertNewConversation];
+            editor.chatter = self.conversation.chatter;
+            editor.type = @(self.conversation.conversationType);
         }
+        editor.editor = editorText;
     }else{
-        [EM_ChatDBM deleteConversation:conversation];
+        [[EM_ChatDBUtils shared] deleteConversationWithChatter:editor];
     }
+    [[EM_ChatDBUtils shared] saveChat];
 }
 
 - (void)queryEditor{
-    EM_ChatConversation *conversation = [EM_ChatDBM queryConversation:self.conversation.chatter];
-    if (conversation && conversation.conversationEditor && conversation.conversationEditor.length > 0) {
-        _chatToolBarView.inputToolView.editor = conversation.conversationEditor;
+    EM_ChatConversation *editor = [[EM_ChatDBUtils shared]queryConversationWithChatter:self.conversation.chatter];
+    if (editor) {
+        _chatToolBarView.inputToolView.editor = editor.editor;
     }
 }
 
 #pragma mark - sendMessage
-- (void)sendMessage:(EMMessage *)message{
-    [[EaseMob sharedInstance].chatManager asyncSendMessage:message progress:self];
-}
-
-- (void)sendMessageBody:(id<IEMMessageBody>)messageBody {
-    [self sendMessageBody:messageBody userExt:nil];
-}
-
-- (void)sendMessageBody:(id<IEMMessageBody>)messageBody userExt:(NSDictionary *)userExt{
-    NSDictionary *userInfo = nil;
-    if (_delegate && [_delegate respondsToSelector:@selector(extendForMessageBody:)]) {
-        userInfo = [_delegate extendForMessageBody:messageBody];
+- (void)sendMessage:(EM_ChatMessageModel *)message{
+    if (_dataSource.count > 0) {
+        EM_ChatMessageModel *perMessage = _dataSource[_dataSource.count - 1];
+        message.extend.showTime = (message.message.timestamp - perMessage.message.timestamp) / 1000 >= 300;
+    }else{
+        message.extend.showTime = YES;
     }
-    
-    NSMutableDictionary *extend = [[NSMutableDictionary alloc]init];
-    
-    NSMutableDictionary *userData = [[NSMutableDictionary alloc]init];
-    if (userInfo) {
-        [userData setObject:userInfo forKey:kExtendUserInfo];
-    }
-    if (userExt) {
-        [userData setObject:userExt forKey:kExtendUserExt];
-    }
-    if (userData.count > 0) {
-        [extend setObject:userData forKey:kExtendUserData];
-    }
-    
-    [extend setObject:[[[EM_ChatMessageData alloc] init] getContentValues] forKey:kExtendMessageData];
-    
-    EMMessage *retureMsg = [[EMMessage alloc]initWithReceiver:_conversation.chatter bodies:[NSArray arrayWithObject:messageBody]];
-    retureMsg.messageType = _messageType;
-    retureMsg.ext = extend;
-    
-    [self sendMessage:retureMsg];
+    [[EaseMob sharedInstance].chatManager asyncSendMessage:message.message progress:self];
 }
 
 - (EM_ChatMessageModel*)formatMessage:(EMMessage *)message{
-    EM_ChatMessageModel *messageModel = [[EM_ChatMessageModel alloc]initWithMessage:message];
+    EM_ChatMessageModel *messageModel = [EM_ChatMessageModel fromEMMessage:message];
     NSString *loginChatter = [[EaseMob sharedInstance].chatManager loginInfo][kSDKUsername];
-    messageModel.sender = [messageModel.chatter isEqualToString:loginChatter];
-    if (_delegate) {
-        if ([_delegate respondsToSelector:@selector(nickNameWithChatter:)]) {
-            messageModel.nickName = [_delegate nickNameWithChatter:messageModel.chatter];
+    messageModel.sender = [messageModel.message.from isEqualToString:loginChatter];
+    id<EM_ChatUserDelegate> userDelegate = [EaseMobUIClient sharedInstance].userDelegate;
+    if (userDelegate) {
+        if ([userDelegate respondsToSelector:@selector(nickNameWithChatter:)]) {
+            messageModel.nickName = [[EaseMobUIClient sharedInstance].userDelegate nickNameWithChatter:messageModel.message.from];
         }
-        if ([_delegate respondsToSelector:@selector(avatarWithChatter:)]) {
-            messageModel.avatar = [_delegate avatarWithChatter:messageModel.chatter];
+        if ([userDelegate respondsToSelector:@selector(avatarWithChatter:)]) {
+            messageModel.avatar = [[EaseMobUIClient sharedInstance].userDelegate avatarWithChatter:messageModel.message.from];
         }
     }
     
@@ -262,7 +225,7 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
     EM_ChatMessageModel *messageModel = [self formatMessage:message];
     if (_dataSource.count > 0) {
         EM_ChatMessageModel *preMessage = _dataSource[_dataSource.count - 1];
-        messageModel.showTime = preMessage.timestamp - messageModel.timestamp >= 1000 * 60 * 5;
+        messageModel.extend.showTime = preMessage.message.timestamp - messageModel.message.timestamp >= 1000 * 60 * 5;
     }
     [self continuousMessage:messageModel];
     
@@ -278,9 +241,9 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
 
 //连续播放语音、图片
 - (void)continuousMessage:(EM_ChatMessageModel *)message{
-    if (message.bodyType == eMessageBodyType_Image) {
+    if (message.messageBody.messageBodyType == eMessageBodyType_Image) {
         [_imageDataArray addObject:message];
-    }else if (message.bodyType == eMessageBodyType_Voice){
+    }else if (message.messageBody.messageBodyType == eMessageBodyType_Voice){
         [_voiceDataArray addObject:message];
     }
 }
@@ -304,7 +267,6 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
 
 - (void)reloadMessage:(EMMessage *)message progress:(CGFloat)progress{
     EM_ChatMessageModel *messageModel = [self formatMessage:message];
-    messageModel.progress = progress;
     NSInteger index = [_dataSource indexOfObject:messageModel];
     if (index < 0 || index >= _dataSource.count){
         return;
@@ -325,7 +287,7 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
     long long timestamp = ([NSDate date].timeIntervalSince1970 + 1) * 1000;
     if (_dataSource.count > 0) {
         EM_ChatMessageModel *message = [_dataSource firstObject];
-        timestamp = message.timestamp;
+        timestamp = message.message.timestamp;
     }
     
     dispatch_async(_messageQueue,^{
@@ -333,19 +295,6 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
         if (messages.count > 0) {
             for (NSInteger i = messages.count - 1; i >= 0; i--) {
                 EM_ChatMessageModel *messageModel = [self formatMessage:messages[i]];
-                
-                if (i == messages.count - 1) {
-                    if (_dataSource.count > 0) {
-                        EM_ChatMessageModel *nextMessage = _dataSource[0];
-                        messageModel.showTime = nextMessage.timestamp - messageModel.timestamp >= 1000 * 60 * 5;
-                    }else{
-                        messageModel.showTime = [NSDate date].timeIntervalSince1970 * 1000 - messageModel.timestamp >= 1000 * 60 * 5;
-                    }
-                }else{
-                    EM_ChatMessageModel *nextMessage = messages[i + 1];
-                    messageModel.showTime = nextMessage.timestamp - messageModel.timestamp >= 1000 * 60 * 5;
-                }
-                
                 [self continuousMessage:messageModel];
                 
                 [_dataSource insertObject:messageModel atIndex:0];
@@ -378,21 +327,23 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
 }
 
 //InputTool
-- (BOOL)messageToolBar:(EM_ChatToolBar *)toolBar shouldSeneMessage:(NSString *)message{
-    NSLog(@"是否允许发送消息 - %@",message);
-    return YES;
+- (BOOL)messageToolBar:(EM_ChatToolBar *)toolBar shouldSendMessage:(NSString *)message{
+    BOOL shouldSend = YES;
+    if (self.delegate && [self.delegate respondsToSelector:@selector(shouldSendMessage:messageType:)]) {
+        shouldSend = [self.delegate shouldSendMessage:message messageType:eMessageBodyType_Text];
+    }
+    return shouldSend;
 }
 - (void)messageToolBar:(EM_ChatToolBar *)toolBar didSendMessagee:(NSString *)message{
-    NSLog(@"发送消息 - %@",message);
-    EMChatText *text = [[EMChatText alloc] initWithText:message];
-    EMTextMessageBody *body = [[EMTextMessageBody alloc] initWithChatObject:text];
-    [self sendMessageBody:body];
+    EM_ChatMessageExtend *extend = nil;
+    if(self.delegate && [self.delegate respondsToSelector:@selector(extendForMessage:messageType:)]){
+        extend = [self.delegate extendForMessage:message messageType:eMessageBodyType_Text];
+    }
+    [self sendMessage:[EM_ChatMessageModel fromText:message conversation:self.conversation extend:extend]];
 }
 
 //MoroTool
 - (void)messageToolBar:(EM_ChatToolBar *)toolBar didSelectedActionWithName:(NSString *)action{
-    NSLog(@"动作 - %@",action);
-    
     if ([action isEqualToString:kActionNameImage]) {
         
         BOOL photoAvailable = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary];
@@ -401,7 +352,7 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
             self.imagePicker.mediaTypes = @[(NSString *)kUTTypeImage];
             [self presentViewController:self.imagePicker animated:YES completion:NULL];
         }else{
-            [self showHint:EM_ChatString(@"error.device.not_support_photo_library")];
+            [self showHint:[EM_ChatResourcesUtils stringWithName:@"error.device.not_support_photo_library"]];
         }
         
     }else if ([action isEqualToString:kActionNameCamera]){
@@ -414,22 +365,21 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
             self.imagePicker.videoMaximumDuration = 180;
             [self presentViewController:self.imagePicker animated:YES completion:NULL];
         }else{
-            [self showHint:EM_ChatString(@"error.device.not_support_camera")];
+            [self showHint:[EM_ChatResourcesUtils stringWithName:@"error.device.not_support_camera"]];
         }
     }else if ([action isEqualToString:kActionNameVoice]){
-        [self showHint:EM_ChatString(@"error.hint.function_null")];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kEMNotificationCallActionOut object:nil userInfo:@{kEMCallChatter:self.conversation.chatter,kEMCallType:kEMCallTypeVoice}];
     }else if ([action isEqualToString:kActionNameVideo]){
-        [self showHint:EM_ChatString(@"error.hint.function_null")];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kEMNotificationCallActionOut object:nil userInfo:@{kEMCallChatter:self.conversation.chatter,kEMCallType:kEMCallTypeVideo}];
     }else if ([action isEqualToString:kActionNameLocation]){
         
         EM_LocationController *locationController = [[EM_LocationController alloc]init];
         locationController.delegate = self;
         [self.navigationController pushViewController:locationController animated:YES];
     }else if ([action isEqualToString:kActionNameFile]){
-        NSData *data = UIImageJPEGRepresentation([UIImage imageNamed:RES_IMAGE_TOOL(@"tool_play")],1.0);
-        EMChatFile *chatFile =  [[EMChatFile alloc]initWithData:data displayName:@"tool_play.png"];
-        EMFileMessageBody *body = [[EMFileMessageBody alloc]initWithChatObject:chatFile];
-        [self sendMessageBody:body];
+        EM_ExplorerController *explorerController = [[EM_ExplorerController alloc]init];
+        explorerController.delegate = self;
+        [self presentViewController:[[UINavigationController alloc]initWithRootViewController:explorerController] animated:YES completion:nil];
     }else{
         if (_delegate && [_delegate respondsToSelector:@selector(didActionSelectedWithName:)]){
             [_delegate didActionSelectedWithName:action];
@@ -437,8 +387,6 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
     }
 }
 - (BOOL)messageToolBar:(EM_ChatToolBar *)toolBar shouldRecord:(UIView *)view{
-    NSLog(@"是否允许录音");
-    
     __block BOOL bCanRecord = YES;
     if ([[[UIDevice currentDevice] systemVersion] compare:@"7.0"] != NSOrderedAscending){
         AVAudioSession *audioSession = [AVAudioSession sharedInstance];
@@ -451,128 +399,152 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
     
     return bCanRecord;
 }
+
 - (void)messageToolBar:(EM_ChatToolBar *)toolBar didStartRecord:(UIView *)view{
-    NSLog(@"开始录音");
+
 }
 
 - (void)messageToolBar:(EM_ChatToolBar *)toolBar didCancelRecord:(UIView *)view{
-    NSLog(@"取消录音");
+    
 }
 
 - (void)messageToolBar:(EM_ChatToolBar *)toolBar didEndRecord:(NSString *)name record:(NSString *)recordPath duration:(NSInteger)duration{
-    NSLog(@"结束录音  %@",name);
-    EMChatVoice *voice = [[EMChatVoice alloc] initWithFile:recordPath displayName:name];
-    voice.duration = duration;
-    EMVoiceMessageBody *body = [[EMVoiceMessageBody alloc] initWithChatObject:voice];
-    [self sendMessageBody:body];
+    EM_ChatMessageExtend *extend = nil;
+    if(self.delegate && [self.delegate respondsToSelector:@selector(extendForMessage:messageType:)]){
+        extend = [self.delegate extendForMessage:recordPath messageType:eMessageBodyType_Voice];
+    }
+    [self sendMessage:[EM_ChatMessageModel fromVoice:recordPath name:name duration:duration conversation:self.conversation extend:extend]];
 }
 
 - (void)messageToolBar:(EM_ChatToolBar *)toolBar didRecordError:(NSError *)error{
     if (!error) {
-        [self showHint:EM_ChatString(@"error.record.too_short")];
+        [self showHint:[EM_ChatResourcesUtils stringWithName:@"error.record.too_short"]];
     }else{
-        [self showHint:EM_ChatString(@"error.record.failure")];
+        [self showHint:[EM_ChatResourcesUtils stringWithName:@"error.record.failure"]];
     }
 }
 
 #pragma mark - EM_ChatMessageCellDelegate
 - (void)chatMessageCell:(EM_ChatMessageCell *)cell didTapAvatarWithChatter:(NSString *)chatter indexPath:(NSIndexPath *)indexPath{
     NSString *loginChatter = [[EaseMob sharedInstance].chatManager loginInfo][kSDKUsername];
-    if ([chatter isEqualToString:loginChatter]) {
-        [self showHint:@"点击了自己的头像"];
-    }else{
-        [self showHint:@"点击了对方的头像"];
+    BOOL isOwn = [chatter isEqualToString:loginChatter];
+    
+    if (_delegate && [_delegate respondsToSelector:@selector(didAvatarTapWithChatter:isOwn:)]) {
+        [_delegate didAvatarTapWithChatter:chatter isOwn:isOwn];
     }
-
 }
 
 - (void)chatMessageCell:(EM_ChatMessageCell *)cell resendMessageWithMessage:(EM_ChatMessageModel *)message indexPath:(NSIndexPath *)indexPath{
     [[EaseMob sharedInstance].chatManager resendMessage:message.message progress:self error:nil];
 }
 
-- (void)chatMessageCell:(EM_ChatMessageCell *)cell didTapMessageWithUserInfo:(NSDictionary *)userInfo indexPath:(NSIndexPath *)indexPath{
+- (void)chatMessageCell:(EM_ChatMessageCell *)cell didTapWithUserInfo:(NSDictionary *)userInfo indexPath:(NSIndexPath *)indexPath{
     EM_ChatMessageModel *messageModel = userInfo[kHandleActionMessage];
     
     NSString *handleAction = userInfo[kHandleActionName];
-    if ([handleAction isEqualToString:HANDLE_ACTION_URL]) {
-        NSURL *url = userInfo[kHandleActionValue];
-        [[UIApplication sharedApplication] openURL:url];
-    }else if ([handleAction isEqualToString:HANDLE_ACTION_PHONE]){
-        NSString *phone = userInfo[kHandleActionValue];
-        UIActionSheet *sheet = [[UIActionSheet alloc]initWithTitle:[NSString stringWithFormat:EM_ChatString(@"hint.may_phone"),phone] delegate:self cancelButtonTitle:EM_ChatString(@"common.cancel") destructiveButtonTitle:nil otherButtonTitles:EM_ChatString(@"common.call"),EM_ChatString(@"common.copy"),nil];
-        sheet.tag = ALERT_ACTION_TAP_PHONE;
-        [sheet showInView:self.view];
-    }else if ([handleAction isEqualToString:HANDLE_ACTION_TEXT]){
+    NSString *handleFrom = userInfo[kHandleActionFrom];
+    
+    if ([handleFrom isEqualToString:HANDLE_FROM_BODY]) {
         
-    }else if ([handleAction isEqualToString:HANDLE_ACTION_IMAGE]){
-        NSInteger index = [_imageDataArray indexOfObject:messageModel];
-        if (index >= 0 && index < _imageDataArray.count) {
-            [[EM_ChatMessageManager defaultManager] showBrowserWithImagesMessage:_imageDataArray index:index];
-        }else{
-            [[EM_ChatMessageManager defaultManager] showBrowserWithImagesMessage:@[messageModel] index:0];
-        }
-    }else if ([handleAction isEqualToString:HANDLE_ACTION_VOICE]){
-        [EM_ChatMessageManager defaultManager].delegate = self;
-        if (messageModel.messageData.checking) {
-            messageModel.messageData.checking = NO;
-            [[EM_ChatMessageManager defaultManager] stopVoice];
-            [_chatTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
-        }else{
-            NSInteger index = [_voiceDataArray indexOfObject:messageModel];
-            if (index >= 0 && index < _voiceDataArray.count) {
-                [[EM_ChatMessageManager defaultManager] playVoice:_voiceDataArray index:index];
-            }else{
-                [[EM_ChatMessageManager defaultManager] playVoice:@[messageModel] index:0];
+        if ([handleAction isEqualToString:HANDLE_ACTION_URL]) {
+            NSURL *url = userInfo[kHandleActionValue];
+            [[UIApplication sharedApplication] openURL:url];
+        }else if ([handleAction isEqualToString:HANDLE_ACTION_PHONE]){
+            NSString *phone = userInfo[kHandleActionValue];
+            UIActionSheet *sheet = [[UIActionSheet alloc]initWithTitle:[NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"hint.may_phone"],phone] delegate:self cancelButtonTitle:[EM_ChatResourcesUtils stringWithName:@"common.cancel"] destructiveButtonTitle:nil otherButtonTitles:[EM_ChatResourcesUtils stringWithName:@"common.call"],[EM_ChatResourcesUtils stringWithName:@"common.copy"],nil];
+            sheet.tag = ALERT_ACTION_TAP_PHONE;
+            [sheet showInView:self.view];
+        }else if ([handleAction isEqualToString:HANDLE_ACTION_TEXT]){
+            if (messageModel.extend.isCallMessage) {
+                NSLog(@"重拨");
             }
+        }else if ([handleAction isEqualToString:HANDLE_ACTION_IMAGE]){
+            NSInteger index = [_imageDataArray indexOfObject:messageModel];
+            if (index >= 0 && index < _imageDataArray.count) {
+                [[EM_ChatMessageManager defaultManager] showBrowserWithImagesMessage:_imageDataArray index:index];
+            }else{
+                [[EM_ChatMessageManager defaultManager] showBrowserWithImagesMessage:@[messageModel] index:0];
+            }
+        }else if ([handleAction isEqualToString:HANDLE_ACTION_VOICE]){
+            [EM_ChatMessageManager defaultManager].delegate = self;
+            if (messageModel.extend.checking) {
+                messageModel.extend.checking = NO;
+                [[EM_ChatMessageManager defaultManager] stopVoice];
+                [_chatTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
+            }else{
+                NSInteger index = [_voiceDataArray indexOfObject:messageModel];
+                if (index >= 0 && index < _voiceDataArray.count) {
+                    [[EM_ChatMessageManager defaultManager] playVoice:_voiceDataArray index:index];
+                }else{
+                    [[EM_ChatMessageManager defaultManager] playVoice:@[messageModel] index:0];
+                }
+            }
+        }else if ([handleAction isEqualToString:HANDLE_ACTION_VIDEO]){
+            [[EM_ChatMessageManager defaultManager] showBrowserWithVideoMessage:messageModel];
+        }else if ([handleAction isEqualToString:HANDLE_ACTION_LOCATION]){
+            EMLocationMessageBody *locationBody = messageModel.messageBody;
+            EM_LocationController *locationController = [[EM_LocationController alloc]initWithLatitude:locationBody.latitude longitude:locationBody.longitude];
+            [self.navigationController pushViewController:locationController animated:YES];
+        }else if ([handleAction isEqualToString:HANDLE_ACTION_FILE]){
+            
+        }else if([handleAction isEqualToString:HANDEL_ACTION_BODY]){
+            
+        }else{
+            
         }
-    }else if ([handleAction isEqualToString:HANDLE_ACTION_VIDEO]){
-        [[EM_ChatMessageManager defaultManager] showBrowserWithVideoMessage:messageModel];
-    }else if ([handleAction isEqualToString:HANDLE_ACTION_LOCATION]){
-        EMLocationMessageBody *locationBody = messageModel.messageBody;
-        EM_LocationController *locationController = [[EM_LocationController alloc]initWithLocation:CLLocationCoordinate2DMake(locationBody.latitude, locationBody.longitude)];
-        [self.navigationController pushViewController:locationController animated:YES];
-    }else if ([handleAction isEqualToString:HANDLE_ACTION_FILE]){
         
+        if (!messageModel.sender
+            && !messageModel.extend.details
+            && ![handleAction isEqualToString:HANDLE_ACTION_URL]
+            && ![handleAction isEqualToString:HANDLE_ACTION_PHONE]
+            && ![handleAction isEqualToString:HANDLE_ACTION_TEXT]){
+            messageModel.extend.details = YES;
+            [messageModel updateExt];
+        }
+    }else if ([handleFrom isEqualToString:HANDLE_FROM_EXTEND]){
+        if (self.delegate && [self.delegate respondsToSelector:@selector(didExtendTapWithUserInfo:)]) {
+            [self.delegate didExtendTapWithUserInfo:userInfo];
+        }
     }else{
         
     }
-    
-    if (!messageModel.sender
-        && !messageModel.messageData.details
-        && ![handleAction isEqualToString:HANDLE_ACTION_URL]
-        && ![handleAction isEqualToString:HANDLE_ACTION_PHONE]
-        && ![handleAction isEqualToString:HANDLE_ACTION_TEXT]){
-        messageModel.messageData.details = YES;
-        [messageModel updateExt];
-    }
 }
 
-- (void)chatMessageCell:(EM_ChatMessageCell *)cell didLongPressMessageWithUserInfo:(NSDictionary *)userInfo indexPath:(NSIndexPath *)indexPath{
+- (void)chatMessageCell:(EM_ChatMessageCell *)cell didLongPressWithUserInfo:(NSDictionary *)userInfo indexPath:(NSIndexPath *)indexPath{
     
     NSString *handleAction = userInfo[kHandleActionName];
-    if ([handleAction isEqualToString:HANDLE_ACTION_URL]) {
-        NSURL *url = userInfo[kHandleActionValue];
-        UIActionSheet *sheet = [[UIActionSheet alloc]initWithTitle:[NSString stringWithFormat:EM_ChatString(@"hint.may_link"),url] delegate:self cancelButtonTitle:EM_ChatString(@"common.cancel") destructiveButtonTitle:nil otherButtonTitles:EM_ChatString(@"common.open"),EM_ChatString(@"common.copy"),nil];
-        sheet.tag = ALERT_ACTION_PRESS_URL;
-        [sheet showInView:self.view];
-    }else if ([handleAction isEqualToString:HANDLE_ACTION_PHONE]){
-        NSString *phone = userInfo[kHandleActionValue];
-        UIActionSheet *sheet = [[UIActionSheet alloc]initWithTitle:[NSString stringWithFormat:EM_ChatString(@"hint.may_phone"),phone] delegate:self cancelButtonTitle:EM_ChatString(@"common.cancel") destructiveButtonTitle:nil otherButtonTitles:EM_ChatString(@"common.call"),EM_ChatString(@"common.copy"),nil];
-        sheet.tag = ALERT_ACTION_PRESS_PHONE;
-        [sheet showInView:self.view];
+    NSString *handleFrom = userInfo[kHandleActionFrom];
+    
+    if ([handleFrom isEqualToString:HANDLE_FROM_BODY]) {
+        
+        if ([handleAction isEqualToString:HANDLE_ACTION_URL]) {
+            NSURL *url = userInfo[kHandleActionValue];
+            UIActionSheet *sheet = [[UIActionSheet alloc]initWithTitle:[NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"hint.may_link"],url] delegate:self cancelButtonTitle:[EM_ChatResourcesUtils stringWithName:@"common.cancel"] destructiveButtonTitle:nil otherButtonTitles:[EM_ChatResourcesUtils stringWithName:@"common.open"],[EM_ChatResourcesUtils stringWithName:@"common.copy"],nil];
+            sheet.tag = ALERT_ACTION_PRESS_URL;
+            [sheet showInView:self.view];
+        }else if ([handleAction isEqualToString:HANDLE_ACTION_PHONE]){
+            NSString *phone = userInfo[kHandleActionValue];
+            UIActionSheet *sheet = [[UIActionSheet alloc]initWithTitle:[NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"hint.may_phone"],phone] delegate:self cancelButtonTitle:[EM_ChatResourcesUtils stringWithName:@"common.cancel"] destructiveButtonTitle:nil otherButtonTitles:[EM_ChatResourcesUtils stringWithName:@"common.call"],[EM_ChatResourcesUtils stringWithName:@"common.copy"],nil];
+            sheet.tag = ALERT_ACTION_PRESS_PHONE;
+            [sheet showInView:self.view];
+        }else{
+            [self showMenuViewControllerWithUserInfo:userInfo];
+        }
+    }else if([handleFrom isEqualToString:HANDLE_FROM_EXTEND]){
+        [self showMenuViewControllerWithUserInfo:userInfo];
     }else{
-        EM_ChatMessageModel *messageModel = _dataSource[indexPath.row];
-        [self showMenuViewControllerAtIndexPath:indexPath withMessage:messageModel];
+        
     }
 }
 
-- (void)chatMessageCell:(EM_ChatMessageCell *)cell didMenuSelectedWithAction:(EM_MENU_ACTION)action message:(EM_ChatMessageModel *)message indexPath:(NSIndexPath *)indexPath{
-    if (!message) {
-        return;
-    }
+- (void)chatMessageCell:(EM_ChatMessageCell *)cell didMenuSelectedWithUserInfo:(NSDictionary *)userInfo indexPath:(NSIndexPath *)indexPath{
     
-    switch (action) {
-        case EM_MENU_ACTION_DELETE:{
+    EM_ChatMessageModel *message = userInfo[kHandleActionMessage];
+    NSString *action = userInfo[kHandleActionName];
+    NSString *handleFrom = userInfo[kHandleActionFrom];
+    
+    if ([handleFrom isEqualToString:HANDLE_FROM_BODY]) {
+        if ([action isEqualToString:MENU_ACTION_DELETE]) {
             BOOL delete = [self.conversation removeMessage:message.message];
             if (delete) {
                 [_dataSource removeObject:message];
@@ -582,55 +554,55 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
                 [self.chatTableView endUpdates];
                 
             }else{
-                [self showHint:EM_ChatString(@"common.hint.delete.failure")];
+                [self showHint:[EM_ChatResourcesUtils stringWithName:@"common.hint.delete.failure"]];
             }
-        }
-            break;
-        case EM_MENU_ACTION_COPY:{
+        }else if ([action isEqualToString:MENU_ACTION_COPY]){
             EMTextMessageBody *textBody = (EMTextMessageBody *)message.messageBody;
             UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
             pasteboard.string = textBody.text;
-        }
-            break;
-        case EM_MENU_ACTION_FACE:{
-            [self showHint:EM_ChatString(@"error.hint.function_null")];
-        }
-            break;
-        case EM_MENU_ACTION_DOWNLOAD:{
-            [self showHint:EM_ChatString(@"error.hint.function_null")];
-        }
-            break;
-        case EM_MENU_ACTION_COLLECT:{
-            message.messageData.collected = !message.messageData.collected;
+        }else if ([action isEqualToString:MENU_ACTION_FACE]){
+            [self showHint:[EM_ChatResourcesUtils stringWithName:@"error.hint.function_null"]];
+        }else if ([action isEqualToString:MENU_ACTION_DOWNLOAD]){
+            [self showHint:[EM_ChatResourcesUtils stringWithName:@"error.hint.function_null"]];
+        }else if ([action isEqualToString:MENU_ACTION_COLLECT]){
+            message.extend.collected = !message.extend.collected;
             [message updateExt];
+        }else if ([action isEqualToString:MENU_ACTION_FORWARD]){
+            [self showHint:[EM_ChatResourcesUtils stringWithName:@"error.hint.function_null"]];
         }
-            break;
-        case EM_MENU_ACTION_FORWARD:{
-            [self showHint:EM_ChatString(@"error.hint.function_null")];
+    }else if([handleFrom isEqualToString:HANDLE_FROM_EXTEND]){
+        if (self.delegate && [self.delegate respondsToSelector:@selector(didExtendMenuSelectedWithUserInfo)]) {
+            [self.delegate didExtendMenuSelectedWithUserInfo:userInfo];
         }
-            break;
+    }else{
+        
     }
 }
 
 #pragma mark - ShowMenu
-- (void)showMenuViewControllerAtIndexPath:(NSIndexPath *)indexPath withMessage:(EM_ChatMessageModel *)message{
+- (void)showMenuViewControllerWithUserInfo:(NSDictionary *)userInfo{
     
     if (!_menuController) {
         _menuController = [UIMenuController sharedMenuController];
     }
-
-    EM_ChatMessageCell *cell = (EM_ChatMessageCell *)[_chatTableView cellForRowAtIndexPath:indexPath];
-    [_menuController setMenuItems:[cell.bubbleView bubbleMenuItems]];
-    UIView *targetView = cell.bubbleView;
     
-    if (_chatToolBarView.inputEditing) {
-        _chatToolBarView.inputToolView.overrideNextResponder = targetView;
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(menuDidHide:) name:UIMenuControllerDidHideMenuNotification object:nil];
-    }else{
-        [targetView becomeFirstResponder];
+    EM_ChatMessageContent *contentView = userInfo[kHandleActionView];
+    
+    NSArray *menuItems = [contentView menuItems];
+    if (menuItems.count == 0) {
+        return;
     }
     
-    [_menuController setTargetRect:targetView.frame inView:targetView.superview];
+    [_menuController setMenuItems:menuItems];
+    
+    if (_chatToolBarView.inputEditing) {
+        _chatToolBarView.inputToolView.overrideNextResponder = contentView;
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(menuDidHide:) name:UIMenuControllerDidHideMenuNotification object:nil];
+    }else{
+        [contentView becomeFirstResponder];
+    }
+    
+    [_menuController setTargetRect:contentView.frame inView:contentView.superview];
     [_menuController setMenuVisible:YES animated:YES];
 }
 
@@ -665,7 +637,7 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
         [_chatTableView reloadRowsAtIndexPaths:reloadArray withRowAnimation:UITableViewRowAnimationNone];
         EM_ChatMessageModel *messageModel = completionMessage;
         if (!messageModel.sender) {
-            messageModel.messageData.details = YES;
+            messageModel.extend.details = YES;
             [messageModel updateExt];
         }
     }
@@ -706,10 +678,23 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
 }
 
 #pragma mark - EM_LocationControllerDelegate
--(void)sendLocationLatitude:(double)latitude longitude:(double)longitude andAddress:(NSString *)address{
-    EMChatLocation *chatLocation = [[EMChatLocation alloc] initWithLatitude:latitude longitude:longitude address:address];
-    EMLocationMessageBody *body = [[EMLocationMessageBody alloc] initWithChatObject:chatLocation];
-    [self sendMessageBody:body];
+-(void)sendLatitude:(double)latitude longitude:(double)longitude andAddress:(NSString *)address{
+    EM_ChatMessageExtend *extend = nil;
+    if(self.delegate && [self.delegate respondsToSelector:@selector(extendForMessage:messageType:)]){
+        extend = [self.delegate extendForMessage:address messageType:eMessageBodyType_Location];
+    }
+    [self sendMessage:[EM_ChatMessageModel fromLatitude:latitude longitude:longitude address:address conversation:self.conversation extend:extend]];
+}
+
+#pragma mark - EM_ExplorerControllerDelegate
+- (void)didFileSelected:(NSArray *)files{
+    for (NSURL *url in files) {
+        EM_ChatMessageExtend *extend = nil;
+        if(self.delegate && [self.delegate respondsToSelector:@selector(extendForMessage:messageType:)]){
+            extend = [self.delegate extendForMessage:url messageType:eMessageBodyType_File];
+        }
+        [self sendMessage:[EM_ChatMessageModel fromFile:url.path name:url.path.lastPathComponent conversation:self.conversation extend:extend]];
+    }
 }
 
 #pragma mark - UIImagePickerControllerDelegate
@@ -719,9 +704,12 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
     NSString *mediaType = info[UIImagePickerControllerMediaType];
     if ([mediaType isEqualToString:(NSString *)kUTTypeImage]) {
         UIImage *orgImage = info[UIImagePickerControllerOriginalImage];
-        EMChatImage *chatImage = [[EMChatImage alloc] initWithUIImage:orgImage displayName:[NSString stringWithFormat:@"%d%d%@",(int)[NSDate date].timeIntervalSince1970,arc4random() % 100000,@".jpg"]];
-        EMImageMessageBody *body = [[EMImageMessageBody alloc] initWithImage:chatImage thumbnailImage:nil];
-        [self sendMessageBody:body];
+        
+        EM_ChatMessageExtend *extend = nil;
+        if(self.delegate && [self.delegate respondsToSelector:@selector(extendForMessage:messageType:)]){
+            extend = [self.delegate extendForMessage:orgImage messageType:eMessageBodyType_Image];
+        }
+        [self sendMessage:[EM_ChatMessageModel fromImage:orgImage conversation:self.conversation extend:extend]];
     }else if([mediaType isEqualToString:(NSString *)kUTTypeMovie]){
         NSURL *videoURL = info[UIImagePickerControllerMediaURL];
         
@@ -734,9 +722,13 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
                 NSLog(@"failed to remove file, error:%@.", error);
             }
         }
-        EMChatVideo *chatVideo = [[EMChatVideo alloc] initWithFile:[mp4 relativePath] displayName:[NSString stringWithFormat:@"%d%d%@",(int)[NSDate date].timeIntervalSince1970,arc4random() % 100000,@".mp4"]];
-        EMVideoMessageBody *body = [[EMVideoMessageBody alloc]initWithChatObject:chatVideo];
-        [self sendMessageBody:body];
+        
+        EM_ChatMessageExtend *extend = nil;
+        if(self.delegate && [self.delegate respondsToSelector:@selector(extendForMessage:messageType:)]){
+            extend = [self.delegate extendForMessage:[mp4 relativePath] messageType:eMessageBodyType_Video];
+        }
+        
+        [self sendMessage:[EM_ChatMessageModel fromVideo:[mp4 relativePath] conversation:self.conversation extend:extend]];
     }
 }
 
@@ -796,29 +788,14 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     EM_ChatMessageModel *message = _dataSource[indexPath.row];
-    NSDictionary *extend = message.extend;
+    NSString *cellId = [message reuseIdentifier];
     
-    NSString *extendId = nil;
-    if (message.extendShow && _delegate && [_delegate respondsToSelector:@selector(reuseIdentifierForExtendMessage:)]) {
-        extendId = [_delegate reuseIdentifierForExtendMessage:extend];
-    }
-    NSString *cellId = [EM_ChatMessageCell cellIdFormMessageBodyType:message.bodyType];
-    
-    NSMutableString *identifier = [[NSMutableString alloc]initWithString:cellId];
-    if (extendId) {
-        [identifier appendString:@"_"];
-        [identifier appendString:extendId];
-    }
-    
-    EM_ChatMessageCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+    EM_ChatMessageCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];
     if (!cell) {
-        cell = [EM_ChatMessageCell cellFromMessageBodyType:message.bodyType reuseIdentifier:identifier];
+        cell = [[EM_ChatMessageCell alloc]initWithBodyClass:[message classForBuildView] extendClass:[message.extend classForExtendView] reuseIdentifier:cellId];
         cell.backgroundColor = [UIColor clearColor];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    }
-    
-    if (message.extendShow && _delegate && [_delegate respondsToSelector:@selector(viewForExtendMessage:reuseView:)]) {
-        cell.extendView = [_delegate viewForExtendMessage:extend reuseView:cell.extendView];
+        cell.config = self.config.messageConfig;
     }
     
     cell.message = message;
@@ -831,20 +808,8 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
 #pragma mark - UITableViewDelegate
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     EM_ChatMessageModel *message = _dataSource[indexPath.row];
-    NSDictionary *extend = message.extend;
     CGFloat max = tableView.bounds.size.width;
-    
-    CGFloat height = [EM_ChatMessageCell heightForCellWithMessage:message maxWidth:max indexPath:indexPath];
-    
-    if (extend && _delegate && [_delegate respondsToSelector:@selector(showForExtendMessage:)]) {
-        message.extendShow = [_delegate showForExtendMessage:extend];
-    }
-    
-    if (message.extendShow && _delegate && [_delegate respondsToSelector:@selector(sizeForExtendMessage:maxWidth:)]) {
-        message.extendSize = [_delegate sizeForExtendMessage:message.extend maxWidth:[EM_ChatMessageCell cellBubbleMaxWidth:max]];
-        height += (message.extendSize.height + CELL_BUBBLE_EXTEND_PADDING);
-    }
-    
+    CGFloat height = [EM_ChatMessageCell heightForCellWithMessage:message maxWidth:max indexPath:indexPath config:self.config.messageConfig];
     return height;
 }
 
@@ -919,14 +884,14 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
 #pragma mark - EMChatManagerGroupDelegate
 - (void)group:(EMGroup *)group didLeave:(EMGroupLeaveReason)reason error:(EMError *)error{
     //聊天中,被请出
-    if (_conversationType != eConversationTypeGroupChat){
+    if (self.conversation.conversationType != eConversationTypeGroupChat){
         return;
     }
 }
 
 - (void)groupDidUpdateInfo:(EMGroup *)group error:(EMError *)error{
     //聊天中,群信息发生变化(成员,公告)
-    if (_conversationType != eConversationTypeGroupChat){
+    if (self.conversation.conversationType != eConversationTypeGroupChat){
         return;
     }
 }
@@ -934,21 +899,21 @@ NSString * const kExtendUserExt = @"kkExtendUserExt";
 #pragma mark - EMChatManagerChatroomDelegate
 - (void)chatroom:(EMChatroom *)chatroom occupantDidJoin:(NSString *)username{
     //聊天中,有成员加入
-    if (_conversationType != eConversationTypeChatRoom){
+    if (self.conversation.conversationType != eConversationTypeChatRoom){
         return;
     }
 }
 
 - (void)chatroom:(EMChatroom *)chatroom occupantDidLeave:(NSString *)username{
     //聊天中,有成员离开
-    if (_conversationType != eConversationTypeChatRoom){
+    if (self.conversation.conversationType != eConversationTypeChatRoom){
         return;
     }
 }
 
 - (void)beKickedOutFromChatroom:(EMChatroom *)chatroom reason:(EMChatroomBeKickedReason)reason{
     //聊天中,被请出
-    if (_conversationType != eConversationTypeChatRoom){
+    if (self.conversation.conversationType != eConversationTypeChatRoom){
         return;
     }
 }

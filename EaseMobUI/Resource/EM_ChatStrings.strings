@@ -29,6 +29,17 @@ common.collect_cancel = "取消收藏";
 common.forward = "转发";
 common.revocation = "撤回";
 common.delete = "删除";
+common.close = "关闭";
+
+common.monday = "星期一";
+common.tuesday = "星期二";
+common.wednesday = "星期三";
+common.thursday = "星期四";
+common.friday = "星期五";
+common.saturday = "星期六";
+common.sunday = "星期日";
+common.yesterday = "昨天";
+common.thDeayBeforeYesterday = "前天";
 
 common.hint.delete.failure = "删除失败";
 common.hint.collect.failure = "收藏失败";
@@ -37,6 +48,42 @@ record.will_cancel = "松开取消发送";
 record.will_audition = "松开试听";
 record.normal_record = "按住说话";
 record.will_record = "准备中...";
+
+call.in = "%@\n\n正在呼叫您...";
+call.out = "%@\n\n正在等待接听...";
+call.ongoing = "%@\n\n正在通话\n%@";
+call.end = "%@\n\n通话结束\n%@";
+call.hangup = "%@\n\n对方已挂断";
+call.reject = "%@\n\n对方已拒绝";
+call.interrupt = "%@\n\n您已挂断";
+call.offline = "%@\n\n对方不在线,请稍后再拨";
+call.no_response = "%@\n\n对方未接听,请稍后再拨";
+call.busy = "%@\n\n对方正忙,请稍后再拨";
+call.no_answer = "%@\n\n您未接听";
+call.message.hint.reject = "已拒绝，点击回拨";
+call.message.hint.no_response = "未接听，点击回拨";
+call.message.hint.opposite_cancel = "对方已取消，点击回拨";
+call.message.hint.own_cancel = "已取消，点击重拨";
+call.message.hint.end = "通话时间%@，点击重拨";
+call.message.hint.opposite_no_response = "对方未接听，点击重拨";
+
+file.document = "文档";
+file.video = "视频";
+file.image = "相册";
+file.audio = "音频";
+file.other = "其它";
+file.wifi_upload = "WiFi上传";
+
+wifi.server_web_title = "%@ - WiFi上传";
+wifi.server_title = "WIFI服务已开启";
+wifi.server_warn = "上传过程中请勿离开此页或锁屏";
+wifi.server_hint = "在电脑浏览器地址栏中输入";
+wifi.server_file_upload_exist = "文件已存在";
+wifi.server_file_upload_big = "文件过大";
+wifi.server_file_upload_failure = "文件上传失败";
+wifi.server_file_upload_success = "文件上传成功";
+wifi.server_file_delete_success = "文件删除成功";
+wifi.server_file_delete_failure = "文件删除失败:%@";
 
 hint.may_phone = "[%@]这可能是一个电话号码，你可以";
 hint.may_link = "[%@]这可能是一个网址，你可以";
@@ -47,3 +94,5 @@ error.record.too_short = "录音时间太短";
 error.record.failure = "录音失败";
 
 error.hint.function_null = "功能未实现";
+error.hint.vioce = "无法开始实时语音";
+error.hint.video = "无法喀什实时视频";

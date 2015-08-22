@@ -78,19 +78,22 @@
     [super layoutSubviews];
     
     CGSize size = self.frame.size;
-    scroll.frame = CGRectMake(0, 0, size.width, (size.width - LEFT_PADDING - RIGHT_PADDING) / HORIZONTAL_COUNT * VERTICAL_COUNT);
-    
-    CGFloat actionX = LEFT_PADDING;
-    CGFloat actionY = 0;
-    CGFloat actionSize = scroll.frame.size.height / 2;
+    scroll.frame = CGRectMake(LEFT_PADDING, 0, size.width - LEFT_PADDING - RIGHT_PADDING, (size.width - LEFT_PADDING - RIGHT_PADDING) / HORIZONTAL_COUNT * VERTICAL_COUNT);
+    CGFloat offest = scroll.frame.size.height / VERTICAL_COUNT;
+    CGFloat actionSize = scroll.frame.size.height / 2 - 5;
     NSInteger actionPageIndex = 0;
-    
+    CGFloat centerX;
+    CGFloat centerY;
+
     for (int i = 0; i < scroll.subviews.count; i++) {
         UIView *actionView = scroll.subviews[i];
+
         actionPageIndex = i / (HORIZONTAL_COUNT * VERTICAL_COUNT);
-        actionX = scroll.frame.size.width * actionPageIndex + LEFT_PADDING + actionSize * (i % HORIZONTAL_COUNT);
-        actionY = actionSize * (((i % (HORIZONTAL_COUNT * VERTICAL_COUNT) ) / HORIZONTAL_COUNT));
-        actionView.frame = CGRectMake(actionX, actionY, actionSize, actionSize);
+        centerX = scroll.frame.size.width * actionPageIndex + offest / 2 + offest * (i % HORIZONTAL_COUNT);
+        centerY = offest / 2 + offest * (((i % (HORIZONTAL_COUNT * VERTICAL_COUNT) ) / HORIZONTAL_COUNT));
+        
+        actionView.bounds = CGRectMake(0, 0, actionSize, actionSize);
+        actionView.center = CGPointMake(centerX, centerY);
     }
     
     if (indicatorArray && indicatorArray.count > 1) {

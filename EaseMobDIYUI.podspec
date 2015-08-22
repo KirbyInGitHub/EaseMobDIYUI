@@ -10,7 +10,7 @@ Pod::Spec.new do |s|
 
   # ―――  Spec Metadata  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   s.name         = "EaseMobDIYUI"
-  s.version      = "0.1.8"
+  s.version      = "0.1.9"
   s.summary      = "环信DIY聊天UI"
 
   s.description  = <<-DESC
@@ -18,7 +18,6 @@ Pod::Spec.new do |s|
 
                    * 方便集成环信的开发者,快速的开发和定制自己的聊天界面
                    * 快速,简单,集成
-                   * 0.1.0暂时只有聊天界面,暂时未开发语音和视频聊天
                    DESC
 
   s.homepage     = "https://github.com/AwakenDragon/EaseMobDIYUI"
@@ -73,11 +72,11 @@ Pod::Spec.new do |s|
   end
 
   # ――― Resources ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-  s.resources = ["EaseMobUI/Resource/EM_Resource.bundle","EaseMobUI/Resource/EM_ChatStrings.strings"]
+  s.resources = ["EaseMobUI/Resource/EM_Resource.bundle","EaseMobUI/Resource/EM_ChatStrings.strings","EaseMobUI/Resource/EM_Web.bundle","EaseMobUI/Resource/EM_ChatModel.xcdatamodeld"]
 
 
   # ――― Project Linking ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-  s.frameworks = "UIKit", "MapKit","Foundation"
+  s.frameworks = "UIKit", "MapKit","Foundation","CoreData"
 
   # ――― Project Settings ――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   s.requires_arc = true
@@ -87,7 +86,6 @@ Pod::Spec.new do |s|
   s.dependency "MJRefresh", "2.0.4"
   s.dependency "MWPhotoBrowser", "2.1.1"
   s.dependency "MBProgressHUD", "0.9.1"
-  s.dependency "FMDB", "2.5"
   s.dependency "TTTAttributedLabel", "1.13.4"
 
 end

@@ -10,11 +10,12 @@
 #import "EmojiEmoticons.h"
 
 #import "EM+Common.h"
+#import "EM+ChatResourcesUtils.h"
 #import "EM+ChatUIConfig.h"
 #import "UIColor+Hex.h"
 
-#import "EM+ChatDBM.h"
-#import "EM+ChatLatelyEmoji.h"
+#import "EM_ChatEmoji.h"
+#import "EM+ChatDBUtils.h"
 
 #define HORIZONTAL_COUNT (8)
 #define VERTICAL_COUNT  (3)
@@ -59,9 +60,9 @@ typedef NS_ENUM(NSInteger, Emoji_Type) {
         
         latelyButton = [[UIButton alloc]init];
         latelyButton.backgroundColor = self.backgroundColor;
-        [latelyButton setTitle:EM_ChatString(@"common.lately") forState:UIControlStateNormal];
-        [latelyButton setTitleColor:[UIColor colorWithHEX:TEXT_NORMAL_COLOR alpha:1.0] forState:UIControlStateNormal];
-        [latelyButton setTitleColor:[UIColor colorWithHEX:TEXT_SELECT_COLOR alpha:1.0] forState:UIControlStateSelected];
+        [latelyButton setTitle:[EM_ChatResourcesUtils stringWithName:@"common.lately"] forState:UIControlStateNormal];
+        [latelyButton setTitleColor:[UIColor colorWithHexRGB:TEXT_NORMAL_COLOR] forState:UIControlStateNormal];
+        [latelyButton setTitleColor:[UIColor colorWithHexRGB:TEXT_SELECT_COLOR] forState:UIControlStateSelected];
         [latelyButton addTarget:self action:@selector(emojiLatelyClicked:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:latelyButton];
         
@@ -69,21 +70,21 @@ typedef NS_ENUM(NSInteger, Emoji_Type) {
         emojiButton.backgroundColor = [UIColor colorWithHEX:LINE_COLOR alpha:1.0];
         emojiButton.selected = YES;
         [emojiButton setTitle:@"Emoji" forState:UIControlStateNormal];
-        [emojiButton setTitleColor:[UIColor colorWithHEX:TEXT_NORMAL_COLOR alpha:1.0] forState:UIControlStateNormal];
-        [emojiButton setTitleColor:[UIColor colorWithHEX:TEXT_SELECT_COLOR alpha:1.0] forState:UIControlStateSelected];
+        [emojiButton setTitleColor:[UIColor colorWithHexRGB:TEXT_NORMAL_COLOR] forState:UIControlStateNormal];
+        [emojiButton setTitleColor:[UIColor colorWithHexRGB:TEXT_SELECT_COLOR] forState:UIControlStateSelected];
         [emojiButton addTarget:self action:@selector(emojiActionClicked:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:emojiButton];
         
         sendButton = [[UIButton alloc]init];
         sendButton.backgroundColor = [UIColor colorWithHEX:@"#A4D3EE" alpha:1.0];
         sendButton.selected = YES;
-        [sendButton setTitle:EM_ChatString(@"common.send") forState:UIControlStateNormal];
-        [sendButton setTitleColor:[UIColor colorWithHEX:TEXT_NORMAL_COLOR alpha:1.0] forState:UIControlStateNormal];
-        [sendButton setTitleColor:[UIColor colorWithHEX:TEXT_SELECT_COLOR alpha:1.0] forState:UIControlStateSelected];
+        [sendButton setTitle:[EM_ChatResourcesUtils stringWithName:@"common.send"] forState:UIControlStateNormal];
+        [sendButton setTitleColor:[UIColor colorWithHexRGB:TEXT_NORMAL_COLOR] forState:UIControlStateNormal];
+        [sendButton setTitleColor:[UIColor colorWithHexRGB:TEXT_SELECT_COLOR] forState:UIControlStateSelected];
         [sendButton addTarget:self action:@selector(emojiSendClicked:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:sendButton];
         
-        latelyArray = [[NSMutableArray alloc]initWithArray:[EM_ChatDBM queryEmoji]];
+        latelyArray = [[NSMutableArray alloc]initWithArray:[[EM_ChatDBUtils shared] queryEmoji]];
         emojiArray = [EmojiEmoticons allEmoticons];
         tempArray = [[NSMutableArray alloc]init];
         
@@ -93,10 +94,7 @@ typedef NS_ENUM(NSInteger, Emoji_Type) {
 }
 
 - (void)dealloc{
-//    for (int i = 0; i < latelyArray.count; i++) {
-//        EM_ChatLatelyEmoji *emoji = latelyArray[i];
-//        [EM_ChatDBM updateEmoji:emoji];
-//    }
+
 }
 
 - (void)initEmoji:(Emoji_Type)type{
@@ -121,7 +119,7 @@ typedef NS_ENUM(NSInteger, Emoji_Type) {
     for (int i = 0; i < array.count; i++) {
         UIButton *emoji = [[UIButton alloc]init];
         if (type == Emoji_Lately) {
-            EM_ChatLatelyEmoji *latelyEmoji = array[i];
+            EM_ChatEmoji *latelyEmoji = array[i];
             [emoji setTitle:latelyEmoji.emoji forState:UIControlStateNormal];
         }else{
             [emoji setTitle:array[i] forState:UIControlStateNormal];
@@ -132,7 +130,10 @@ typedef NS_ENUM(NSInteger, Emoji_Type) {
         
         if (i % pageEmojiCount == pageEmojiCount - 1 || i == array.count - 1) {
             UIButton *deleteButton = [[UIButton alloc]init];
-            [deleteButton setImage:[UIImage imageNamed:RES_IMAGE_TOOL(@"tool_delete")] forState:UIControlStateNormal];
+            deleteButton.titleLabel.font = [EM_ChatResourcesUtils iconFontWithSize:25];
+            [deleteButton setTitle:kEMChatIconMoreRepeal forState:UIControlStateNormal];
+            [deleteButton setTitleColor:[UIColor colorWithHexRGB:TEXT_NORMAL_COLOR] forState:UIControlStateNormal];
+            [deleteButton setTitleColor:[UIColor colorWithHexRGB:TEXT_SELECT_COLOR] forState:UIControlStateHighlighted];
             [deleteButton addTarget:self action:@selector(emojiDeleteClicked:) forControlEvents:UIControlEventTouchUpInside];
             [scroll addSubview:deleteButton];
         }
@@ -173,21 +174,24 @@ typedef NS_ENUM(NSInteger, Emoji_Type) {
 }
 
 - (void)updateLatelyEmojiArray{
-    for (EM_ChatLatelyEmoji *tempEmoji in tempArray) {
-        NSInteger index = [latelyArray indexOfObject:tempEmoji];
-        if (index >= 0 && index < latelyArray.count) {
-            EM_ChatLatelyEmoji *emoji = latelyArray[index];
-            emoji.calculate += tempEmoji.calculate;
-            emoji.useTime = tempEmoji.useTime;
-            [EM_ChatDBM updateEmoji:emoji];
-        }else{
-            [latelyArray insertObject:tempEmoji atIndex:0];
-            [EM_ChatDBM insertEmoji:tempEmoji];
+    for (NSString *tempEmoji in tempArray) {
+        EM_ChatEmoji *emoji = [[EM_ChatDBUtils shared] queryEmoji:tempEmoji];
+        if (!emoji){
+            emoji = [[EM_ChatDBUtils shared] insertNewEmoji];
+            emoji.emoji = tempEmoji;
+            [latelyArray insertObject:emoji atIndex:0];
             if (latelyArray.count > 46) {
-                [latelyArray removeLastObject];
+                EM_ChatEmoji *removeEmoji = [latelyArray lastObject];
+                [latelyArray removeObject:removeEmoji];
+                [[EM_ChatDBUtils shared] deleteEmoji:removeEmoji];
             }
         }
+        
+        emoji.calculate = [emoji.calculate decimalNumberByAdding:[NSDecimalNumber decimalNumberWithString:@"1"]];
+        emoji.modify = [NSDate date];
     }
+    [tempArray removeAllObjects];
+    [[EM_ChatDBUtils shared] saveChat];
 }
 
 - (void)layoutSubviews{
@@ -235,16 +239,14 @@ typedef NS_ENUM(NSInteger, Emoji_Type) {
 }
 
 - (void)emojiClicked:(UIButton *)sender{
-    EM_ChatLatelyEmoji *tempEmoji = [[EM_ChatLatelyEmoji alloc]initWithEmoji:sender.titleLabel.text];
-    [tempArray addObject:tempEmoji];
+    [tempArray addObject:sender.titleLabel.text];
     if (_delegate) {
         [_delegate didEmojiClicked:sender.titleLabel.text];
     }
 }
 
 - (void)emojiDeleteClicked:(UIButton *)sender{
-    EM_ChatLatelyEmoji *tempEmoji = [[EM_ChatLatelyEmoji alloc]initWithEmoji:sender.titleLabel.text];
-    [tempArray removeObject:tempEmoji];
+    [tempArray removeObject:sender.titleLabel.text];
     if (_delegate) {
         [_delegate didEmojiDeleteClicked];
     }
