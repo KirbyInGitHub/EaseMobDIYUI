@@ -30,8 +30,8 @@
     if (!self.message.extend.isCallMessage) {
         if (messageBody.messageBodyType == eMessageBodyType_Text) {
             //复制
-            UIMenuItem *copyItme = [[UIMenuItem alloc]initWithTitle:[EM_ChatResourcesUtils stringWithName:@"common.copy"] action:@selector(copyEMMessage:)];
-            [menuItems addObject:copyItme];
+            UIMenuItem *copyItem = [[UIMenuItem alloc]initWithTitle:[EM_ChatResourcesUtils stringWithName:@"common.copy"] action:@selector(copyEMMessage:)];
+            [menuItems addObject:copyItem];
         }else if (messageBody.messageBodyType == eMessageBodyType_Image){
             //收藏到表情
             UIMenuItem *collectFaceItem = [[UIMenuItem alloc]initWithTitle:[EM_ChatResourcesUtils stringWithName:@"common.collect_face"] action:@selector(collectEMMessageFace:)];
@@ -74,6 +74,7 @@
 
 - (NSMutableDictionary *)userInfo{
     NSMutableDictionary *userInfo = [super userInfo];
+    [userInfo setObject:HANDLE_FROM_BODY forKey:kHandleActionFrom];
     [userInfo setObject:HANDEL_ACTION_BODY forKey:kHandleActionName];
     return userInfo;
 }

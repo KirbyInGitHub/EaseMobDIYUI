@@ -62,4 +62,28 @@
  */
 - (void)didActionSelectedWithName:(NSString *)name;
 
+/**
+ *  头像点击事件
+ *
+ *  @param chatter 
+ *  @param isOwn 是否是自己的头像
+ */
+- (void)didAvatarTapWithChatter:(NSString *)chatter isOwn:(BOOL)isOwn;
+
+/**
+ *  扩展View被点击
+ *
+ *  @param userInfo  数据
+ *  @param indexPath
+ */
+- (void)didExtendTapWithUserInfo:(NSDictionary *)userInfo;
+
+/**
+ *  扩展View菜单被选择
+ *
+ *  @param userInfo  数据
+ *  @param indexPath 
+ */
+- (void)didExtendMenuSelectedWithUserInfo:(NSDictionary *)userInfo;
+
 @end

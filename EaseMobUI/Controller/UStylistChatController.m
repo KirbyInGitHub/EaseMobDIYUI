@@ -25,7 +25,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
 }
 
 
@@ -50,6 +49,18 @@
 }
 
 - (void)didActionSelectedWithName:(NSString *)name{
+    
+}
+
+- (void)didAvatarTapWithChatter:(NSString *)chatter isOwn:(BOOL)isOwn{
+    
+}
+
+- (void)didExtendTapWithUserInfo:(NSDictionary *)userInfo{
+    
+}
+
+- (void)didExtendMenuSelectedWithUserInfo:(NSDictionary *)userInfo{
     
 }
 

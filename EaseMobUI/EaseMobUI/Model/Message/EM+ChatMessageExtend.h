@@ -42,7 +42,7 @@ extern NSString * const kClassName;
 @property (nonatomic, assign) BOOL checking;
 
 /**
- *  标记消失是否被收藏
+ *  标记消息是否被收藏
  */
 @property (nonatomic, assign) BOOL collected;
 
@@ -58,7 +58,7 @@ extern NSString * const kClassName;
 
 //overwrite
 /**
- *  返回扩展内容绑定View的Class,子类必须重写
+ *  返回扩展内容绑定View的Class,showExtend为YES的时候子类必须重写
  *
  *  @return class
  */
@@ -79,7 +79,7 @@ extern NSString * const kClassName;
 - (void)getFrom:(NSDictionary *)extend;
 
 /**
- *  返回扩展展示的大小,子类必须重写,否则默认返回CGSizeZero
+ *  返回扩展展示的大小,showExtend为YES时子类必须重写,否则默认返回CGSizeZero
  *
  *  @param maxWidth 扩展最大的宽度,返回大小的宽度必须小于等于maxWidth
  *

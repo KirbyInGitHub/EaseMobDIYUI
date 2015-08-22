@@ -18,6 +18,11 @@ NSString * const kHandleActionName      = @"kHandleActionName";
 NSString * const kHandleActionMessage   = @"kHandleActionMessage";
 NSString * const kHandleActionValue     = @"kHandleActionValue";
 NSString * const kHandleActionView      = @"kHandleActionView";
+NSString * const kHandleActionFrom      = @"kHandleActionFrom";
+
+NSString * const HANDLE_FROM_CONTENT = @"HANDLE_FROM_CONTENT";
+NSString * const HANDLE_FROM_BODY = @"HANDLE_FROM_BODY";
+NSString * const HANDLE_FROM_EXTEND = @"HANDLE_FROM_EXTEND";
 
 NSString * const HANDLE_ACTION_URL      = @"HANDLE_ACTION_URL";
 NSString * const HANDLE_ACTION_PHONE    = @"HANDLE_ACTION_PHONE";
@@ -123,7 +128,7 @@ NSString * const MENU_ACTION_FORWARD    = @"MENU_ACTION_FORWARD";
     if (self.message) {
         [userInfo setObject:self.message forKey:kHandleActionMessage];
     }
-    
+    [userInfo setObject:HANDLE_FROM_CONTENT forKey:kHandleActionFrom];
     [userInfo setObject:HANDLE_ACTION_UNKNOWN forKey:kHandleActionName];
     [userInfo setObject:self forKey:kHandleActionView];
     return userInfo;

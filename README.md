@@ -13,14 +13,19 @@
     * [要求](#2.1) 
     * [pod](#2.2) 
     * [依赖](#2.3) 
-    * [初始化及使用](#2.4) 
-    * [配置文件](#2.5)   
-    * [Delegate](#2.6) 
-    * [UI](#2.7)
+    * [初始化及权限](#2.4) 
+        * [初始化](#2.4.1)
+        * [权限](#2.4.2)
+    * [会话列表](#2.5)   
+    * [好友列表](#2.6) 
+    * [聊天界面](#2.7)
+        * [配置文件](#2.7.1)
+    * [自定义扩展](#2.8)
+    * [UI](#2.9)
 * [期望](#3)
   
 <h2 id = "1">简介</h2>
-集成环信的即时通讯功能，pod集成，方便管理。简单继承，轻松定制自己的UI界面。当前最新版本```0.1.8```,目前暂时只完成了单聊界面，暂时不支持即时语音和即时视频功能。很多功能和界面都在开发中，聊天界面的UI也没有开发完善，所以现在显示很挫。在```1.0.0```版本之前会完成所有可以使用环信SDK实现的功能，并且加入其它实用的功能，在此之前也不适合使用。当然你也可以参考环信的[Demo](http://www.easemob.com/downloads)。
+集成环信的即时通讯功能，pod集成，方便管理。简单继承，轻松定制自己的UI界面。当前最新版本```0.1.9```,主要由会话列表(```EM_ConversationListController```)、好友列表(```EM_FriendsController```)和聊天界面(```EM_ChatController```)组成。很多功能和界面都在开发中，聊天界面的UI也没有开发完善，所以现在显示很挫。在```1.0.0```版本之前会完成所有可以使用环信SDK实现的功能，并且加入其它实用的功能，在此之前也不适合使用。当然你也可以参考环信的[Demo](http://www.easemob.com/downloads)。
 
 <h3 id = "1.1">环信SDK</h3>
 使用pod集成的[EaseMobSDKFull](https://github.com/dujiepeng/EaseMobSDKFull)，集成版本```2.1.7```。因为pod集成[EaseMobSDK](https://github.com/easemob/sdk-ios-cocoapods)是没有语音和视频通讯功能的。
@@ -32,7 +37,8 @@
 - 语音消息发送之前的播放
 - 自定义Action，除了图片、相机、语音、视频、位置和文件等Action外，可以额外添加其它Action，View会根据数量来自动增加翻页
 - 语音识别（未实现）
-- 文件浏览器（未实现）
+- 文件浏览器
+- WiFi文件上传
 - .......
 
 <h2 id = "2">使用</h2>
@@ -55,7 +61,6 @@ pod 'VoiceConvert',:git => "https://github.com/AwakenDragon/VoiceConvert.git"
 - ```"MJRefresh", "2.0.4"``` 上拉下拉，相信你也会用到 [MJRefresh](https://github.com/CoderMJLee/MJRefresh)
 - ```"MWPhotoBrowser", "2.1.1"``` 图片浏览，同时也支持视频播放 [MWPhotoBrowser](https://github.com/mwaterfall/MWPhotoBrowser)
 - ```"MBProgressHUD", "0.9.1"``` 主要还是toast功能 [MBProgressHUD](https://github.com/jdg/MBProgressHUD)
-- ```"FMDB", "2.5"``` 这是实现保存会话状态和聊天表情的，你应该也会用到 [FMDB](https://github.com/ccgus/fmdb)
 - ```"TTTAttributedLabel", "1.13.4"``` 富文本显示 [TTTAttributedLabel](https://github.com/TTTAttributedLabel/TTTAttributedLabel)
 
 所以你不需要再额外pod这些了。
@@ -69,49 +74,176 @@ pod 'VoiceConvert',:git => "https://github.com/AwakenDragon/VoiceConvert.git"
 - ```EaseMobSDK --> include --> Utility --> ErrorManager --> EMErrorDefs.h``` 
 - ```你项目根目录 --> Pods --> EaseMobSDKFull --> EaseMobSDKFull --> include --> Utility --> ErrorManager --> EMErrorDefs.h```
 
-<h3 id = "2.4">初始化及使用</h3>
+<h3 id = "2.4">初始化及权限</h3>
+<h4 id = "2.4.1">初始化</h4>
+在```AppDelegate```中初始化
+
 ```
+#import "AppDelegate.h"
 #import "EaseMobUIClient.h"
-```
+#import "EaseMob.h"
 
-```
-[EaseMobUIClient sharedInstance];//这里会初始化数据库等
-EM_ChatUIConfig *config = [EM_ChatUIConfig defaultConfig];//自定义UI的配置
-UIViewController *chatController = [[EM_ChatController alloc]initWithChatter:chatter conversationType:eConversationTypeChat config:config];
-```
-你也可以直接继承```EM_ChatController```使用。环信初始化及登录方法仍然需要自己去调用。
-```
-[[EaseMob sharedInstance] registerSDKWithAppKey:EaseMob_AppKey apnsCertName:EaseMob_APNSCertName];
-[[EaseMob sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
-[[EaseMob sharedInstance].chatManager asyncLoginWithUsername:user password:password completion:^(NSDictionary *loginInfo, EMError *error) {
-} onQueue:nil];
-```
-具体其他的环信API调用请参考环信的[官方文档](http://www.easemob.com/docs/ios/IOSSDKPrepare/)。
+@interface AppDelegate ()<EM_ChatUserDelegate>
 
-<h3 id = "2.5">配置文件</h3>
+@end
+
+@implementation AppDelegate
+
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    
+    self.window = [[UIWindow alloc]initWithFrame:[UIScreen mainScreen].bounds];
+    self.window.backgroundColor = [UIColor whiteColor];
+
+    //初始化，并设置用户代理
+    [EaseMobUIClient sharedInstance].userDelegate = self;
+
+    //初始化环信
+    [[EaseMob sharedInstance] registerSDKWithAppKey:EaseMob_AppKey apnsCertName:EaseMob_APNSCertName];
+    [[EaseMob sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
+    //登录环信
+    [[EaseMob sharedInstance].chatManager asyncLoginWithUsername:@"你的用户名" password:@"你的密码" completion:^(NSDictionary *loginInfo, EMError *error) {
+    } onQueue:nil];
+    
+    return YES;
+}
+
+- (void)applicationWillResignActive:(UIApplication *)application {
+    
+}
+
+- (void)applicationDidBecomeActive:(UIApplication *)application {
+    
+}
+
+- (void)applicationDidEnterBackground:(UIApplication *)application {
+    [[EaseMobUIClient sharedInstance] applicationDidEnterBackground:application];
+}
+
+- (void)applicationWillEnterForeground:(UIApplication *)application {
+    [[EaseMobUIClient sharedInstance] applicationWillEnterForeground:application];
+}
+
+- (void)applicationWillTerminate:(UIApplication *)application {
+    [[EaseMobUIClient sharedInstance] applicationWillTerminate:application];
+}
+
+#pragma mark - EM_ChatUserDelegate
+- (NSString *)nickNameWithChatter:(NSString *)chatter{
+    //根据chatter返回用户昵称
+    return nil;
+}
+
+- (NSString *)avatarWithChatter:(NSString *)chatter{
+    //根据chatter返回用户头像地址
+    return nil;
+}
+
+@end
+```
+环信的部分API仍然需要自己去调用，比如初始化及登录方法。具体其他的环信API调用请参考环信的[官方文档](http://www.easemob.com/docs/ios/IOSSDKPrepare/)。
+<h4 id = "2.4.2">权限</h4>
+为了功能的正常时候，我们需要以下全下
+- **位置**    *在Info.plist中添加NSLocationAlwaysUsageDescription(始终允许使用)、NSLocationWhenInUseUsageDescription(使用期间允许使用)*
+- **照片**
+- **麦克风**
+- **相机**
+- **通知**    *注册APNS*
+- **后台应用程序刷新**  *在Info.plist中添加Required background modes 并添加App plays audio or streams audio/video using AirPlay、App downloads content in response to push notifications和App provides Voice over IP services三项；或者在Capabilities中打开Background Models，勾选Audio and Airplay、Voice over IP和Remote notifications*
+- **使用蜂窝移动数据**
+
+<h3 id = "2.5">会话列表</h3>
+直接继承使用即可，暂时没有完成
+<h3 id = "2.6">好友列表</h3>
+直接继承使用即可，暂时没有完成
+<h3 id = "2.7">聊天界面</h3>
+直接继承使用即可，有很多功能和UI还在完善中。
+<h4 id = "2.7.1">配置文件</h4>
+在使用聊天界面之前，请先了解```EM_ChatUIConfig```和```EM_ChatMessageUIConfig```两个配置文件的相关属性。配置文件只在初始化显示聊天界面的时候使用，在聊天界面显示后再修改无效。
 ```
 EM_ChatUIConfig
 ```
+聊天界面的配置
 ```
-//Action按钮，录音，Emoji表情，和更多按钮的属性
-extern NSString * const kAttributeName;
-extern NSString * const kAttributeTitle;//录音，Emoji表情，和更多按钮没有这个属性
-extern NSString * const kAttributeNormalImage;
-extern NSString * const kAttributeHighlightImage;
-extern NSString * const kAttributeBackgroundColor;
-extern NSString * const kAttributeBorderColor;
-extern NSString * const kAttributeBorderWidth;
-extern NSString * const kAttributeCornerRadius;
-extern NSString * const kAttributeFont;
-extern NSString * const kAttributeText;//字体图标
+#import <Foundation/Foundation.h>
+@class EM_ChatMessageUIConfig;
 
-//工具栏按钮Name,默认有录音，Emoji表情，和更多（即'+'）按钮
+//聊天界面中大部分文字的默认大小
+#define RES_FONT_DEFAUT (14)
+
+//文字输入工具栏图标字体的默认大小
+#define RES_TOOL_ICO_FONT (30)
+
+//动作图标的默认大小
+#define RES_ACTION_ICO_FONT (30)
+
+//属性
+/**
+ *  属性名称
+ */
+extern NSString * const kAttributeName;
+
+/**
+ *  标题
+ */
+extern NSString * const kAttributeTitle;
+
+/**
+ *  一般图片
+ */
+extern NSString * const kAttributeNormalImage;
+
+/**
+ *  高亮图片
+ */
+extern NSString * const kAttributeHighlightImage;
+
+/**
+ *  背景色,输入框工具栏按钮无此属性
+ */
+extern NSString * const kAttributeBackgroundColor;
+
+/**
+ *  边框颜色,输入框工具栏按钮无此属性
+ */
+extern NSString * const kAttributeBorderColor;
+
+/**
+ *  边框宽度,输入框工具栏按钮无此属性
+ */
+extern NSString * const kAttributeBorderWidth;
+
+/**
+ *  圆角,输入框工具栏按钮无此属性
+ */
+extern NSString * const kAttributeCornerRadius;
+
+/**
+ *  图标字体,设置此属性后,kAttributeNormalImage和kAttributeHighlightImage会失效
+ */
+extern NSString * const kAttributeFont;
+
+/**
+ *  图标
+ */
+extern NSString * const kAttributeText;
+
+/**
+ *  图标一般颜色
+ */
+extern NSString * const kAttributeNormalColor;
+
+/**
+ *  图标高亮颜色
+ */
+extern NSString * const kAttributeHighlightColor;
+
+//工具栏按钮Name
 extern NSString * const kButtonNameRecord;
 extern NSString * const kButtonNameKeyboard;
 extern NSString * const kButtonNameEmoji;
 extern NSString * const kButtonNameAction;
 
-//动作Name，默认图片，相机，语音，视频，位置，文件六个Action，更多按钮请自定义添加
+//动作Name
 extern NSString * const kActionNameImage;
 extern NSString * const kActionNameCamera;
 extern NSString * const kActionNameVoice;
@@ -121,60 +253,593 @@ extern NSString * const kActionNameFile;
 
 @interface EM_ChatUIConfig : NSObject
 
-@property (nonatomic,assign) BOOL hiddenOfRecord;//是否显示录音按钮
-@property (nonatomic,assign) BOOL hiddenOfEmoji;//是否显示Emoji表情按钮
+@property (nonatomic, assign) BOOL hiddenOfRecord;
+@property (nonatomic, assign) BOOL hiddenOfEmoji;
+@property (nonatomic, strong) EM_ChatMessageUIConfig *messageConfig;
 
-@property (nonatomic,strong,readonly) NSMutableDictionary *actionDictionary;//存储Action按钮的属性
-@property (nonatomic,strong,readonly) NSMutableDictionary *toolDictionary;//存储录音，Emoji表情和更多按钮的属性
-@property (nonatomic,strong,readonly) NSMutableArray *keyArray;//Action按钮的name，这个决定按钮的显示顺序
+@property (nonatomic, strong, readonly) NSMutableDictionary *actionDictionary;
+@property (nonatomic, strong, readonly) NSMutableDictionary *toolDictionary;
+@property (nonatomic, strong, readonly) NSMutableArray *keyArray;
 
-+ (instancetype)defaultConfig;//默认的配置
 
-- (void)setToolName:(NSString *)toolName attributeName:(NSString *)attributeName attribute:(id)attribute;//设置录音，Emoji表情和更多按钮的属性的属性
++ (instancetype)defaultConfig;
+
+- (void)setToolName:(NSString *)toolName attributeName:(NSString *)attributeName attribute:(id)attribute;
 - (void)removeToolWithName:(NSString *)name;
 - (void)removeToolAttributeWithName:(NSString *)attributeName tool:(NSString *)toolName;
 
-- (void)setActionName:(NSString *)actionName attributeName:(NSString *)attributeName attribute:(id)attribute;//设置Action按钮
-- (void)removeActionWithName:(NSString *)name;//移除一个Action按钮的配置
+- (void)setActionName:(NSString *)actionName attributeName:(NSString *)attributeName attribute:(id)attribute;
+- (void)removeActionWithName:(NSString *)name;
 - (void)removeActionAttributeWithName:(NSString *)attributeName action:(NSString *)actionName;
 ```
-配置文件只在初始化显示聊天界面的时候使用，在聊天界面显示后再修改并不能修改界面元素
 
-<h3 id = "2.6">Delegate</h3>
 ```
-EM_ChatControllerDelegate
+EM_ChatMessageUIConfig
 ```
+显示消息cell的配置
 ```
-@protocol EM_ChatControllerDelegate <NSObject>
-@required
-@optional
-- (NSString *)nickNameWithChatter:(NSString *)chatter;//昵称
-- (NSString *)avatarWithChatter:(NSString *)chatter;//头像地址
-- (NSDictionary *)extendForMessageBody:(id<IEMMessageBody>)messageBody;//为所有要发送的消息添加扩展
-- (BOOL)showForExtendMessage:(NSDictionary *)ext;//是否显示消息扩展View
-- (NSString *)reuseIdentifierForExtendMessage:(NSDictionary *)ext;//reuseIdentifier
-- (CGSize)sizeForExtendMessage:(NSDictionary *)ext maxWidth:(CGFloat)max;//消息扩展View的Size
-- (UIView *)viewForExtendMessage:(NSDictionary *)ext reuseView:(UIView *)view;//消息扩展View
-- (void)didActionSelectedWithName:(NSString *)name;//自定义Action按钮被点击
+#import <Foundation/Foundation.h>
+
+typedef NS_ENUM(NSInteger, EM_AVATAR_STYLE) {
+    EM_AVATAR_STYLE_SQUARE = 0,//方形
+    EM_AVATAR_STYLE_CIRCULAR//圆形
+};
+
+@interface EM_ChatMessageUIConfig : NSObject
+
+//cell
+/**
+ *  头像风格,默认EM_AVATAR_STYLE_CIRCULAR
+ */
+@property (nonatomic, assign) EM_AVATAR_STYLE avatarStyle;
+
+/**
+ *  头像的大小
+ */
+@property (nonatomic, assign) float messageAvatarSize;
+
+/**
+ *  消息左右的padding
+ */
+@property (nonatomic, assign) float messagePadding;
+
+/**
+ *  消息顶部padding,即消息和消息之间的空隙
+ */
+@property (nonatomic, assign) float messageTopPadding;
+
+/**
+ *  消息时间显示高度
+ */
+@property (nonatomic, assign) float messageTimeLabelHeight;
+
+/**
+ *  昵称显示高度
+ */
+@property (nonatomic, assign) float messageNameLabelHeight;
+
+/**
+ *  菊花高度
+ */
+@property (nonatomic, assign) float messageIndicatorSize;
+
+/**
+ *  气泡尾巴宽度
+ */
+@property (nonatomic, assign) float messageTailWithd;
+
+//bubble
+/**
+ *  气泡padding
+ */
+@property (nonatomic, assign) float bubblePadding;
+
+/**
+ *  气泡文字大小
+ */
+@property (nonatomic, assign) float bubbleTextFont;
+
+/**
+ *  文字行间距
+ */
+@property (nonatomic, assign) float bubbleTextLineSpacing;
+
+/**
+ *  文字边距
+ */
+@property (nonatomic, assign) float bubbleTextPadding;
+
++ (instancetype)defaultConfig;
 
 @end
 ```
-<h3 id = "2.7">UI</h3>
-**聊天界面**
+
+<h4 id = "2.7.2">聊天Controller</h4>
+```
+EM_ChatController
+```
+聊天界面的Controller，直接继承并自定义自己的部分。
+
+```
+#import "EM+ChatBaseController.h"
+#import "EM+ChatUIConfig.h"
+#import "EM+ChatMessageModel.h"
+
+@protocol EM_ChatControllerDelegate;
+
+@interface EM_ChatController : EM_ChatBaseController
+
+/**
+ *  会话对象
+ */
+@property (nonatomic, strong, readonly) EMConversation *conversation;
+
+
+@property (nonatomic,weak) id<EM_ChatControllerDelegate> delegate;
+
+- (instancetype)initWithChatter:(NSString *)chatter conversationType:(EMConversationType)conversationType config:(EM_ChatUIConfig *)config;
+
+- (void)sendMessage:(EM_ChatMessageModel *)message;
+
+@end
+
+@protocol EM_ChatControllerDelegate <NSObject>
+
+@required
+
+@optional
+
+/**
+ *  为要发送的消息添加扩展
+ *
+ *  @param body 消息内容
+ *
+ *  @param type 消息类型
+ *
+ *  @return 扩展
+ */
+- (EM_ChatMessageExtend *)extendForMessage:(id)body messageType:(MessageBodyType)type;
+
+/**
+ *  是否允许发送消息
+ *
+ *  @param body 消息内容
+ *  @param type 消息类型
+ *
+ *  @return YES or NO,默认YES
+ */
+- (BOOL)shouldSendMessage:(id)body messageType:(MessageBodyType)type;
+
+/**
+ *  自定义动作监听
+ *
+ *  @param name 自定义动作
+ */
+- (void)didActionSelectedWithName:(NSString *)name;
+
+/**
+ *  头像点击事件
+ *
+ *  @param chatter 
+ *  @param isOwn 是否是自己的头像
+ */
+- (void)didAvatarTapWithChatter:(NSString *)chatter isOwn:(BOOL)isOwn;
+
+/**
+ *  扩展View被点击
+ *
+ *  @param userInfo  数据
+ *  @param indexPath
+ */
+- (void)didExtendTapWithUserInfo:(NSDictionary *)userInfo;
+
+/**
+ *  扩展View菜单被选择
+ *
+ *  @param userInfo  数据
+ *  @param indexPath 
+ */
+- (void)didExtendMenuSelectedWithUserInfo:(NSDictionary *)userInfo;
+
+@end
+```
+继承
+```
+#import "EM+ChatController.h"
+
+@interface CustomChatController : EM_ChatController
+
+@end
+```
+```
+#import "CustomChatController.h"
+#import "CustomExtend.h"
+
+@interface CustomChatController ()<EM_ChatControllerDelegate>
+
+@end
+
+@implementation CustomChatController
+
+- (instancetype)initWithChatter:(NSString *)chatter conversationType:(EMConversationType)conversationType config:(EM_ChatUIConfig *)config{
+    self = [super initWithChatter:chatter conversationType:conversationType config:config];
+    if (self) {
+        self.delegate = self;
+    }
+    return self;
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+}
+
+- (void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+}
+
+#define mark - EM_ChatControllerDelegate
+- (NSString *)nickNameWithChatter:(NSString *)chatter{
+    return @"昵称";
+}
+
+- (NSString *)avatarWithChatter:(NSString *)chatter{
+    return @"http://you.server.com/avatar.png";
+}
+
+- (EM_ChatMessageExtend *)extendForMessage:(id)body messageType:(MessageBodyType)type{
+    CustomExtend *extend = [[CustomExtend alloc]init];
+    extend.showBody = YES;
+    extend.showExtend = NO;
+    return extend;
+}
+
+- (void)didActionSelectedWithName:(NSString *)name{
+    
+}
+
+- (void)didAvatarTapWithChatter:(NSString *)chatter isOwn:(BOOL)isOwn{
+    //点击了头像
+}
+
+- (void)didExtendTapWithUserInfo:(NSDictionary *)userInfo{
+    //点击了扩展View
+}
+
+- (void)didExtendMenuSelectedWithUserInfo:(NSDictionary *)userInfo{
+    
+}
+
+@end
+```
+
+聊天界面会涉及的其他三个Controller，```EM_LocationController```(定位，用于获取定位信息)、```EM_ExplorerController```（文件浏览器，获取要发送的文件）、```EM_CallController```(语音、视频即时通讯)
+
+<h3 id = "2.8">自定义扩展</h3>
+**自定义扩展**是通过环信```EMMessage```的扩展属性```ext```来实现的，我只是对自定义扩展进行了规范，可以让大家方便扩展的同时实现了自己的一些功能。为了统一iOS和Android，在声明属性的时候请尽量只声明NSString、BOOL和数字类型，因为Android只支持这些类型。
+```EM_ChatMessageExtend```
+这里有我自己的一些扩展属性，大家只需要继承就可以了。
+```
+
+#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
+@class EM_ChatMessageModel;
+
+extern NSString * const kClassName;
+
+@interface EM_ChatMessageExtend : NSObject
+
+@property (nonatomic, strong) EM_ChatMessageModel *message;
+
+/**
+ *  是否显示消息内容,默认YES
+ */
+@property (nonatomic, assign) BOOL showBody;
+
+/**
+ *  是否显示扩展内容,默认NO
+ */
+@property (nonatomic, assign) BOOL showExtend;
+
+/**
+ *  是否显示时间,默认NO
+ */
+@property (nonatomic, assign) BOOL showTime;
+
+/**
+ *  标记消息的详情是否被查看,比如图片的大图是否被查看,语音消息是否被听过,视频是否被看过
+ */
+@property (nonatomic, assign) BOOL details;
+
+/**
+ *  标记消息是否正在查看
+ */
+@property (nonatomic, assign) BOOL checking;
+
+/**
+ *  标记消息是否被收藏
+ */
+@property (nonatomic, assign) BOOL collected;
+
+/**
+ *  标记是否是即时语音、即时视频消息,该标记只针对文字消息有效,请不要随意修改
+ */
+@property (nonatomic, assign) BOOL isCallMessage;
+
+/**
+ *  文件类型,只针对文件消息有效,请不要随意修改
+ */
+@property (nonatomic, copy) NSString *fileType;
+
+//overwrite
+/**
+ *  返回扩展内容绑定View的Class,showExtend为YES时子类必须重写
+ *
+ *  @return class
+ */
+- (Class)classForExtendView;
+
+/**
+ *  将扩展序列化成字典,子类必须重写,且必须通过super获取
+ *
+ *  @return
+ */
+- (NSMutableDictionary *)getContentValues;
+
+/**
+ *  从字典解析扩展
+ *
+ *  @param extend 来自EMMessage 的 ext
+ */
+- (void)getFrom:(NSDictionary *)extend;
+
+/**
+ *  返回扩展展示的大小,showExtend为YES时子类必须重写,否则默认返回CGSizeZero
+ *
+ *  @param maxWidth 扩展最大的宽度,返回大小的宽度必须小于等于maxWidth
+ *
+ *  @return size
+ */
+- (CGSize)extendSizeFromMaxWidth:(CGFloat)maxWidth;
+
+//private,你可能仅仅扩展自己基本类型的字段,且不需要显示,这里会满足你
+- (void)setAttribute:(id)attribute forKey:(NSString *)key;
+- (void)removeAttributeForKey:(NSString *)key;
+- (id)attributeForkey:(NSString *)key;
+
+@end
+```
+其中大部分属性都不需要自己去修改，自己只需要关注```showBody```、```showExtend```这两个字段，以及```- (Class)classForExtendView```、```- (NSMutableDictionary *)getContentValues```、```- (void)getFrom:(NSDictionary *)extend```和```- (CGSize)extendSizeFromMaxWidth:(CGFloat)maxWidth```方法就可以了。
+
+因为扩展内容是通过```NSDictionary```的方式进行存储的，所以子类需要重写```- (NSMutableDictionary *)getContentValues```和```- (void)getFrom:(NSDictionary *)extend```方法。
+
+```
+#import "EM+ChatMessageExtend.h"
+
+@interface CustomExtend : EM_ChatMessageExtend
+
+@property (nonatomic, copy) NSString *custom;
+
+@end
+```
+```
+#import "CustomExtend.h"
+#import "CustomExtendView.h"
+
+@implementation CustomExtend
+
+- (instancetype)init{
+    self = [super init];
+    if(self){
+
+    }
+    return self;
+}
+
+- (Class)classForExtendView{
+    return [CustomExtendView class];
+}
+
+- (NSMutableDictionary *)getContentValues{
+    NSMutableDictionary *values = [super getContentValues];
+    //放入自定义属性,请避免让key和父类中的重复
+    if(self.custom){
+        [values setObject:self.custom forKey:@"key"];
+    }
+    
+    return values;
+}
+- (void)getFrom:(NSDictionary *)extend{
+    [super getFrom:extend];
+    //取出自己的属性,一定要记得super
+    self.custom = extend[@"key"];
+}
+
+@end
+```
+当你需要消息```View```上显示扩展内容的时候，请将```showExtend```标记为```YES```。当然你也可以同时将```showBody```标记为```NO```，这个时候就只会在```View```上显示扩展内容而不显示消息内容了。然后再在消息气泡上加一个特殊的背景！
+当```showExtend```标记为```YES```，你需要提供自定义的```View```，自定义View必须继承```EM_ChatMessageExtendView```，不需要提供额外的```init```方法。```EM_ChatMessageExtendView```本身没有太多可以实现的（后期会加入更多的实现），和```EM_ChatMessageBodyView```（用来显示消息内容的View）一样都是继承自```EM_ChatMessageContent```。
+```
+EM_ChatMessageContent
+```
+目前你只需要关注该类中的实现。
+```
+#import <UIKit/UIKit.h>
+@class EM_ChatMessageModel;
+@class EM_ChatMessageUIConfig;
+
+/**
+ *  userInfo key
+ */
+extern NSString * const kHandleActionName;
+extern NSString * const kHandleActionMessage;
+extern NSString * const kHandleActionValue;
+extern NSString * const kHandleActionView;
+extern NSString * const kHandleActionFrom;
+
+/**
+ *  from
+ */
+extern NSString * const HANDLE_FROM_CONTENT;
+extern NSString * const HANDLE_FROM_BODY;
+extern NSString * const HANDLE_FROM_EXTEND;
+
+/**
+ *  action
+ */
+extern NSString * const HANDLE_ACTION_URL;
+extern NSString * const HANDLE_ACTION_PHONE;
+extern NSString * const HANDLE_ACTION_TEXT;
+extern NSString * const HANDLE_ACTION_IMAGE;
+extern NSString * const HANDLE_ACTION_VOICE;
+extern NSString * const HANDLE_ACTION_VIDEO;
+extern NSString * const HANDLE_ACTION_LOCATION;
+extern NSString * const HANDLE_ACTION_FILE;
+extern NSString * const HANDEL_ACTION_BODY;
+extern NSString * const HANDLE_ACTION_EXTEND;
+extern NSString * const HANDLE_ACTION_UNKNOWN;
+
+/**
+ *  menu action
+ */
+extern NSString * const MENU_ACTION_DELETE;//删除
+extern NSString * const MENU_ACTION_COPY;//复制
+extern NSString * const MENU_ACTION_FACE;//添加到表情
+extern NSString * const MENU_ACTION_DOWNLOAD;//下载
+extern NSString * const MENU_ACTION_COLLECT;//收藏
+extern NSString * const MENU_ACTION_FORWARD;//转发
+
+@protocol EM_ChatMessageContentDelegate;
+
+@interface EM_ChatMessageContent : UIView
+
+@property (nonatomic, weak) id<EM_ChatMessageContentDelegate> delegate;
+@property (nonatomic,strong) EM_ChatMessageModel *message;
+
+/**
+ *  是否需要点击,默认YES
+ */
+@property (nonatomic, assign) BOOL needTap;
+
+/**
+ *  是否需要长按,默认YES
+ */
+@property (nonatomic, assign) BOOL needLongPress;
+
+@property (nonatomic, strong) EM_ChatMessageUIConfig *config;
+
+
+//overwrite
+
+/**
+ *  返回菜单项,请使用super
+ *
+ *  @return 菜单项
+ */
+- (NSMutableArray *)menuItems;
+
+/**
+ *  返回点击、长按传入的数据,请使用super
+ *
+ *  @return 数据
+ */
+- (NSMutableDictionary *)userInfo;
+
+@end
+
+@protocol EM_ChatMessageContentDelegate <NSObject>
+
+@required
+
+@optional
+
+/**
+ *  点击监听
+ *
+ *  @param content  view
+ *  @param action   动作
+ *  @param userInfo 数据
+ */
+- (void) contentTap:(UIView *)content action:(NSString *)action withUserInfo:(NSDictionary *)userInfo;
+
+/**
+ *  长按监听
+ *
+ *  @param content  view
+ *  @param action   动作
+ *  @param userInfo 数据
+ */
+- (void) contentLongPress:(UIView *)content action:(NSString *)action withUserInfo:(NSDictionary *)userInfo;
+
+/**
+ *  菜单选项监听
+ *
+ *  @param content  view
+ *  @param action   动作
+ *  @param userInfo 数据
+ */
+- (void) contentMenu:(UIView *)content action:(NSString *)action withUserInfo:(NSDictionary *)userInfo;
+
+@end
+```
+默认有点击、长按手势，而且你不需要实现代理，代理已经在```EM_ChatController```中实现。你需要关注```- (NSMutableArray *)menuItems```和```- (NSMutableDictionary *)userInfo```方法，长按手势默认是用来调出menu的，所以你需要提供menuItems。
+```
+#import "EM+ChatMessageExtendView.h"
+
+@interface CustomExtendView : EM_ChatMessageExtendView
+
+@end
+```
+```
+#import "CustomExtendView.h"
+
+@implementation CustomExtendView
+
+- (NSMutableArray *)menuItems{
+    NSMutableArray *items = [super menuItems];
+    UIMenuItem *copyItem = [[UIMenuItem alloc]initWithTitle:@"复制" action:@selector(copy:)];
+    [items addObject:copyItem];
+    return items;
+}
+
+- (void)copy:(id)sender{
+    //这里执行你的代码，或者调用代理中的方法。如果你使用代理，EM_ChatControllerDelegate中的- (void)didExtendMenuSelectedWithUserInfo:(NSDictionary *)userInfo方法会被调用。
+    if (self.delegate && [self.delegate respondsToSelector:@selector(contentMenu:action:withUserInfo:)]) {
+        NSMutableDictionary *userInfo = [self userInfo];//
+        [userInfo setObject:MENU_ACTION_COPY forKey:kHandleActionName];
+        [self.delegate contentMenu:self action:MENU_ACTION_COPY withUserInfo:userInfo];
+    }
+}
+
+- (NSMutableDictionary *)userInfo{
+    NSMutableDictionary *userInfo = [super userInfo];
+    //在userInfo中放入自己的一些数据，点击和长按都触发
+    [userInfo setObject:@"Click" forKey:kHandleActionName];
+    return userInfo;
+}
+
+@end
+```
+
+
+<h3 id = "2.9">UI</h3>
 
 ![enter image description here](https://github.com/AwakenDragon/ImageRepository/blob/master/EaseMobDIYUI/01.PNG?raw=true)
 
-**更多Action按钮**
-
 ![enter image description here](https://github.com/AwakenDragon/ImageRepository/blob/master/EaseMobDIYUI/02.PNG?raw=true)
-
-**Emoji**
 
 ![enter image description here](https://github.com/AwakenDragon/ImageRepository/blob/master/EaseMobDIYUI/03.PNG?raw=true)
 
-**录音**
-
 ![enter image description here](https://github.com/AwakenDragon/ImageRepository/blob/master/EaseMobDIYUI/04.PNG?raw=true)
+
+![enter image description here](https://github.com/AwakenDragon/ImageRepository/blob/master/EaseMobDIYUI/05.png?raw=true)
+
+![enter image description here](https://github.com/AwakenDragon/ImageRepository/blob/master/EaseMobDIYUI/06.png?raw=true)
+
+![enter image description here](https://github.com/AwakenDragon/ImageRepository/blob/master/EaseMobDIYUI/07.png?raw=true)
+
+![enter image description here](https://github.com/AwakenDragon/ImageRepository/blob/master/EaseMobDIYUI/08.png?raw=true)
+
+![enter image description here](https://github.com/AwakenDragon/ImageRepository/blob/master/EaseMobDIYUI/09.png?raw=true)
 
 <h2 id = "3">期望</h2>
 - **合作：**如果你 也是环信的使用者，可以一起和我开发这个项目，让更多的环信开发者方便使用

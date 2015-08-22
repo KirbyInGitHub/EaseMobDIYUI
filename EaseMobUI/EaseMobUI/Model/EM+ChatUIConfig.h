@@ -9,8 +9,13 @@
 #import <Foundation/Foundation.h>
 @class EM_ChatMessageUIConfig;
 
+//聊天界面中大部分文字的默认大小
 #define RES_FONT_DEFAUT (14)
+
+//文字输入工具栏图标字体的默认大小
 #define RES_TOOL_ICO_FONT (30)
+
+//动作图标的默认大小
 #define RES_ACTION_ICO_FONT (30)
 
 //属性

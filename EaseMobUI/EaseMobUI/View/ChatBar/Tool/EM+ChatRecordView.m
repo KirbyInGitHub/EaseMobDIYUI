@@ -123,7 +123,7 @@ typedef NS_ENUM(NSUInteger,RECORD_STATE) {
         case RECORD_STATE_RECORDING:{
             recordLabel.tag = 0;
             
-            recordView.font = [EM_ChatResourcesUtils iconFontWithSize:80];
+            recordView.font = [EM_ChatResourcesUtils iconFontWithSize:60];
             recordView.text = kEMChatIconMoreRecord;
             recordView.backgroundColor = [UIColor colorWithHEX:RECORD_HIGHLIGHTED_BACKGROUND_COLOR alpha:1.0];
             recordView.textColor = [UIColor whiteColor];
@@ -143,7 +143,7 @@ typedef NS_ENUM(NSUInteger,RECORD_STATE) {
             recordLabel.tag = 1;
             recordLabel.text = [EM_ChatResourcesUtils stringWithName:@"record.will_cancel"];
             
-            recordView.font = [EM_ChatResourcesUtils iconFontWithSize:80];
+            recordView.font = [EM_ChatResourcesUtils iconFontWithSize:60];
             recordView.text = kEMChatIconMoreRecord;
             recordView.backgroundColor = [UIColor colorWithHEX:RECORD_HIGHLIGHTED_BACKGROUND_COLOR alpha:1.0];
             recordView.textColor = [UIColor whiteColor];
@@ -163,7 +163,7 @@ typedef NS_ENUM(NSUInteger,RECORD_STATE) {
             recordLabel.tag = 1;
             recordLabel.text = [EM_ChatResourcesUtils stringWithName:@"record.will_audition"];
             
-            recordView.font = [EM_ChatResourcesUtils iconFontWithSize:80];
+            recordView.font = [EM_ChatResourcesUtils iconFontWithSize:60];
             recordView.text = kEMChatIconMoreRecord;
             recordView.backgroundColor = [UIColor colorWithHEX:RECORD_HIGHLIGHTED_BACKGROUND_COLOR alpha:1.0];
             recordView.textColor = [UIColor whiteColor];
@@ -182,7 +182,7 @@ typedef NS_ENUM(NSUInteger,RECORD_STATE) {
         case RECORD_STATE_PLAYING:{
             recordLabel.tag = 0;
             
-            recordView.font = [EM_ChatResourcesUtils iconFontWithSize:60];
+            recordView.font = [EM_ChatResourcesUtils iconFontWithSize:50];
             recordView.text = kEMChatIconMoreStop;
             recordView.backgroundColor = [UIColor whiteColor];
             recordView.textColor = [UIColor colorWithHEX:RECORD_HIGHLIGHTED_BACKGROUND_COLOR alpha:1.0];
@@ -214,7 +214,7 @@ typedef NS_ENUM(NSUInteger,RECORD_STATE) {
             recordLabel.text = time;
             recordLabel.tag = 0;
             
-            recordView.font = [EM_ChatResourcesUtils iconFontWithSize:60];
+            recordView.font = [EM_ChatResourcesUtils iconFontWithSize:50];
             recordView.text = KEMChatIconMorePlay;
             recordView.backgroundColor = [UIColor whiteColor];
             recordView.textColor = [UIColor colorWithHEX:RECORD_HIGHLIGHTED_BACKGROUND_COLOR alpha:1.0];
@@ -234,7 +234,7 @@ typedef NS_ENUM(NSUInteger,RECORD_STATE) {
             recordLabel.tag = 0;
             recordLabel.text = [EM_ChatResourcesUtils stringWithName:@"record.normal_record"];
             
-            recordView.font = [EM_ChatResourcesUtils iconFontWithSize:80];
+            recordView.font = [EM_ChatResourcesUtils iconFontWithSize:60];
             recordView.text = kEMChatIconMoreRecord;
             recordView.backgroundColor = [UIColor colorWithHEX:RECORD_HIGHLIGHTED_BACKGROUND_COLOR alpha:1.0];
             recordView.textColor = [UIColor whiteColor];

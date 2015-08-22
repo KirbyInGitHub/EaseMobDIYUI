@@ -17,6 +17,14 @@ extern NSString * const kHandleActionName;
 extern NSString * const kHandleActionMessage;
 extern NSString * const kHandleActionValue;
 extern NSString * const kHandleActionView;
+extern NSString * const kHandleActionFrom;
+
+/**
+ *  from
+ */
+extern NSString * const HANDLE_FROM_CONTENT;
+extern NSString * const HANDLE_FROM_BODY;
+extern NSString * const HANDLE_FROM_EXTEND;
 
 /**
  *  action

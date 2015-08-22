@@ -86,6 +86,7 @@
 		B9C0E4AB1B7DAE010036C0CB /* UserCustomExtendView.m in Sources */ = {isa = PBXBuildFile; fileRef = B9C0E4AA1B7DAE010036C0CB /* UserCustomExtendView.m */; };
 		B9C0E4AE1B7DE6930036C0CB /* EM+CallController.m in Sources */ = {isa = PBXBuildFile; fileRef = B9C0E4AD1B7DE6930036C0CB /* EM+CallController.m */; };
 		B9C847121B7B92DB00D4D390 /* EM+ChatMessageContent.m in Sources */ = {isa = PBXBuildFile; fileRef = B9C847111B7B92DB00D4D390 /* EM+ChatMessageContent.m */; };
+		B9CFBC6F1B8860B1007D7C0D /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9CFBC6E1B8860B1007D7C0D /* MapKit.framework */; };
 		B9D1BF751B59167600C0A3D4 /* UIViewController+HUD.m in Sources */ = {isa = PBXBuildFile; fileRef = B9D1BF741B59167600C0A3D4 /* UIViewController+HUD.m */; };
 		B9D1BF9E1B5A4C3900C0A3D4 /* EMAudioPlayerUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = B9D1BF801B5A4C3900C0A3D4 /* EMAudioPlayerUtil.m */; };
 		B9D1BF9F1B5A4C3900C0A3D4 /* EMAudioRecorderUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = B9D1BF821B5A4C3900C0A3D4 /* EMAudioRecorderUtil.m */; };
@@ -278,6 +279,7 @@
 		B9C0E4B51B7DF0C00036C0CB /* EM+ChatUserDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EM+ChatUserDelegate.h"; sourceTree = "<group>"; };
 		B9C847101B7B92DB00D4D390 /* EM+ChatMessageContent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EM+ChatMessageContent.h"; sourceTree = "<group>"; };
 		B9C847111B7B92DB00D4D390 /* EM+ChatMessageContent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "EM+ChatMessageContent.m"; sourceTree = "<group>"; };
+		B9CFBC6E1B8860B1007D7C0D /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		B9D1BF731B59167600C0A3D4 /* UIViewController+HUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+HUD.h"; sourceTree = "<group>"; };
 		B9D1BF741B59167600C0A3D4 /* UIViewController+HUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+HUD.m"; sourceTree = "<group>"; };
 		B9D1BF7B1B5A4C3900C0A3D4 /* EMCDDeviceManagerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EMCDDeviceManagerDelegate.h; sourceTree = "<group>"; };
@@ -338,6 +340,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B97F054D1B7461350096B98D /* CoreData.framework in Frameworks */,
+				B9CFBC6F1B8860B1007D7C0D /* MapKit.framework in Frameworks */,
 				4233C91D54090CEF16F59568 /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -887,6 +890,7 @@
 		DCEF3704E015E69BA9E67AC5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B9CFBC6E1B8860B1007D7C0D /* MapKit.framework */,
 				B97F054C1B7461350096B98D /* CoreData.framework */,
 				055F3965F5D3B2098C86D930 /* libPods.a */,
 			);
@@ -947,6 +951,9 @@
 						DevelopmentTeam = 9ECTU77S2U;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+							com.apple.Maps.iOS = {
 								enabled = 1;
 							};
 						};

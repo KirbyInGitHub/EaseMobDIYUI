@@ -20,6 +20,7 @@
 
 - (NSMutableDictionary *)userInfo{
     NSMutableDictionary *userInfo = [super userInfo];
+    [userInfo setObject:HANDLE_FROM_EXTEND forKey:kHandleActionFrom];
     [userInfo setObject:HANDLE_ACTION_EXTEND forKey:kHandleActionName];
     return userInfo;
 }
