@@ -54,8 +54,11 @@ NSString * const kEMChatIconMoreStop = @"\ue610";
     return [self imageWithName:[NSString stringWithFormat:@"EM_Resource.bundle/images/call/%@",name]];
 }
 
-+ (UIFont *)iconFontWithSize:(float)size
-{
++ (UIImage *)fileImageWithName:(NSString *)name{
+    return [self imageWithName:[NSString stringWithFormat:@"EM_Resource.bundle/images/file/%@",name]];
+}
+
++ (UIFont *)iconFontWithSize:(float)size{
 #ifndef DISABLE_FONTAWESOME_AUTO_REGISTRATION
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{

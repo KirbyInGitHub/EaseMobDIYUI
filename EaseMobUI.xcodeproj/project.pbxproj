@@ -76,6 +76,7 @@
 		B98FC8FD1B7887E4008A95FE /* EM_Web.bundle in Resources */ = {isa = PBXBuildFile; fileRef = B98FC8FC1B7887E4008A95FE /* EM_Web.bundle */; };
 		B990CA4F1B5F735300BA25B1 /* EM+ChatMessageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B990CA4E1B5F735300BA25B1 /* EM+ChatMessageManager.m */; };
 		B997E1E91B74B75400E024C3 /* EM+ExplorerController.m in Sources */ = {isa = PBXBuildFile; fileRef = B997E1E81B74B75400E024C3 /* EM+ExplorerController.m */; };
+		B998F8081B89E3F7006DEBC6 /* EM+ExplorerBaseCell.m in Sources */ = {isa = PBXBuildFile; fileRef = B998F8071B89E3F7006DEBC6 /* EM+ExplorerBaseCell.m */; };
 		B9A0E0FE1B841835006E5636 /* EM+ChatHttpErrorResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = B9A0E0FD1B841835006E5636 /* EM+ChatHttpErrorResponse.m */; };
 		B9BF0DFD1B42889F0003FF67 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B9BF0DFC1B42889F0003FF67 /* main.m */; };
 		B9BF0E001B42889F0003FF67 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B9BF0DFF1B42889F0003FF67 /* AppDelegate.m */; };
@@ -258,6 +259,8 @@
 		B990CA4E1B5F735300BA25B1 /* EM+ChatMessageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "EM+ChatMessageManager.m"; sourceTree = "<group>"; };
 		B997E1E71B74B75400E024C3 /* EM+ExplorerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EM+ExplorerController.h"; sourceTree = "<group>"; };
 		B997E1E81B74B75400E024C3 /* EM+ExplorerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "EM+ExplorerController.m"; sourceTree = "<group>"; };
+		B998F8061B89E3F7006DEBC6 /* EM+ExplorerBaseCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EM+ExplorerBaseCell.h"; sourceTree = "<group>"; };
+		B998F8071B89E3F7006DEBC6 /* EM+ExplorerBaseCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "EM+ExplorerBaseCell.m"; sourceTree = "<group>"; };
 		B9A0E0FC1B841835006E5636 /* EM+ChatHttpErrorResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EM+ChatHttpErrorResponse.h"; sourceTree = "<group>"; };
 		B9A0E0FD1B841835006E5636 /* EM+ChatHttpErrorResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "EM+ChatHttpErrorResponse.m"; sourceTree = "<group>"; };
 		B9BF0DF71B42889F0003FF67 /* EaseMobUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EaseMobUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -524,6 +527,7 @@
 				B97829FD1B43EF2500D602F0 /* ChatCell */,
 				B98FC8241B785533008A95FE /* EM+ChatWifiView.h */,
 				B98FC8251B785533008A95FE /* EM+ChatWifiView.m */,
+				B998F8051B89E2F3006DEBC6 /* ExplorerCell */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -781,6 +785,15 @@
 				B9D3D0F01B79D33D0064CA8F /* EM+ChatMessageExtendView.m */,
 			);
 			path = Extend;
+			sourceTree = "<group>";
+		};
+		B998F8051B89E2F3006DEBC6 /* ExplorerCell */ = {
+			isa = PBXGroup;
+			children = (
+				B998F8061B89E3F7006DEBC6 /* EM+ExplorerBaseCell.h */,
+				B998F8071B89E3F7006DEBC6 /* EM+ExplorerBaseCell.m */,
+			);
+			path = ExplorerCell;
 			sourceTree = "<group>";
 		};
 		B9BF0DEE1B42889F0003FF67 = {
@@ -1118,6 +1131,7 @@
 				B98FC8E51B788233008A95FE /* DDLog.m in Sources */,
 				B97F054B1B7461160096B98D /* EM+ChatDBUtils.m in Sources */,
 				B9782A121B4629AC00D602F0 /* EM+ChatInputTool.m in Sources */,
+				B998F8081B89E3F7006DEBC6 /* EM+ExplorerBaseCell.m in Sources */,
 				B98FC8B71B788216008A95FE /* HTTPFileResponse.m in Sources */,
 				B98FC8E31B788233008A95FE /* DDASLLogger.m in Sources */,
 				B97F05501B74630D0096B98D /* EM_ChatModel.xcdatamodeld in Sources */,

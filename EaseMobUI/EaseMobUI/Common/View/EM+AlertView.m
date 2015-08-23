@@ -32,6 +32,7 @@
     self = [super init];
     if (self) {
         self.backgroundColor = [UIColor whiteColor];
+        self.needTap = YES;
     }
     return self;
 }
@@ -69,8 +70,10 @@
     _cover.userInteractionEnabled = YES;
     _cover.hidden = self.coverHidden;
     
-    UITapGestureRecognizer *tapGes = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismiss)];
-    [_cover addGestureRecognizer:tapGes];
+    if (self.needTap) {
+        UITapGestureRecognizer *tapGes = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismiss)];
+        [_cover addGestureRecognizer:tapGes];
+    }
     
     CGFloat height = self.contentHeight;
     
