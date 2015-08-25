@@ -38,7 +38,7 @@ static EaseMobUIClient *sharedClient;
 /**
  *  EMDeviceManagerNetworkDelegate
  */
-@interface EaseMobUIClient()<EMChatManagerDelegate,EMCallManagerDelegate,EMDeviceManagerDelegate,IEMChatProgressDelegate>
+@interface EaseMobUIClient()<EMChatManagerDelegate,EMCallManagerDelegate,EMDeviceManagerDelegate>
 
 @property (nonatomic, assign) BOOL callShow;
 

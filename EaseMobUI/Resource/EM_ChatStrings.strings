@@ -31,6 +31,9 @@ common.revocation = "撤回";
 common.delete = "删除";
 common.close = "关闭";
 
+common.message = "消息";
+common.contact = "联系人";
+
 common.monday = "星期一";
 common.tuesday = "星期二";
 common.wednesday = "星期三";
@@ -39,7 +42,7 @@ common.friday = "星期五";
 common.saturday = "星期六";
 common.sunday = "星期日";
 common.yesterday = "昨天";
-common.thDeayBeforeYesterday = "前天";
+common.theDayBeforeYesterday = "前天";
 
 common.hint.delete.failure = "删除失败";
 common.hint.collect.failure = "收藏失败";

@@ -89,12 +89,31 @@ EMDeviceManagerDelegate>
 - (instancetype)initWithChatter:(NSString *)chatter conversationType:(EMConversationType)conversationType config:(EM_ChatUIConfig *)config{
     self = [super init];
     if (self) {
+        [self initializeWithChatter:chatter conversationType:conversationType config:config];
+    }
+    return self;
+}
+
+- (instancetype)initWithBuddy:(EM_ChatBuddyModel *)buddy config:(EM_ChatUIConfig *)config{
+    self = [super init];
+    if (self) {
+        [self initializeWithChatter:buddy.userName conversationType:eConversationTypeChat config:config];
+    }
+    return self;
+}
+
+- (instancetype)initWithConversation:(EMConversation *)conversation config:(EM_ChatUIConfig *)config{
+    self = [super init];
+    if (self) {
+        self.hidesBottomBarWhenPushed = YES;
+        self.navigationController.interactivePopGestureRecognizer.enabled = YES;
+        
         if (!config) {
-             _config = [EM_ChatUIConfig defaultConfig];
+            _config = [EM_ChatUIConfig defaultConfig];
         }else{
             _config = config;
         }
-        _conversation = [[EaseMob sharedInstance].chatManager conversationForChatter:chatter conversationType:conversationType];
+        _conversation = conversation;
         [_conversation markAllMessagesAsRead:YES];
         
         _dataSource = [[NSMutableArray alloc]init];
@@ -102,6 +121,23 @@ EMDeviceManagerDelegate>
         _voiceDataArray = [[NSMutableArray alloc]init];
     }
     return self;
+}
+
+- (void)initializeWithChatter:(NSString *)chatter conversationType:(EMConversationType)conversationType config:(EM_ChatUIConfig *)config{
+    self.hidesBottomBarWhenPushed = YES;
+    self.navigationController.interactivePopGestureRecognizer.enabled = YES;
+    
+    if (!config) {
+        _config = [EM_ChatUIConfig defaultConfig];
+    }else{
+        _config = config;
+    }
+    _conversation = [[EaseMob sharedInstance].chatManager conversationForChatter:chatter conversationType:conversationType];
+    [_conversation markAllMessagesAsRead:YES];
+    
+    _dataSource = [[NSMutableArray alloc]init];
+    _imageDataArray = [[NSMutableArray alloc]init];
+    _voiceDataArray = [[NSMutableArray alloc]init];
 }
 
 - (void)viewDidLoad{

@@ -12,7 +12,8 @@
 #import "DDLog.h"
 #import "DDTTYLogger.h"
 
-#import "UStylistChatController.h"
+#import "EaseMob.h"
+#import "MainController.h"
 
 
 #define EaseMob_AppKey (@"zhou-yuzhen#easemobchatui")
@@ -56,8 +57,8 @@
     
     [EaseMobUIClient sharedInstance].userDelegate = self;
     
-    UIViewController *rootController = [[UStylistChatController alloc]initWithChatter:chatter conversationType:eConversationTypeChat config:nil];
-    self.window.rootViewController = [[UINavigationController alloc]initWithRootViewController:rootController];
+    UIViewController *rootController = [[MainController alloc]init];
+    self.window.rootViewController = rootController;
     [self.window makeKeyAndVisible];
 
     [[EaseMob sharedInstance] registerSDKWithAppKey:EaseMob_AppKey apnsCertName:EaseMob_APNSCertName];
