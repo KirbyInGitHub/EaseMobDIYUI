@@ -62,7 +62,7 @@
         
         _avatarView = [[UIButton alloc]init];
         _avatarView.layer.masksToBounds = YES;
-        [_avatarView setImage:[EM_ChatResourcesUtils cellImageWithName:@"avatar_default"] forState:UIControlStateNormal];
+        [_avatarView setImage:[EM_ChatResourcesUtils defaultAvatarImage] forState:UIControlStateNormal];
         [_avatarView addTarget:self action:@selector(avatarClicked:) forControlEvents:UIControlEventTouchUpInside];
         [self.contentView addSubview:_avatarView];
         
@@ -170,7 +170,7 @@
 - (void)setMessage:(EM_ChatMessageModel *)message{
     _message = message;
 
-    _nameLabel.text = message.nickName;
+    _nameLabel.text = message.displayName;
     _nameLabel.hidden = message.message.messageType == eMessageTypeChat;
     
     if (_message.avatar) {

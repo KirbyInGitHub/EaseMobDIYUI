@@ -16,11 +16,13 @@
 
 @interface EM_ChatMessageCell : UITableViewCell
 
-@property (nonatomic,weak) id<EM_ChatMessageCellDelegate> delegate;
+@property (nonatomic, weak) id<EM_ChatMessageCellDelegate> delegate;
 
-@property (nonatomic,strong) EM_ChatMessageModel *message;
-@property (nonatomic,strong) NSIndexPath *indexPath;
+@property (nonatomic, strong) EM_ChatMessageModel *message;
+@property (nonatomic, strong) NSIndexPath *indexPath;
 @property (nonatomic, strong) EM_ChatMessageUIConfig *config;
+@property (nonatomic, copy) NSString *displayName;
+@property (nonatomic, strong) NSURL *avatarURL;
 
 @property (nonatomic,strong,readonly) EM_ChatMessageBubble *bubbleView;
 

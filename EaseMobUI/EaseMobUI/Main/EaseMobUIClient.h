@@ -8,7 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
+#import "EM+ChatUser.h"
+#import "EM+ChatBuddy.h"
+#import "EM+ChatGroup.h"
+#import "EM+ChatRoom.h"
+
 @protocol EM_ChatUserDelegate;
+@protocol EM_ChatOppositeDelegate;
 
 extern NSString * const kEMNotificationCallActionIn;
 extern NSString * const kEMNotificationCallActionOut;
@@ -23,7 +29,17 @@ extern NSString * const kEMCallTypeVideo;
 
 @interface EaseMobUIClient : NSObject
 
+/**
+ *  登录用户信息代理
+ */
 @property (nonatomic, weak) id<EM_ChatUserDelegate> userDelegate;
+
+/**
+ *  聊天数据代理
+ */
+@property (nonatomic, weak) id<EM_ChatOppositeDelegate> oppositeDelegate;
+
+
 
 + (instancetype)sharedInstance;
 
@@ -43,23 +59,63 @@ extern NSString * const kEMCallTypeVideo;
 
 @required
 
+- (EM_ChatUser *)userForEMChat;
+
 @optional
-/**
- *  根据用户名获取昵称
- *
- *  @param chatter 用户名
- *
- *  @return 昵称
- */
-- (NSString *)nickNameWithChatter:(NSString *)chatter;
+
+@end
+
+@protocol EM_ChatOppositeDelegate <NSObject>
+
+@required
 
 /**
- *  根据用户名获取头像网络地址
+ *  根据chatter返回好友信息
  *
- *  @param chatter 用户名
+ *  @param chatter
  *
- *  @return 头像网络地址
+ *  @return
  */
-- (NSString *)avatarWithChatter:(NSString *)chatter;
+- (EM_ChatBuddy *)buddyInfoWithChatter:(NSString *)chatter;
+
+/**
+ *  根据chatter返回群信息
+ *
+ *  @param chatter
+ *
+ *  @return
+ */
+- (EM_ChatGroup *)groupInfoWithChatter:(NSString *)chatter;
+
+/**
+ *  根据chatter返回群中好友信息
+ *
+ *  @param chatter
+ *  @param group
+ *
+ *  @return
+ */
+- (EM_ChatBuddy *)buddyInfoWithChatter:(NSString *)chatter inGroup:(EM_ChatGroup *)group;
+
+/**
+ *  根据chatter返回讨论组信息
+ *
+ *  @param chatter
+ *
+ *  @return
+ */
+- (EM_ChatRoom *)roomInfoWithChatter:(NSString *)chatter;
+
+/**
+ *  根据chatter返回讨论组成员信息
+ *
+ *  @param chatter
+ *  @param room
+ *
+ *  @return 
+ */
+- (EM_ChatBuddy *)buddyInfoWithChatter:(NSString *)chatter inRoom:(EM_ChatRoom *)room;
+
+@optional
 
 @end

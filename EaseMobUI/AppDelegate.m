@@ -12,7 +12,8 @@
 #import "DDLog.h"
 #import "DDTTYLogger.h"
 
-#import "UStylistChatController.h"
+#import "EaseMob.h"
+#import "MainController.h"
 
 
 #define EaseMob_AppKey (@"zhou-yuzhen#easemobchatui")
@@ -27,7 +28,7 @@
 
 #endif
 
-@interface AppDelegate ()<EM_ChatUserDelegate>
+@interface AppDelegate ()
 
 @end
 
@@ -54,10 +55,10 @@
         password = @"123456";
     }
     
-    [EaseMobUIClient sharedInstance].userDelegate = self;
+    [EaseMobUIClient sharedInstance];
     
-    UIViewController *rootController = [[UStylistChatController alloc]initWithChatter:chatter conversationType:eConversationTypeChat config:nil];
-    self.window.rootViewController = [[UINavigationController alloc]initWithRootViewController:rootController];
+    UIViewController *rootController = [[MainController alloc]init];
+    self.window.rootViewController = rootController;
     [self.window makeKeyAndVisible];
 
     [[EaseMob sharedInstance] registerSDKWithAppKey:EaseMob_AppKey apnsCertName:EaseMob_APNSCertName];
@@ -89,14 +90,5 @@
     [[EaseMobUIClient sharedInstance] applicationWillTerminate:application];
 }
 
-#pragma mark - EM_ChatUserDelegate
-- (NSString *)nickNameWithChatter:(NSString *)chatter{
-    if ([chatter isEqualToString:@"zhouyuzhen"]) {
-        return @"周玉震";
-    }else if ([chatter isEqualToString:@"yuanjing"]){
-        return @"袁静";
-    }
-    return nil;
-}
 
 @end

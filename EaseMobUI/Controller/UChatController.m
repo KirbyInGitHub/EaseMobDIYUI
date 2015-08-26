@@ -6,14 +6,14 @@
 //  Copyright (c) 2015年 周玉震. All rights reserved.
 //
 
-#import "UStylistChatController.h"
+#import "UChatController.h"
 #import "UserCustomExtend.h"
 
-@interface UStylistChatController ()<EM_ChatControllerDelegate>
+@interface UChatController ()<EM_ChatControllerDelegate>
 
 @end
 
-@implementation UStylistChatController
+@implementation UChatController
 
 - (instancetype)initWithChatter:(NSString *)chatter conversationType:(EMConversationType)conversationType config:(EM_ChatUIConfig *)config{
     self = [super initWithChatter:chatter conversationType:conversationType config:config];

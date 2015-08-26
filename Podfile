@@ -16,10 +16,10 @@ pod 'MWPhotoBrowser','2.1.1'
 #Toast
 pod 'MBProgressHUD','0.9.1'
 
-
 #富文本
 pod 'TTTAttributedLabel','1.13.4'
 
-pod 'FontAwesomeKit'
+#Cell左滑出现多个按钮
+pod 'SWTableViewCell','0.3.7'
 
 pod 'VoiceConvert',:git => "https://github.com/AwakenDragon/VoiceConvert.git"

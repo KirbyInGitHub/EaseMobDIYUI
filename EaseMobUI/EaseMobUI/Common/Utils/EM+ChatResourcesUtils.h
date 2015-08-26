@@ -37,6 +37,8 @@ extern NSString * const kEMChatIconMoreStop;
 
 + (NSString *)stringWithName:(NSString *)name;
 + (NSString *)stringWithName:(NSString *)name table:(NSString *)table;
++ (UIImage *)defaultAvatarImage;
++ (NSURL *)defaultAvatarURL;
 + (UIImage *)cellImageWithName:(NSString *)name;
 + (UIImage *)callImageWithName:(NSString *)name;
 + (UIImage *)fileImageWithName:(NSString *)name;

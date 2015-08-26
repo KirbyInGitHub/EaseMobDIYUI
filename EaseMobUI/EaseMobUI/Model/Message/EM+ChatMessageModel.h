@@ -16,11 +16,11 @@
 /**
  *  消息发送者的昵称
  */
-@property (nonatomic, copy) NSString *nickName;
+@property (nonatomic, copy) NSString *displayName;
 /**
  *  消息发送者的头像地址
  */
-@property (nonatomic, copy) NSString *avatar;
+@property (nonatomic, strong) NSURL *avatar;
 /**
  *  是否是自己发送
  */

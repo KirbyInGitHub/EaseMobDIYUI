@@ -65,7 +65,6 @@ typedef NS_ENUM(NSInteger, EMChatCallState){
 @property (nonatomic, assign, readonly) EMChatCallAction callAction;
 @property (nonatomic, assign, readonly) EMChatCallState callState;
 @property (nonatomic, strong, readonly) EMCallSession *callSession;
-@property (nonatomic, copy, readonly) NSString *nickName;
 
 - (instancetype)initWithSession:(EMCallSession *)session type:(EMChatCallType)type action:(EMChatCallAction)action;
 

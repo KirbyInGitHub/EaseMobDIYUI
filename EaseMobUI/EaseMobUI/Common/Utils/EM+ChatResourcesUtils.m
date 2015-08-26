@@ -10,6 +10,9 @@
 #import <UIKit/UIKit.h>
 #import <CoreText/CoreText.h>
 
+static UIImage *avatarImage;
+static NSURL *avatarURL;
+
 @implementation EM_ChatResourcesUtils
 
 NSString * const kEMChatIconFontName = @"em_chat_icon";
@@ -44,6 +47,22 @@ NSString * const kEMChatIconMoreStop = @"\ue610";
 
 + (UIImage *)imageWithName:(NSString *)name{
     return [UIImage imageNamed:name];
+}
+
++ (UIImage *)defaultAvatarImage{
+    static dispatch_once_t pred;
+    dispatch_once(&pred, ^{
+        avatarImage = [self imageWithName:@"EM_Resource.bundle/images/avatar_default"];
+    });
+    return avatarImage;
+}
+
++ (NSURL *)defaultAvatarURL{
+    static dispatch_once_t pred;
+    dispatch_once(&pred, ^{
+        avatarURL = [NSURL fileURLWithPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"EM_Resource.bundle/images/avatar_default.png"]];;
+    });
+    return avatarURL;
 }
 
 + (UIImage *)cellImageWithName:(NSString *)name{
