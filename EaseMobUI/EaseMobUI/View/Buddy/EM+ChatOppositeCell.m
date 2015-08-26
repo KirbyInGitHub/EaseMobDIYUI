@@ -1,16 +1,16 @@
 //
-//  EM+ChatBuddyCell.m
+//  EM+ChatOppositeCell.m
 //  EaseMobUI
 //
 //  Created by 周玉震 on 15/8/24.
 //  Copyright (c) 2015年 周玉震. All rights reserved.
 //
 
-#import "EM+ChatBuddyCell.h"
+#import "EM+ChatOppositeCell.h"
 #import "EM+Common.h"
 #import "UIColor+Hex.h"
 
-@implementation EM_ChatBuddyCell{
+@implementation EM_ChatOppositeCell{
 
 }
 

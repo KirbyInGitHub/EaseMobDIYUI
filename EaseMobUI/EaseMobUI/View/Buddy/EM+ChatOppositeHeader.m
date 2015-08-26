@@ -1,16 +1,16 @@
 //
-//  EM+ChatBuddyHeader.m
+//  EM+ChatOppositeHeader.m
 //  EaseMobUI
 //
 //  Created by 周玉震 on 15/8/24.
 //  Copyright (c) 2015年 周玉震. All rights reserved.
 //
 
-#import "EM+ChatBuddyHeader.h"
+#import "EM+ChatOppositeHeader.h"
 
-@implementation EM_ChatBuddyHeader{
+@implementation EM_ChatOppositeHeader{
     UILabel *titleLabel;
-    EM_ChatBuddyHeaderBlock _block;
+    EM_ChatOppositeHeaderBlock _block;
 }
 
 - (instancetype)initWithReuseIdentifier:(NSString *)reuseIdentifier{
@@ -32,7 +32,7 @@
     titleLabel.frame = CGRectMake(15, 0, size.width, size.height);
 }
 
-- (void)setChatBuddyHeaderBlock:(EM_ChatBuddyHeaderBlock)block{
+- (void)setChatOppositeHeaderBlock:(EM_ChatOppositeHeaderBlock)block{
     _block = block;
 }
 

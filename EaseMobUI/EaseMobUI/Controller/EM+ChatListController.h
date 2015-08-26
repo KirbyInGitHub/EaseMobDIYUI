@@ -1,5 +1,5 @@
 //
-//  EM+ConversationListController.h
+//  EM+ChatListController.h
 //  EaseMobUI
 //
 //  Created by 周玉震 on 15/8/21.
@@ -14,6 +14,9 @@
 @interface EM_ChatListController : EM_ChatBaseController
 
 @property (nonatomic, weak) id<EM_ChatListControllerDelegate> delegate;
+
+//overwrite
+- (void)pulldownLoad;
 
 @end
 

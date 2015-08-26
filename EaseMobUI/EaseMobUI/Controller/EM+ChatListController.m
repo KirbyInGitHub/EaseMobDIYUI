@@ -1,5 +1,5 @@
 //
-//  EM+ConversationListController.m
+//  EM+ChatListController.m
 //  EaseMobUI 会话列表
 //
 //  Created by 周玉震 on 15/8/21.
@@ -19,6 +19,7 @@
 #import "EM+ChatMessageModel.h"
 #import "EM+Common.h"
 #import "EM+ChatResourcesUtils.h"
+#import "EM+ChatDateUtils.h"
 
 @interface EM_ChatListController ()
 <UITableViewDataSource,
@@ -51,10 +52,12 @@ EM_ChatTableViewTapDelegate>
 - (void)viewDidLoad {
     [super viewDidLoad];
     _tableView = [[EM_ChatTableView alloc]initWithFrame:self.view.frame];
-    _tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
+    _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     _tableView.dataSource = self;
     _tableView.delegate = self;
     _tableView.tapDelegate = self;
+    MJRefreshGifHeader *header = [MJRefreshGifHeader headerWithRefreshingTarget:self refreshingAction:@selector(pulldownLoad)];
+    _tableView.header = header;
     [self.view addSubview:_tableView];
     
     _searchBar = [[UISearchBar alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 44)];
@@ -83,12 +86,16 @@ EM_ChatTableViewTapDelegate>
     [super viewWillDisappear:animated];
     
     if (_searchBar.isFirstResponder) {
-        [_searchBar resignFirstResponder];
+        [_searchController setActive:NO];
     }
 }
 
 - (void)dealloc{
     [[EaseMob sharedInstance].chatManager removeDelegate:self];
+}
+
+- (void)pulldownLoad{
+    [_tableView.header endRefreshing];
 }
 
 #pragma mark - UISearchDisplayDelegate
@@ -144,11 +151,13 @@ EM_ChatTableViewTapDelegate>
     EMConversation *conversation;
     if (tableView == _tableView) {
         conversation = [EaseMob sharedInstance].chatManager.conversations[indexPath.row];
+        cell.hiddenBottomLine = indexPath.row != [EaseMob sharedInstance].chatManager.conversations.count - 1;
     }else{
         conversation = _searchResultArray[indexPath.row];
+        cell.hiddenBottomLine = indexPath.row != _searchResultArray.count - 1;
     }
     
-    cell.imageView.image = [EM_ChatResourcesUtils cellImageWithName:@"avatar_default"];
+    cell.imageView.image = [EM_ChatResourcesUtils defaultAvatarImage];
     cell.textLabel.text = conversation.chatter;
     EMMessage *lastMessage = [conversation latestMessage];
     EM_ChatMessageModel *message = [EM_ChatMessageModel fromEMMessage:lastMessage];
@@ -159,24 +168,32 @@ EM_ChatTableViewTapDelegate>
         }
             break;
         case eMessageBodyType_Image:{
-            cell.detailTextLabel.text = @"[图片]";
+            cell.detailTextLabel.text = [EM_ChatResourcesUtils stringWithName:@"common.message_type_image"];
         }
             break;
         case eMessageBodyType_Video:{
-            cell.detailTextLabel.text = @"[视频]";
+            cell.detailTextLabel.text = [EM_ChatResourcesUtils stringWithName:@"common.message_type_video"];
         }
             break;
         case eMessageBodyType_Voice:{
-            cell.detailTextLabel.text = @"[语音]";
+            cell.detailTextLabel.text = [EM_ChatResourcesUtils stringWithName:@"common.message_type_voice"];
         }
             break;
         case eMessageBodyType_File:{
-            cell.detailTextLabel.text = @"[文件]";
+            cell.detailTextLabel.text = [EM_ChatResourcesUtils stringWithName:@"common.message_type_file"];;
         }
             break;
-        default:
+        case eMessageBodyType_Location:{
+            cell.detailTextLabel.text = [EM_ChatResourcesUtils stringWithName:@"common.message_type_location"];
+        }
+            break;
+        default:{
+            cell.detailTextLabel.text = [EM_ChatResourcesUtils stringWithName:@"common.message_type_diy"];
+        }
             break;
     }
+    
+    cell.time = [EM_ChatDateUtils stringFormatterMessageDateFromTimeInterval:lastMessage.timestamp / 1000];
     
     return cell;
 }
@@ -206,6 +223,7 @@ EM_ChatTableViewTapDelegate>
 
 #pragma mark - EMChatManagerLoginDelegate
 - (void)didLoginWithInfo:(NSDictionary *)loginInfo error:(EMError *)error{
+    NSLog(@"==========登录");
     if (!error) {
         [[EaseMob sharedInstance].chatManager loadAllConversationsFromDatabaseWithAppend2Chat:YES];
         MAIN(^{

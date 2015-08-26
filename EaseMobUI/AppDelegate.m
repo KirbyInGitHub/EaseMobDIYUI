@@ -28,7 +28,7 @@
 
 #endif
 
-@interface AppDelegate ()<EM_ChatUserDelegate>
+@interface AppDelegate ()
 
 @end
 
@@ -55,7 +55,7 @@
         password = @"123456";
     }
     
-    [EaseMobUIClient sharedInstance].userDelegate = self;
+    [EaseMobUIClient sharedInstance];
     
     UIViewController *rootController = [[MainController alloc]init];
     self.window.rootViewController = rootController;
@@ -90,14 +90,5 @@
     [[EaseMobUIClient sharedInstance] applicationWillTerminate:application];
 }
 
-#pragma mark - EM_ChatUserDelegate
-- (NSString *)nickNameWithChatter:(NSString *)chatter{
-    if ([chatter isEqualToString:@"zhouyuzhen"]) {
-        return @"周玉震";
-    }else if ([chatter isEqualToString:@"yuanjing"]){
-        return @"袁静";
-    }
-    return nil;
-}
 
 @end

@@ -9,7 +9,7 @@
 #import "EM+ChatBaseController.h"
 #import "EM+ChatUIConfig.h"
 #import "EM+ChatMessageModel.h"
-@class EM_ChatBuddyModel;
+@class EM_ChatOpposite;
 
 @protocol EM_ChatControllerDelegate;
 
@@ -20,11 +20,11 @@
  */
 @property (nonatomic, strong, readonly) EMConversation *conversation;
 
-
 @property (nonatomic,weak) id<EM_ChatControllerDelegate> delegate;
 
+- (instancetype)initWithOpposite:(EM_ChatOpposite *)opposite config:(EM_ChatUIConfig *)config;
+
 - (instancetype)initWithChatter:(NSString *)chatter conversationType:(EMConversationType)conversationType config:(EM_ChatUIConfig *)config;
-- (instancetype)initWithBuddy:(EM_ChatBuddyModel *)buddy config:(EM_ChatUIConfig *)config;
 
 - (instancetype)initWithConversation:(EMConversation *)conversation config:(EM_ChatUIConfig *)config;
 

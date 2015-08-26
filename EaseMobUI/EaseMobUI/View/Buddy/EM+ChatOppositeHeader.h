@@ -1,5 +1,5 @@
 //
-//  EM+ChatBuddyHeader.h
+//  EM+ChatOppositeHeader.h
 //  EaseMobUI
 //
 //  Created by 周玉震 on 15/8/24.
@@ -8,13 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
-typedef void (^EM_ChatBuddyHeaderBlock)(NSInteger section);
+typedef void (^EM_ChatOppositeHeaderBlock)(NSInteger section);
 
-@interface EM_ChatBuddyHeader : UITableViewHeaderFooterView
+@interface EM_ChatOppositeHeader : UITableViewHeaderFooterView
 
 @property (nonatomic, copy) NSString *title;
 @property (nonatomic, assign) NSInteger section;
 
-- (void)setChatBuddyHeaderBlock:(EM_ChatBuddyHeaderBlock)block;
+- (void)setChatOppositeHeaderBlock:(EM_ChatOppositeHeaderBlock)block;
 
 @end

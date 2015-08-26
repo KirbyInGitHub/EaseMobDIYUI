@@ -37,7 +37,7 @@
 @property (nonatomic, strong) AVCaptureDeviceInput *captureInput;
 @property (nonatomic, strong) AVCaptureVideoDataOutput *captureOutput;
 
-@property (nonatomic, copy) NSString *avatar;
+@property (nonatomic, strong) EM_ChatBuddy *buddy;
 
 @end
 
@@ -60,15 +60,14 @@
         _callType = type;
         _callAction = action;
         
-        id<EM_ChatUserDelegate> userDelegate = [EaseMobUIClient sharedInstance].userDelegate;
-        if (userDelegate && [userDelegate respondsToSelector:@selector(nickNameWithChatter:)]) {
-            _nickName = [userDelegate nickNameWithChatter:_callSession.sessionChatter];
+        id<EM_ChatOppositeDelegate> userDelegate = [EaseMobUIClient sharedInstance].oppositeDelegate;
+        if (userDelegate && [userDelegate respondsToSelector:@selector(buddyInfoWithChatter:)]) {
+            _buddy = [userDelegate buddyInfoWithChatter:_callSession.sessionChatter];
         }else{
-            _nickName = _callSession.sessionChatter;
-        }
-        
-        if (userDelegate && [userDelegate respondsToSelector:@selector(avatarWithChatter:)]) {
-            _avatar = [userDelegate avatarWithChatter:_callSession.sessionChatter];
+            _buddy = [[EM_ChatBuddy alloc]init];
+            _buddy.uid = _callSession.sessionChatter;
+            _buddy.displayName = _callSession.sessionChatter;
+            
         }
     }
     return self;
@@ -147,9 +146,10 @@
     _avatarImageView.center = CGPointMake(self.view.frame.size.width / 2, 100);
     _avatarImageView.layer.masksToBounds = YES;
     _avatarImageView.layer.cornerRadius = _avatarImageView.bounds.size.width / 2;
+    _avatarImageView.image = [EM_ChatResourcesUtils defaultAvatarImage];
     [self.view addSubview:_avatarImageView];
-    if (_avatar) {
-        [_avatarImageView sd_setImageWithURL:[[NSURL alloc]initWithString:_avatar]];
+    if (_buddy.avatar) {
+        [_avatarImageView sd_setImageWithURL:_buddy.avatar];
     }
     
     _contentLabel = [[UILabel alloc]init];
@@ -248,7 +248,7 @@
     switch (callState) {
         case EMChatCallStateWait:{
             if (self.callAction == EMChatCallActionIn) {
-                _contentLabel.text = [NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"call.in"],_nickName];
+                _contentLabel.text = [NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"call.in"],_buddy.displayName];
                 _interruptButton.hidden = YES;
                 _rejectButton.hidden = NO;
                 _agreeButton.hidden = NO;
@@ -263,7 +263,7 @@
                     }
                 }
             }else{
-                _contentLabel.text = [NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"call.out"],_nickName];
+                _contentLabel.text = [NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"call.out"],_buddy.displayName];
                 _interruptButton.hidden = NO;
                 _rejectButton.hidden = YES;
                 _agreeButton.hidden = YES;
@@ -276,7 +276,7 @@
             break;
         case EMChatCallStateIn:{
             if (_callState == EMChatCallStateWait) {
-                _contentLabel.text = [NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"call.ongoing"],_nickName,[self stringWithTime]];
+                _contentLabel.text = [NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"call.ongoing"],_buddy.displayName,[self stringWithTime]];
                 [_contentLabel sizeToFit];
                 _contentLabel.center = CGPointMake(self.view.frame.size.width / 2,_avatarImageView.frame.origin.y + _avatarImageView.frame.size.height + 10 + _contentLabel.frame.size.height / 2);
                 _interruptButton.hidden = NO;
@@ -304,25 +304,25 @@
                 if (_callState == EMChatCallStateWait) {
                     if (_reject) {
                         //等待中拒绝
-                        content = [NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"call.interrupt"],_nickName];
+                        content = [NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"call.interrupt"],_buddy.displayName];
                         hintMessage = [EM_ChatResourcesUtils stringWithName:@"call.message.hint.reject"];
                     }else{
                         if (_reason == eCallReason_NoResponse) {
-                            content = [NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"call.no_answer"],_nickName];
+                            content = [NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"call.no_answer"],_buddy.displayName];
                             hintMessage = [EM_ChatResourcesUtils stringWithName:@"call.message.hint.no_response"];
                         }else{
                             //等待中对方挂断
-                            content = [NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"call.hangup"],_nickName];
+                            content = [NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"call.hangup"],_buddy.displayName];
                             hintMessage = [EM_ChatResourcesUtils stringWithName:@"call.message.hint.opposite_cancel"];
                         }
                     }
                 }else{
                     if (_interrupt) {
                         //通话中挂断
-                        content = [NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"call.end"],_nickName,[self stringWithTime]];
+                        content = [NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"call.end"],_buddy.displayName,[self stringWithTime]];
                     }else{
                         //通话中对方挂断
-                        content = [NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"call.end"],_nickName,[self stringWithTime]];
+                        content = [NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"call.end"],_buddy.displayName,[self stringWithTime]];
                     }
                     hintMessage = [NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"call.message.hint.end"],[self stringWithTime]];
                 }
@@ -331,28 +331,28 @@
                 if (_callState == EMChatCallStateWait) {
                     if (_interrupt) {
                         //等待中挂断
-                        content = [NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"call.interrupt"],_nickName];
+                        content = [NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"call.interrupt"],_buddy.displayName];
                         hintMessage = [EM_ChatResourcesUtils stringWithName:@"call.message.hint.own_cancel"];
                     }else{
                         if (_reason == eCallReason_Offline) {
-                            content = [NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"call.offline"],_nickName];
+                            content = [NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"call.offline"],_buddy.displayName];
                         }else if(_reason == eCallReason_NoResponse || _reason == eCallReason_Null){
-                            content = [NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"call.no_response"],_nickName];
+                            content = [NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"call.no_response"],_buddy.displayName];
                         }else if(_reason == eCallReason_Busy){
-                            content = [NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"call.busy"],_nickName];
+                            content = [NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"call.busy"],_buddy.displayName];
                         }else{
                             //等待中对方拒绝
-                            content = [NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"call.reject"],_nickName];
+                            content = [NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"call.reject"],_buddy.displayName];
                         }
                         hintMessage = [EM_ChatResourcesUtils stringWithName:@"call.message.hint.opposite_no_response"];
                     }
                 }else{
                     if (_interrupt) {
                         //通话中挂断
-                        content = [NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"call.end"],_nickName,[self stringWithTime]];
+                        content = [NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"call.end"],_buddy.displayName,[self stringWithTime]];
                     }else{
                         //通话中对方挂断
-                        content = [NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"call.end"],_nickName,[self stringWithTime]];
+                        content = [NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"call.end"],_buddy.displayName,[self stringWithTime]];
                     }
                     hintMessage = [NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"call.message.hint.end"],[self stringWithTime]];
                 }
@@ -434,7 +434,7 @@
 
 - (void)timerAction:(id)sender{
     _duration += 1;
-    _contentLabel.text = [NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"call.ongoing"],_nickName,[self stringWithTime]];
+    _contentLabel.text = [NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"call.ongoing"],_buddy.displayName,[self stringWithTime]];
     [_contentLabel sizeToFit];
     _contentLabel.center = CGPointMake(self.view.frame.size.width / 2,_avatarImageView.frame.origin.y + _avatarImageView.frame.size.height + 10 + _contentLabel.frame.size.height / 2);
 }

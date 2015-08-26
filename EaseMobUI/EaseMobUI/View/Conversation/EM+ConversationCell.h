@@ -6,8 +6,12 @@
 //  Copyright (c) 2015年 周玉震. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "SWTableViewCell.h"
 
-@interface EM_ConversationCell : UITableViewCell
+@interface EM_ConversationCell : SWTableViewCell
+
+@property (nonatomic, copy) NSString *time;
+@property (nonatomic, assign) BOOL hiddenTopLine;
+@property (nonatomic, assign) BOOL hiddenBottomLine;
 
 @end

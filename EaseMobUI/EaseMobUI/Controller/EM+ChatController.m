@@ -17,6 +17,9 @@
 #import "EM+ChatInputTool.h"
 
 #import "EM+ChatMessageModel.h"
+#import "EM+ChatBuddy.h"
+#import "EM+ChatGroup.h"
+#import "EM+ChatRoom.h"
 #import "EM+ChatMessageManager.h"
 #import "EaseMobUIClient.h"
 
@@ -80,24 +83,39 @@ EMDeviceManagerDelegate>
 @property (nonatomic,strong) EM_ChatTableView *chatTableView;
 @property (nonatomic,strong) EM_ChatToolBar *chatToolBarView;
 
+@property (nonatomic, strong) EM_ChatOpposite *opposite;
+@property (nonatomic, strong) EM_ChatUser *user;
+
 @end
 
 @implementation EM_ChatController{
     dispatch_queue_t _messageQueue;
 }
 
-- (instancetype)initWithChatter:(NSString *)chatter conversationType:(EMConversationType)conversationType config:(EM_ChatUIConfig *)config{
+- (instancetype)initWithOpposite:(EM_ChatOpposite *)opposite config:(EM_ChatUIConfig *)config{
     self = [super init];
     if (self) {
-        [self initializeWithChatter:chatter conversationType:conversationType config:config];
+        _opposite = opposite;
+        
+        EMConversationType conversationType;
+        if (_opposite.oppositeType == EMChatOppositeTypeGroup) {
+            conversationType = eConversationTypeGroupChat;
+        }else if (_opposite.oppositeType == EMChatOppositeTypeRoom){
+            conversationType = eConversationTypeChatRoom;
+        }else{
+            conversationType = eConversationTypeChat;
+        }
+        EMConversation *conversation = [[EaseMob sharedInstance].chatManager conversationForChatter:_opposite.uid conversationType:conversationType];
+        [self initializeWithConversation:conversation config:config];
     }
     return self;
 }
 
-- (instancetype)initWithBuddy:(EM_ChatBuddyModel *)buddy config:(EM_ChatUIConfig *)config{
+- (instancetype)initWithChatter:(NSString *)chatter conversationType:(EMConversationType)conversationType config:(EM_ChatUIConfig *)config{
     self = [super init];
     if (self) {
-        [self initializeWithChatter:buddy.userName conversationType:eConversationTypeChat config:config];
+        EMConversation *conversation = [[EaseMob sharedInstance].chatManager conversationForChatter:chatter conversationType:conversationType];
+        [self initializeWithConversation:conversation config:config];
     }
     return self;
 }
@@ -105,25 +123,12 @@ EMDeviceManagerDelegate>
 - (instancetype)initWithConversation:(EMConversation *)conversation config:(EM_ChatUIConfig *)config{
     self = [super init];
     if (self) {
-        self.hidesBottomBarWhenPushed = YES;
-        self.navigationController.interactivePopGestureRecognizer.enabled = YES;
-        
-        if (!config) {
-            _config = [EM_ChatUIConfig defaultConfig];
-        }else{
-            _config = config;
-        }
-        _conversation = conversation;
-        [_conversation markAllMessagesAsRead:YES];
-        
-        _dataSource = [[NSMutableArray alloc]init];
-        _imageDataArray = [[NSMutableArray alloc]init];
-        _voiceDataArray = [[NSMutableArray alloc]init];
+        [self initializeWithConversation:conversation config:config];
     }
     return self;
 }
 
-- (void)initializeWithChatter:(NSString *)chatter conversationType:(EMConversationType)conversationType config:(EM_ChatUIConfig *)config{
+- (void)initializeWithConversation:(EMConversation *)conversation config:(EM_ChatUIConfig *)config{
     self.hidesBottomBarWhenPushed = YES;
     self.navigationController.interactivePopGestureRecognizer.enabled = YES;
     
@@ -132,8 +137,48 @@ EMDeviceManagerDelegate>
     }else{
         _config = config;
     }
-    _conversation = [[EaseMob sharedInstance].chatManager conversationForChatter:chatter conversationType:conversationType];
+    if (conversation.conversationType != eConversationTypeChat) {
+        [_config removeActionWithName:kActionNameVoice];
+        [_config removeActionWithName:kActionNameVideo];
+    }
+    _conversation = conversation;
     [_conversation markAllMessagesAsRead:YES];
+    
+    if (!_opposite) {
+        id<EM_ChatOppositeDelegate> oppositeDelegate = [EaseMobUIClient sharedInstance].oppositeDelegate;
+        if (oppositeDelegate && [oppositeDelegate respondsToSelector:@selector(userForEMChat)]) {
+            if (_conversation.conversationType == eConversationTypeGroupChat) {
+                _opposite = [oppositeDelegate groupInfoWithChatter:_conversation.chatter];
+            }else if(_conversation.conversationType == eConversationTypeChatRoom){
+                _opposite = [oppositeDelegate roomInfoWithChatter:_conversation.chatter];
+            }else{
+                _opposite = [oppositeDelegate buddyInfoWithChatter:_conversation.chatter];
+            }
+        }else{
+            if (_conversation.conversationType == eConversationTypeGroupChat) {
+                _opposite = [[EM_ChatGroup alloc]init];
+            }else if(_conversation.conversationType == eConversationTypeChatRoom){
+                _opposite = [[EM_ChatRoom alloc]init];
+            }else{
+                _opposite = [[EM_ChatBuddy alloc]init];
+            }
+            _opposite.uid = _conversation.chatter;
+            _opposite.displayName = _conversation.chatter;
+        }
+    }
+    self.title = _opposite.displayName;
+    
+    if (!_user) {
+        id<EM_ChatUserDelegate> userDelegate = [EaseMobUIClient sharedInstance].userDelegate;
+        if (userDelegate && [userDelegate respondsToSelector:@selector(userForEMChat)]) {
+            _user = [userDelegate userForEMChat];
+        }else{
+            NSString *loginChatter = [[EaseMob sharedInstance].chatManager loginInfo][kSDKUsername];
+            _user = [[EM_ChatUser alloc]init];
+            _user.uid = loginChatter;
+            _user.displayName = loginChatter;
+        }
+    }
     
     _dataSource = [[NSMutableArray alloc]init];
     _imageDataArray = [[NSMutableArray alloc]init];
@@ -142,13 +187,6 @@ EMDeviceManagerDelegate>
 
 - (void)viewDidLoad{
     [super viewDidLoad];
-    
-    id<EM_ChatUserDelegate> userDelegate = [EaseMobUIClient sharedInstance].userDelegate;
-    if (userDelegate && [userDelegate respondsToSelector:@selector(nickNameWithChatter:)]) {
-        self.title = [[EaseMobUIClient sharedInstance].userDelegate nickNameWithChatter:self.conversation.chatter];
-    }else{
-        self.title = self.conversation.chatter;
-    }
     
     _chatTableView = [[EM_ChatTableView alloc]initWithFrame:self.view.frame];
     _chatTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
@@ -244,16 +282,24 @@ EMDeviceManagerDelegate>
     EM_ChatMessageModel *messageModel = [EM_ChatMessageModel fromEMMessage:message];
     NSString *loginChatter = [[EaseMob sharedInstance].chatManager loginInfo][kSDKUsername];
     messageModel.sender = [messageModel.message.from isEqualToString:loginChatter];
-    id<EM_ChatUserDelegate> userDelegate = [EaseMobUIClient sharedInstance].userDelegate;
-    if (userDelegate) {
-        if ([userDelegate respondsToSelector:@selector(nickNameWithChatter:)]) {
-            messageModel.nickName = [[EaseMobUIClient sharedInstance].userDelegate nickNameWithChatter:messageModel.message.from];
+    if (messageModel.sender) {
+        messageModel.displayName = _user.displayName;
+        messageModel.avatar = _user.avatar;
+    }else{
+        EM_ChatBuddy *buddy;
+        id<EM_ChatOppositeDelegate> oppositeDelegate = [EaseMobUIClient sharedInstance].oppositeDelegate;
+        if (self.opposite.oppositeType == EMChatOppositeTypeGroup) {
+            if (oppositeDelegate && [oppositeDelegate respondsToSelector:@selector(buddyInfoWithChatter:inGroup:)]) {
+                buddy = [oppositeDelegate buddyInfoWithChatter:messageModel.message.from inGroup:(EM_ChatGroup *)_opposite];
+            }
+        }else if(self.opposite.oppositeType == EMChatOppositeTypeRoom){
+            buddy = [oppositeDelegate buddyInfoWithChatter:messageModel.message.from inRoom:(EM_ChatRoom *)_opposite];
+        }else{
+            buddy = (EM_ChatBuddy *)_opposite;
         }
-        if ([userDelegate respondsToSelector:@selector(avatarWithChatter:)]) {
-            messageModel.avatar = [[EaseMobUIClient sharedInstance].userDelegate avatarWithChatter:messageModel.message.from];
-        }
+        messageModel.displayName = _opposite.displayName;
+        messageModel.avatar = _opposite.avatar;
     }
-    
     return messageModel;
 }
 
@@ -833,7 +879,6 @@ EMDeviceManagerDelegate>
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.config = self.config.messageConfig;
     }
-    
     cell.message = message;
     cell.indexPath = indexPath;
     cell.delegate = self;

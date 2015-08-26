@@ -1,5 +1,5 @@
 //
-//  EM+ChatBuddyCell.h
+//  EM+ChatOppositeCell.h
 //  EaseMobUI
 //
 //  Created by 周玉震 on 15/8/24.
@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface EM_ChatBuddyCell : UITableViewCell
+@interface EM_ChatOppositeCell : UITableViewCell
 
 @property (nonatomic, copy) NSString *name;
 @property (nonatomic, copy) NSString *details;

@@ -7,8 +7,8 @@
 //
 
 #import "MainController.h"
-#import "EM+ChatListController.h"
-#import "EM+BuddyController.h"
+#import "UChatListController.h"
+#import "UBuddyListController.h"
 
 @interface MainController ()<UITabBarControllerDelegate>
 
@@ -18,7 +18,7 @@
 
 @implementation MainController{
     EM_ChatListController *chatController;
-    EM_BuddyController *buddysController;
+    EM_BuddyListController *buddysController;
 }
 
 - (instancetype)init{
@@ -32,10 +32,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    chatController = [[EM_ChatListController alloc]init];
+    chatController = [[UChatListController alloc]init];
     UINavigationController *narChatController = [[UINavigationController alloc]initWithRootViewController:chatController];
     
-    buddysController = [[EM_BuddyController alloc]init];
+    buddysController = [[UBuddyListController alloc]init];
     UINavigationController *narBuddysController = [[UINavigationController alloc]initWithRootViewController:buddysController];
     
     self.controllers = @[narChatController,narBuddysController];
