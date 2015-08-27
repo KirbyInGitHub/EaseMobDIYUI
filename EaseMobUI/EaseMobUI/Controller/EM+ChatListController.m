@@ -75,7 +75,7 @@
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
     if (self.needReload) {
-        [self reloadData];
+        [_tableView reloadData];
         self.needReload = NO;
     }
 }
@@ -94,7 +94,6 @@
 - (void)reloadData{
     if ([EaseMob sharedInstance].chatManager.isLoggedIn) {
         [[EaseMob sharedInstance].chatManager loadAllConversationsFromDatabaseWithAppend2Chat:YES];
-        [_tableView reloadData];
     }
 }
 
@@ -254,7 +253,7 @@
 - (void)didUpdateConversationList:(NSArray *)conversationList{
     //手动向会话添加消息时；
     if (self.isShow) {
-        [self reloadData];
+        [_tableView reloadData];
     }else{
         self.needReload = YES;
     }

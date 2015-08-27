@@ -72,13 +72,12 @@ UICollectionViewDelegateFlowLayout>
     _searchController.delegate = self;
     _searchController.searchResultsDataSource = self;
     _searchController.searchResultsDelegate = self;
+    _searchController.searchResultsTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 }
 
 - (void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
-    if(_tableHeader.searchBar.isFirstResponder){
-        [_searchController setActive:NO];
-    }
+    [_searchController setActive:NO];
 }
 
 - (void)pulldownLoad{
@@ -118,6 +117,40 @@ UICollectionViewDelegateFlowLayout>
     [_tableView reloadData];
 }
 
+- (void)reloadOppositeGroup:(NSInteger)index isExpand:(BOOL)expand{
+    if (self.dataSource && [self.dataSource respondsToSelector:@selector(numberOfGroups)]) {
+        NSInteger groupCount = [self.dataSource numberOfGroups];
+        if (index >= 0 && index < groupCount) {
+            if (expand) {
+                [_tableView reloadSections:[NSIndexSet indexSetWithIndex:index] withRowAnimation:UITableViewRowAnimationBottom];
+            }else{
+                [_tableView reloadSections:[NSIndexSet indexSetWithIndex:index] withRowAnimation:UITableViewRowAnimationTop];
+            }
+            
+        }
+    }
+}
+
+- (void)startRefresh{
+    [_tableView.header beginRefreshing];
+}
+
+- (void)endRefresh{
+    [_tableView.header endRefreshing];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(didEndRefresh)]) {
+        [self.delegate didEndRefresh];
+    }
+}
+
+- (void)didBeginRefresh{
+    if (self.delegate && [self.delegate respondsToSelector:@selector(didStartRefresh)]) {
+        [self.delegate didStartRefresh];
+    }
+    //刷新数据
+    [self reloadOppositeList];
+    [self endRefresh];
+}
+
 #pragma mark - UISearchDisplayDelegate
 - (void)searchDisplayControllerDidEndSearch:(UISearchDisplayController *)controller{
     [controller.searchBar removeFromSuperview];
@@ -149,6 +182,7 @@ UICollectionViewDelegateFlowLayout>
     if (self.dataSource && [self.dataSource respondsToSelector:@selector(titleForTagAtIndex:)]) {
         title = [self.dataSource titleForTagAtIndex:indexPath.row];
     }
+    
     cell.title = title;
     
     UIFont *font = nil;
@@ -248,7 +282,9 @@ UICollectionViewDelegateFlowLayout>
     if (!cell) {
         cell = [[EM_ChatOppositeCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:oppositeIdentifier];
     }
-    
+    cell.indexPath = indexPath;
+    cell.hiddenTopLine = indexPath.row == 0;
+    cell.hiddenBottomLine = YES;
     EM_ChatOpposite *opposite = nil;
     if (tableView == _tableView) {
         if (self.dataSource && [self.dataSource respondsToSelector:@selector(dataForRow:groupIndex:)]) {

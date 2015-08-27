@@ -62,7 +62,7 @@
     
     _topLineView.frame = CGRectMake(self.imageView.frame.origin.x + self.imageView.frame.size.width, 0, size.width, LINE_HEIGHT);
     
-    _topLineView.frame = CGRectMake(self.imageView.frame.origin.x, size.height - LINE_HEIGHT, size.width, LINE_HEIGHT);
+    _bottomLineView.frame = CGRectMake(self.imageView.frame.origin.x, size.height - LINE_HEIGHT, size.width, LINE_HEIGHT);
 }
 
 - (NSArray *)rightButtons{

@@ -21,8 +21,9 @@
 
 - (void)reloadOppositeList;
 
-//overwrite
-- (void)pulldownLoad;
+- (void)startRefresh;
+
+- (void)endRefresh;
 
 @end
 
@@ -176,5 +177,15 @@
  *  @param groupIndex
  */
 - (void)didSelectedForRowAtIndex:(NSInteger)rowIndex groupIndex:(NSInteger)groupIndex;
+
+/**
+ *  已经开始开始下拉刷新
+ */
+- (void)didStartRefresh;
+
+/**
+ *  已经结束下拉刷新
+ */
+- (void)didEndRefresh;
 
 @end

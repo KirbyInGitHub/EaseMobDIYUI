@@ -7,8 +7,9 @@
 //
 
 #import "UChatListController.h"
+#import "UChatController.h"
 
-@interface UChatListController ()
+@interface UChatListController ()<EM_ChatListControllerDelegate>
 
 @end
 
@@ -16,6 +17,12 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+}
+
+#pragma mark - EM_ChatListControllerDelegate
+- (void)didSelectedWithConversation:(EMConversation *)conversation{
+    UChatController *chatController = [[UChatController alloc]initWithConversation:conversation config:nil];
+    [self.navigationController pushViewController:chatController animated:YES];
 }
 
 @end

@@ -15,4 +15,8 @@
 @property (nonatomic, strong) NSURL *avatarURL;
 @property (nonatomic, strong) UIImage *avatarImage;
 
+@property (nonatomic, assign) BOOL hiddenTopLine;
+@property (nonatomic, assign) BOOL hiddenBottomLine;
+@property (nonatomic, strong) NSIndexPath *indexPath;
+
 @end
