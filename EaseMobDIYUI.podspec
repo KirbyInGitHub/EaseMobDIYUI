@@ -10,7 +10,7 @@ Pod::Spec.new do |s|
 
   # ―――  Spec Metadata  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   s.name         = "EaseMobDIYUI"
-  s.version      = "0.2.0"
+  s.version      = "0.2.1"
   s.summary      = "环信DIY聊天UI"
 
   s.description  = <<-DESC
@@ -87,5 +87,6 @@ Pod::Spec.new do |s|
   s.dependency "MWPhotoBrowser", "2.1.1"
   s.dependency "MBProgressHUD", "0.9.1"
   s.dependency "TTTAttributedLabel", "1.13.4"
+  s.dependency "SWTableViewCell", "0.3.7"
 
 end
