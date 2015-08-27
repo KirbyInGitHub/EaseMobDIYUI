@@ -21,24 +21,21 @@
 #import "EM+ChatResourcesUtils.h"
 #import "EM+ChatDateUtils.h"
 
-@interface EM_ChatListController ()
-<UITableViewDataSource,
-UITableViewDelegate,
-UISearchDisplayDelegate,
-EMChatManagerDelegate,
-EM_ChatTableViewTapDelegate>
+@interface EM_ChatListController ()<UITableViewDataSource,UITableViewDelegate,UISearchDisplayDelegate,EMChatManagerDelegate,EM_ChatTableViewTapDelegate,SWTableViewCellDelegate>
+
+@property (nonatomic, assign) BOOL needReload;
 
 @end
 
 @implementation EM_ChatListController{
     UISearchDisplayController *_searchController;
     
-    EM_ChatTableView *_tableView;
     UISearchBar *_searchBar;
-    
-    EaseMobUIClient *_uiClient;
+    EM_ChatTableView *_tableView;
     
     NSMutableArray *_searchResultArray;
+    
+    BOOL fromUser;
 }
 
 - (instancetype)init{
@@ -56,7 +53,7 @@ EM_ChatTableViewTapDelegate>
     _tableView.dataSource = self;
     _tableView.delegate = self;
     _tableView.tapDelegate = self;
-    MJRefreshGifHeader *header = [MJRefreshGifHeader headerWithRefreshingTarget:self refreshingAction:@selector(pulldownLoad)];
+    MJRefreshGifHeader *header = [MJRefreshGifHeader headerWithRefreshingTarget:self refreshingAction:@selector(didBeginRefresh)];
     _tableView.header = header;
     [self.view addSubview:_tableView];
     
@@ -71,20 +68,20 @@ EM_ChatTableViewTapDelegate>
     [[EaseMob sharedInstance].chatManager removeDelegate:self];
     [[EaseMob sharedInstance].chatManager addDelegate:self delegateQueue:nil];
     
-    _uiClient = [EaseMobUIClient sharedInstance];
+    //好像需要加载两次才能够把数据加载出来？
+    [[EaseMob sharedInstance].chatManager loadAllConversationsFromDatabaseWithAppend2Chat:YES];
 }
 
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
-    if ([EaseMob sharedInstance].chatManager.isLoggedIn) {
-        [[EaseMob sharedInstance].chatManager loadAllConversationsFromDatabaseWithAppend2Chat:YES];
-        [_tableView reloadData];
+    if (self.needReload) {
+        [self reloadData];
+        self.needReload = NO;
     }
 }
 
 - (void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
-    
     if (_searchBar.isFirstResponder) {
         [_searchController setActive:NO];
     }
@@ -94,8 +91,40 @@ EM_ChatTableViewTapDelegate>
     [[EaseMob sharedInstance].chatManager removeDelegate:self];
 }
 
-- (void)pulldownLoad{
+- (void)reloadData{
+    if ([EaseMob sharedInstance].chatManager.isLoggedIn) {
+        [[EaseMob sharedInstance].chatManager loadAllConversationsFromDatabaseWithAppend2Chat:YES];
+        [_tableView reloadData];
+    }
+}
+
+- (void)startRefresh{
+    [_tableView.header beginRefreshing];
+}
+
+- (void)endRefresh{
     [_tableView.header endRefreshing];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(didEndRefresh)]) {
+        [self.delegate didEndRefresh];
+    }
+}
+
+- (void)didBeginRefresh{
+    if (self.delegate && [self.delegate respondsToSelector:@selector(didStartRefresh)]) {
+        [self.delegate didStartRefresh];
+    }
+    //刷新数据
+    [self reloadData];
+    [self endRefresh];
+}
+
+#pragma mark - SWTableViewCellDelegate
+- (void)swipeableTableViewCell:(SWTableViewCell *)cell didTriggerRightUtilityButtonWithIndex:(NSInteger)index{
+    NSIndexPath *indexPath = [_tableView indexPathForCell:cell];
+    if (index == 0) {
+        EMConversation *conversation = [EaseMob sharedInstance].chatManager.conversations[indexPath.row];
+        [[EaseMob sharedInstance].chatManager removeConversationByChatter:conversation.chatter deleteMessages:NO append2Chat:YES];
+    }
 }
 
 #pragma mark - UISearchDisplayDelegate
@@ -147,6 +176,8 @@ EM_ChatTableViewTapDelegate>
     if (!cell) {
         cell = [[EM_ConversationCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellId];
     }
+    cell.indexPath = indexPath;
+    cell.delegate = self;
     
     EMConversation *conversation;
     if (tableView == _tableView) {
@@ -219,17 +250,50 @@ EM_ChatTableViewTapDelegate>
     }
 }
 
-#pragma mark - EMChatManagerDelegate
-
-#pragma mark - EMChatManagerLoginDelegate
-- (void)didLoginWithInfo:(NSDictionary *)loginInfo error:(EMError *)error{
-    NSLog(@"==========登录");
-    if (!error) {
-        [[EaseMob sharedInstance].chatManager loadAllConversationsFromDatabaseWithAppend2Chat:YES];
-        MAIN(^{
-            [_tableView reloadData];
-        });
+#pragma mark - EMChatManagerChatDelegate
+- (void)didUpdateConversationList:(NSArray *)conversationList{
+    //手动向会话添加消息时；
+    if (self.isShow) {
+        [self reloadData];
+    }else{
+        self.needReload = YES;
     }
 }
+
+- (void)willSendMessage:(EMMessage *)message error:(EMError *)error{
+    //会话列表显示消息发送状态，编辑状态
+}
+
+- (void)didSendMessage:(EMMessage *)message error:(EMError *)error{
+    
+}
+
+- (void)didReceiveMessage:(EMMessage *)message{
+    
+}
+
+- (void)didReceiveOfflineMessages:(NSArray *)offlineMessages{
+    
+}
+
+- (void)didUnreadMessagesCountChanged{
+
+}
+
+#pragma mark - EMChatManagerBuddyDelegate
+//好友增加或删除,特殊的会话消息
+
+#pragma mark - EMChatManagerUtilDelegate
+- (void)didConnectionStateChanged:(EMConnectionState)connectionState{
+    
+}
+
+#pragma mark - EMChatManagerGroupDelegate
+//群操作,特殊的会话消息
+
+#pragma mark - EMChatManagerChatroomDelegate
+//聊天室操作,特殊的会话消息
+
+#pragma mark - EMChatManagerPushNotificationDelegate
 
 @end

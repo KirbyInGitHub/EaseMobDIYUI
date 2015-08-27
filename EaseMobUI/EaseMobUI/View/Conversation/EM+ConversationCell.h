@@ -13,5 +13,6 @@
 @property (nonatomic, copy) NSString *time;
 @property (nonatomic, assign) BOOL hiddenTopLine;
 @property (nonatomic, assign) BOOL hiddenBottomLine;
+@property (nonatomic, strong) NSIndexPath *indexPath;
 
 @end

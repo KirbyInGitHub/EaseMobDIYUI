@@ -15,8 +15,11 @@
 
 @property (nonatomic, weak) id<EM_ChatListControllerDelegate> delegate;
 
-//overwrite
-- (void)pulldownLoad;
+- (void)reloadData;
+
+- (void)startRefresh;
+
+- (void)endRefresh;
 
 @end
 
@@ -27,5 +30,9 @@
 @optional
 
 - (void)didSelectedWithConversation:(EMConversation *)conversation;
+
+- (void)didStartRefresh;
+
+- (void)didEndRefresh;
 
 @end
