@@ -73,9 +73,21 @@ typedef NS_ENUM(NSInteger, EM_AVATAR_STYLE) {
 @property (nonatomic, assign) float bubbleTextLineSpacing;
 
 /**
- *  文字边距
+ *  气泡圆角大小
  */
-@property (nonatomic, assign) float bubbleTextPadding;
+@property (nonatomic, assign) float bubbleCornerRadius;
+
+@property (nonatomic, assign) float bodyTextPadding;
+
+@property (nonatomic, assign) float bodyImagePadding;
+
+@property (nonatomic, assign) float bodyVideoPadding;
+
+@property (nonatomic, assign) float bodyVoicePadding;
+
+@property (nonatomic, assign) float bodyLocationPadding;
+
+@property (nonatomic, assign) float bodyFilePadding;
 
 + (instancetype)defaultConfig;
 

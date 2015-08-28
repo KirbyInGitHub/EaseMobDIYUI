@@ -10,6 +10,7 @@
 #import "EM+ChatUIConfig.h"
 #import "EM+ChatMessageModel.h"
 #import "EM+ChatResourcesUtils.h"
+#import "EM+ChatMessageUIConfig.h"
 
 @implementation EM_ChatMessageVoiceBody{
     UIImageView *animationView;
@@ -42,11 +43,11 @@
     timeSize.height = size.height;
     
     if (self.message.sender) {
-        timeLabel.frame = CGRectMake(0, 0, timeSize.width, timeSize.height);
-        animationView.frame = CGRectMake(size.width - timeSize.height, 0, timeSize.height, timeSize.height);
+        timeLabel.frame = CGRectMake(self.config.bodyVoicePadding, self.config.bodyVoicePadding, timeSize.width, timeSize.height);
+        animationView.frame = CGRectMake(size.width - timeSize.height, self.config.bodyVoicePadding, timeSize.height, timeSize.height);
     }else{
-        timeLabel.frame = CGRectMake(size.width - timeSize.width, 0, timeSize.width, timeSize.height);
-        animationView.frame = CGRectMake(0, 0, timeSize.height, timeSize.height);
+        timeLabel.frame = CGRectMake(size.width - timeSize.width, self.config.bodyVoicePadding, timeSize.width, timeSize.height);
+        animationView.frame = CGRectMake(self.config.bodyVoicePadding, self.config.bodyVoicePadding, timeSize.height, timeSize.height);
     }
 }
 

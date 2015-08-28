@@ -57,6 +57,7 @@ UICollectionViewDelegateFlowLayout>
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     _tableView.dataSource = self;
     _tableView.delegate = self;
+    _tableView.rowHeight = 60;
     _tableView.tapDelegate = self;
     
     MJRefreshGifHeader *header = [MJRefreshGifHeader headerWithRefreshingTarget:self refreshingAction:@selector(pulldownLoad)];
@@ -309,10 +310,6 @@ UICollectionViewDelegateFlowLayout>
 }
 
 #pragma mark - UITableViewDelegate
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return 60;
-}
-
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     if (tableView == _tableView) {
         return 30;

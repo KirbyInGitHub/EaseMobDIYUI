@@ -10,6 +10,7 @@
 #import "EM+ChatUIConfig.h"
 #import "EM+ChatMessageModel.h"
 #import "EM+ChatResourcesUtils.h"
+#import "EM+ChatMessageUIConfig.h"
 
 @implementation EM_ChatMessageLocationBody{
     UIImageView *mapView;
@@ -36,7 +37,7 @@
     [super layoutSubviews];
     CGSize size = self.frame.size;
     
-    mapView.bounds = self.bounds;
+    mapView.bounds = CGRectMake(0, 0, size.width - self.config.bodyLocationPadding * 2, size.height - self.config.bodyLocationPadding * 2);
     mapView.center = CGPointMake(size.width / 2, size.height / 2);
     addressLabel.frame = CGRectMake(mapView.frame.origin.x, mapView.frame.origin.y + (mapView.frame.size.height - 44), mapView.frame.size.width , 44);
 

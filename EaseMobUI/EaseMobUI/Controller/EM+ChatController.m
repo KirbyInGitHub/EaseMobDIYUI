@@ -935,13 +935,10 @@ EMDeviceManagerDelegate>
     [self reloadMessage:message];
 }
 
-- (void)didReceiveHasReadResponse:(EMReceipt *)resp{
-    //已读回执
-    
-}
-
-- (void)didReceiveHasDeliveredResponse:(EMReceipt *)resp{
-    //已送达回执
+- (void)didUpdateConversationList:(NSArray *)conversationList{
+    if ([conversationList containsObject:self.conversation]) {
+        [self loadMoreMessage:YES animated:YES];
+    }
 }
 
 - (void)didUnreadMessagesCountChanged{
