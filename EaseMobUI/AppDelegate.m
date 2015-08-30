@@ -41,16 +41,13 @@
     
     [DDLog addLogger:[DDTTYLogger sharedInstance]];
     
-    NSString *chatter = nil;
     NSString *user = nil;
     NSString *password = nil;
     
     if (IS_PAD || TARGET_IPHONE_SIMULATOR) {
-        chatter = @"yuanjing";
         user = @"zhouyuzhen";
         password = @"123456";
     }else{
-        chatter = @"zhouyuzhen";
         user = @"yuanjing";
         password = @"123456";
     }

@@ -56,6 +56,7 @@ typedef NS_ENUM(NSInteger, ALERT_ACTION) {
     ALERT_ACTION_PRESS_VIDEO,
     ALERT_ACTION_PRESS_LOCATION,
     ALERT_ACTION_PRESS_FILE,
+    ALERT_ACTION_CALL
 };
 
 @interface EM_ChatController()<UITableViewDataSource,
@@ -188,6 +189,8 @@ EMDeviceManagerDelegate>
 - (void)viewDidLoad{
     [super viewDidLoad];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didEndCall:) name:kEMNotificationCallDismiss object:nil];
+    
     _chatTableView = [[EM_ChatTableView alloc]initWithFrame:self.view.frame];
     _chatTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     _chatTableView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
@@ -264,6 +267,15 @@ EMDeviceManagerDelegate>
     EM_ChatConversation *editor = [[EM_ChatDBUtils shared]queryConversationWithChatter:self.conversation.chatter];
     if (editor) {
         _chatToolBarView.inputToolView.editor = editor.editor;
+    }
+}
+
+- (void)didEndCall:(NSNotification *)notification{
+    NSDictionary *userInfo = notification.userInfo;
+    NSString *chattar = userInfo[kEMCallChatter];
+    if ([chattar isEqualToString:self.conversation.chatter]) {
+        [_dataSource removeAllObjects];
+        [self loadMoreMessage:YES animated:YES];
     }
 }
 
@@ -538,7 +550,9 @@ EMDeviceManagerDelegate>
             [sheet showInView:self.view];
         }else if ([handleAction isEqualToString:HANDLE_ACTION_TEXT]){
             if (messageModel.extend.isCallMessage) {
-                NSLog(@"重拨");
+                UIActionSheet *sheet = [[UIActionSheet alloc]initWithTitle:nil delegate:self cancelButtonTitle:[EM_ChatResourcesUtils stringWithName:@"common.cancel"] destructiveButtonTitle:nil otherButtonTitles:[EM_ChatResourcesUtils stringWithName:@"common.voice"],[EM_ChatResourcesUtils stringWithName:@"common.video"], nil];
+                sheet.tag = ALERT_ACTION_CALL;
+                [sheet showInView:self.view];
             }
         }else if ([handleAction isEqualToString:HANDLE_ACTION_IMAGE]){
             NSInteger index = [_imageDataArray indexOfObject:messageModel];
@@ -653,7 +667,7 @@ EMDeviceManagerDelegate>
             [self showHint:[EM_ChatResourcesUtils stringWithName:@"error.hint.function_null"]];
         }
     }else if([handleFrom isEqualToString:HANDLE_FROM_EXTEND]){
-        if (self.delegate && [self.delegate respondsToSelector:@selector(didExtendMenuSelectedWithUserInfo)]) {
+        if (self.delegate && [self.delegate respondsToSelector:@selector(didExtendMenuSelectedWithUserInfo:)]) {
             [self.delegate didExtendMenuSelectedWithUserInfo:userInfo];
         }
     }else{
@@ -754,6 +768,14 @@ EMDeviceManagerDelegate>
                 pasteboard.string = url;
             }
         }
+        case ALERT_ACTION_CALL:{
+            if (buttonIndex == 0) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:kEMNotificationCallActionOut object:nil userInfo:@{kEMCallChatter:self.conversation.chatter,kEMCallType:kEMCallTypeVoice}];
+            }else if (buttonIndex == 1){
+                [[NSNotificationCenter defaultCenter] postNotificationName:kEMNotificationCallActionOut object:nil userInfo:@{kEMCallChatter:self.conversation.chatter,kEMCallType:kEMCallTypeVideo}];
+            }
+        }
+            break;
         default:
             break;
     }
@@ -933,12 +955,6 @@ EMDeviceManagerDelegate>
 - (void)didMessageAttachmentsStatusChanged:(EMMessage *)message error:(EMError *)error{
     //图片、视频缩略图,语音等下载完成
     [self reloadMessage:message];
-}
-
-- (void)didUpdateConversationList:(NSArray *)conversationList{
-    if ([conversationList containsObject:self.conversation]) {
-        [self loadMoreMessage:YES animated:YES];
-    }
 }
 
 - (void)didUnreadMessagesCountChanged{

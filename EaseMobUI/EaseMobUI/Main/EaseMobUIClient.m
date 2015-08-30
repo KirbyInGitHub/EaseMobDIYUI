@@ -54,7 +54,7 @@ NSString * const kEMNotificationCallDismiss = @"kEMNotificationCallDismiss";
 NSString * const kEMCallChatter = @"kEMCallChatter";
 NSString * const kEMCallType = @"kEMCallType";
 
-NSString * const kEMCallTypeVoice = @"kEMCallAction";
+NSString * const kEMCallTypeVoice = @"kEMCallActionVoice";
 NSString * const kEMCallTypeVideo = @"kEMCallActionVideo";
 
 + (instancetype)sharedInstance{
@@ -134,6 +134,7 @@ NSString * const kEMCallTypeVideo = @"kEMCallActionVideo";
     }
     
     if (type == EMChatCallTypeVideo || type == EMChatCallTypeVoice) {
+        [[EaseMob sharedInstance].callManager removeDelegate:self];
         EM_CallController *callController = [[EM_CallController alloc]initWithSession:callSession type:type action:EMChatCallActionIn];
         callController.modalPresentationStyle = UIModalPresentationOverFullScreen;
         [ShareWindow.rootViewController presentViewController:callController animated:YES completion:nil];
@@ -166,6 +167,7 @@ NSString * const kEMCallTypeVideo = @"kEMCallActionVideo";
     }
     
     if (callSession && !error) {
+        [[EaseMob sharedInstance].callManager removeDelegate:self];
         EM_CallController *callController = [[EM_CallController alloc]initWithSession:callSession type:type action:EMChatCallActionOut];
         callController.modalPresentationStyle = UIModalPresentationOverFullScreen;
         [ShareWindow.rootViewController presentViewController:callController animated:YES completion:nil];

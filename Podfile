@@ -23,3 +23,12 @@ pod 'TTTAttributedLabel','1.13.4'
 pod 'SWTableViewCell','0.3.7'
 
 pod 'VoiceConvert',:git => "https://github.com/AwakenDragon/VoiceConvert.git"
+
+#图片选择
+pod 'MLSelectPhoto','1.2.1'
+
+#GPUImage
+#pod 'GPUImage','0.1.7'
+
+#毛玻璃
+pod 'FXBlurView','1.6.3'

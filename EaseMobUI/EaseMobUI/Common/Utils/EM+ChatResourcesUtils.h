@@ -35,6 +35,11 @@ extern NSString * const kEMChatIconMoreStop;
 extern NSString * const kEMChatIconBubbleTailLeft;
 extern NSString * const kEMChatIconBubbleTailRight;
 
+extern NSString * const kEMChatIconCallHangup;
+extern NSString * const kEMChatIconCallConnect;
+extern NSString * const kEMChatIconCallSilence;
+extern NSString * const kEMChatIconCallExpand;
+
 
 @interface EM_ChatResourcesUtils : NSObject
 

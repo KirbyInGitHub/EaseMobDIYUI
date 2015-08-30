@@ -13,6 +13,7 @@
 #import "EM+Common.h"
 #import "EM+ChatResourcesUtils.h"
 #import "EM+ChatMessageExtend.h"
+#import "FXBlurView.h"
 
 #import <CoreTelephony/CTCallCenter.h>
 #import <CoreTelephony/CTCall.h>
@@ -23,6 +24,7 @@
 @interface EM_CallController ()<AVCaptureVideoDataOutputSampleBufferDelegate,EMCallManagerDelegate>
 
 @property (nonatomic, strong) UIImageView *backgroundView;
+@property (nonatomic, strong) FXBlurView *blurView;
 @property (nonatomic, strong) UIImageView *avatarImageView;
 @property (nonatomic, strong) UILabel *contentLabel;//昵称,时间,状态,原因
 @property (nonatomic, strong) UIButton *interruptButton;//挂断
@@ -51,6 +53,8 @@
     EMCallStatusChangedReason _reason;
     AVAudioPlayer *_ringPlayer;
     UInt8 *_imageDataBuffer;
+    
+    BOOL showControl;
 }
 
 - (instancetype)initWithSession:(EMCallSession *)session type:(EMChatCallType)type action:(EMChatCallAction)action{
@@ -75,13 +79,22 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    NSString *callType;
+    if (_callType == EMChatCallTypeVoice) {
+        callType = kEMCallTypeVoice;
+    }else{
+        callType = kEMCallTypeVideo;
+    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:kEMNotificationCallShow object:nil userInfo:@{kEMCallChatter:self.callSession.sessionChatter,kEMCallType:callType}];
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:kEMNotificationCallShow object:nil userInfo:nil];
-    
-    _backgroundView = [[UIImageView alloc]init];
-    _backgroundView.frame = self.view.bounds;
-    _backgroundView.image = [EM_ChatResourcesUtils callImageWithName:@"call_back"];
+    _backgroundView = [[UIImageView alloc]initWithFrame:self.view.frame];
+    _backgroundView.contentMode = UIViewContentModeScaleAspectFill;
     [self.view addSubview:_backgroundView];
+    [FXBlurView setBlurEnabled:YES];
+    _blurView = [[FXBlurView alloc]init];
+    _blurView.backgroundColor = [UIColor whiteColor];
+    _blurView.frame = self.view.frame;
+    [self.view addSubview:_blurView];
     
     if (self.callType == EMChatCallTypeVideo) {
         [UIApplication sharedApplication].idleTimerDisabled = YES;
@@ -142,7 +155,7 @@
     
     _avatarImageView = [[UIImageView alloc]init];
     _avatarImageView.backgroundColor = [UIColor greenColor];
-    _avatarImageView.bounds = CGRectMake(0, 0, 60, 60);
+    _avatarImageView.bounds = CGRectMake(0, 0, 80, 80);
     _avatarImageView.center = CGPointMake(self.view.frame.size.width / 2, 100);
     _avatarImageView.layer.masksToBounds = YES;
     _avatarImageView.layer.cornerRadius = _avatarImageView.bounds.size.width / 2;
@@ -151,6 +164,7 @@
     if (_buddy.avatar) {
         [_avatarImageView sd_setImageWithURL:_buddy.avatar];
     }
+    _backgroundView.image = _avatarImageView.image;
     
     _contentLabel = [[UILabel alloc]init];
     _contentLabel.textColor = [UIColor blackColor];
@@ -163,49 +177,56 @@
     
     _interruptButton = [[UIButton alloc]init];
     _interruptButton.backgroundColor = [UIColor redColor];
-    _interruptButton.bounds = CGRectMake(0, 0, 44, 44);
+    _interruptButton.bounds = CGRectMake(0, 0, 60, 60);
     _interruptButton.center = CGPointMake(self.view.frame.size.width / 2, self.view.frame.size.height - 100);
     _interruptButton.layer.masksToBounds = YES;
     _interruptButton.layer.cornerRadius = _interruptButton.frame.size.width / 2;
-    [_interruptButton setTitle:@"✖️" forState:UIControlStateNormal];
+    _interruptButton.titleLabel.font = [EM_ChatResourcesUtils iconFontWithSize:16];
+    [_interruptButton setTitle:kEMChatIconCallHangup forState:UIControlStateNormal];
     [_interruptButton addTarget:self action:@selector(interruptCall:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_interruptButton];
     
     _rejectButton = [[UIButton alloc]init];
     _rejectButton.backgroundColor = [UIColor redColor];
-    _rejectButton.bounds = CGRectMake(0, 0, 44, 44);
+    _rejectButton.bounds = CGRectMake(0, 0, 60, 60);
     _rejectButton.center = CGPointMake(_interruptButton.center.x - _interruptButton.frame.size.width / 2 - _rejectButton.frame.size.width / 2, _interruptButton.center.y);
     _rejectButton.layer.masksToBounds = YES;
     _rejectButton.layer.cornerRadius = _rejectButton.frame.size.width / 2;
-    [_rejectButton setTitle:@"✖️" forState:UIControlStateNormal];
+    _rejectButton.titleLabel.font = [EM_ChatResourcesUtils iconFontWithSize:16];
+    [_rejectButton setTitle:kEMChatIconCallHangup forState:UIControlStateNormal];
     [_rejectButton addTarget:self action:@selector(rejectCall:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_rejectButton];
     
     _agreeButton = [[UIButton alloc]init];
     _agreeButton.backgroundColor = [UIColor greenColor];
-    _agreeButton.bounds = CGRectMake(0, 0, 44, 44);
+    _agreeButton.bounds = CGRectMake(0, 0, 60, 60);
     _agreeButton.center = CGPointMake(_interruptButton.center.x + _interruptButton.frame.size.width / 2 + _agreeButton.frame.size.width / 2, _interruptButton.center.y);
     _agreeButton.layer.masksToBounds = YES;
     _agreeButton.layer.cornerRadius = _agreeButton.frame.size.width / 2;
-    [_agreeButton setTitle:@"✆" forState:UIControlStateNormal];
+    _agreeButton.titleLabel.font = [EM_ChatResourcesUtils iconFontWithSize:16];
+    [_agreeButton setTitle:kEMChatIconCallConnect forState:UIControlStateNormal];
     [_agreeButton addTarget:self action:@selector(agreeCall:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_agreeButton];
     
     _silenceButton = [[UIButton alloc]init];
-    _silenceButton.backgroundColor = [UIColor blueColor];
-    _silenceButton.bounds = CGRectMake(0, 0, 30, 30);
+    _silenceButton.backgroundColor = [UIColor greenColor];
+    _silenceButton.bounds = CGRectMake(0, 0, 40, 40);
     _silenceButton.center = CGPointMake(_agreeButton.center.x + _agreeButton.frame.size.width, _agreeButton.center.y);
     _silenceButton.layer.masksToBounds = YES;
     _silenceButton.layer.cornerRadius = _silenceButton.bounds.size.width / 2;
+    _silenceButton.titleLabel.font = [EM_ChatResourcesUtils iconFontWithSize:12];
+    [_silenceButton setTitle:kEMChatIconCallSilence forState:UIControlStateNormal];
     [_silenceButton addTarget:self action:@selector(silenceCall:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_silenceButton];
     
     _expandButton = [[UIButton alloc]init];
-    _expandButton.backgroundColor = [UIColor blueColor];
-    _expandButton.bounds = CGRectMake(0, 0, 30, 30);
+    _expandButton.backgroundColor = [UIColor greenColor];
+    _expandButton.bounds = CGRectMake(0, 0, 40, 40);
     _expandButton.center = CGPointMake(_rejectButton.center.x - _rejectButton.frame.size.width, _agreeButton.center.y);
     _expandButton.layer.masksToBounds = YES;
     _expandButton.layer.cornerRadius = _expandButton.bounds.size.width / 2;
+    _expandButton.titleLabel.font = [EM_ChatResourcesUtils iconFontWithSize:12];
+    [_expandButton setTitle:kEMChatIconCallExpand forState:UIControlStateNormal];
     [_expandButton addTarget:self action:@selector(expandCall:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_expandButton];
     
@@ -222,6 +243,10 @@
             [[EaseMob sharedInstance].callManager asyncEndCall:self.callSession.sessionId reason:eCallReason_Hangup];
         }
     };
+    
+    showControl = YES;
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewTap:)];
+    [self.view addGestureRecognizer:tap];
 }
 
 - (void)dealloc{
@@ -240,10 +265,33 @@
     _hereView = nil;
     
     [[EaseMob sharedInstance].callManager removeDelegate:self];
-    [[NSNotificationCenter defaultCenter] postNotificationName:kEMNotificationCallDismiss object:nil userInfo:nil];
+    NSString *callType;
+    if (_callType == EMChatCallTypeVoice) {
+        callType = kEMCallTypeVoice;
+    }else{
+        callType = kEMCallTypeVideo;
+    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:kEMNotificationCallDismiss object:nil userInfo:@{kEMCallChatter:self.callSession.sessionChatter,kEMCallType:callType}];
 }
 
 #pragma mark - private
+- (void)viewTap:(id)sender{
+    if (self.callType == EMChatCallTypeVideo && self.callState == EMChatCallStateIn) {
+        if (showControl) {
+            _avatarImageView.hidden = YES;
+            _interruptButton.hidden = YES;
+            _silenceButton.hidden = YES;
+            _expandButton.hidden = YES;
+        }else{
+            _avatarImageView.hidden = NO;
+            _interruptButton.hidden = NO;
+            _silenceButton.hidden = NO;
+            _expandButton.hidden = NO;
+        }
+        showControl = !showControl;
+    }
+}
+
 - (void)setCallState:(EMChatCallState)callState{
     switch (callState) {
         case EMChatCallStateWait:{
@@ -437,6 +485,11 @@
     _contentLabel.text = [NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"call.ongoing"],_buddy.displayName,[self stringWithTime]];
     [_contentLabel sizeToFit];
     _contentLabel.center = CGPointMake(self.view.frame.size.width / 2,_avatarImageView.frame.origin.y + _avatarImageView.frame.size.height + 10 + _contentLabel.frame.size.height / 2);
+    
+    _avatarImageView.hidden = YES;
+    _interruptButton.hidden = YES;
+    _silenceButton.hidden = YES;
+    _expandButton.hidden = YES;
 }
 
 /**

@@ -40,6 +40,11 @@ NSString * const kEMChatIconMoreStop = @"\ue610";
 NSString * const kEMChatIconBubbleTailLeft = @"\ue611";
 NSString * const kEMChatIconBubbleTailRight = @"\ue612";
 
+NSString * const kEMChatIconCallHangup = @"\ue613";
+NSString * const kEMChatIconCallConnect = @"\ue614";
+NSString * const kEMChatIconCallSilence = @"\ue615";
+NSString * const kEMChatIconCallExpand = @"\ue616";
+
 + (NSString *)stringWithName:(NSString *)name{
     return [self stringWithName:name table:@"EM_ChatStrings"];
 }

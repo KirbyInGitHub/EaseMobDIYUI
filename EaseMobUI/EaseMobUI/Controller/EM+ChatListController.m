@@ -48,6 +48,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didEndCall:) name:kEMNotificationCallDismiss object:nil];
+    
     _tableView = [[EM_ChatTableView alloc]initWithFrame:self.view.frame];
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     _tableView.dataSource = self;
@@ -90,6 +93,18 @@
 
 - (void)dealloc{
     [[EaseMob sharedInstance].chatManager removeDelegate:self];
+}
+
+- (void)didEndCall:(NSNotification *)notification{
+    NSString *chattar = notification.userInfo[kEMCallChatter];
+    NSArray *conversations = [EaseMob sharedInstance].chatManager.conversations;
+    for (int i = 0; i < conversations.count; i++) {
+        EMConversation *conversation = conversations[i];
+        if ([conversation.chatter isEqualToString:chattar]) {
+            [_tableView reloadData];
+            break;
+        }
+    }
 }
 
 - (void)reloadData{
