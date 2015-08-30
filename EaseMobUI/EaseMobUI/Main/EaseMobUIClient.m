@@ -134,7 +134,6 @@ NSString * const kEMCallTypeVideo = @"kEMCallActionVideo";
     }
     
     if (type == EMChatCallTypeVideo || type == EMChatCallTypeVoice) {
-        [[EaseMob sharedInstance].callManager removeDelegate:self];
         EM_CallController *callController = [[EM_CallController alloc]initWithSession:callSession type:type action:EMChatCallActionIn];
         callController.modalPresentationStyle = UIModalPresentationOverFullScreen;
         [ShareWindow.rootViewController presentViewController:callController animated:YES completion:nil];
@@ -167,10 +166,30 @@ NSString * const kEMCallTypeVideo = @"kEMCallActionVideo";
     }
     
     if (callSession && !error) {
-        [[EaseMob sharedInstance].callManager removeDelegate:self];
+        UIViewController *result = nil;
+        
+        UIWindow * window = ShareWindow;
+        if (window.windowLevel != UIWindowLevelNormal){
+            NSArray *windows = [[UIApplication sharedApplication] windows];
+            for(UIWindow * tmpWin in windows){
+                if (tmpWin.windowLevel == UIWindowLevelNormal){
+                    window = tmpWin;
+                    break;
+                }
+            }
+        }
+        
+        UIView *frontView = [[window subviews] objectAtIndex:0];
+        id nextResponder = [frontView nextResponder];
+        
+        if ([nextResponder isKindOfClass:[UIViewController class]]){
+            result = nextResponder;
+        }else{
+            result = window.rootViewController;
+        }
         EM_CallController *callController = [[EM_CallController alloc]initWithSession:callSession type:type action:EMChatCallActionOut];
         callController.modalPresentationStyle = UIModalPresentationOverFullScreen;
-        [ShareWindow.rootViewController presentViewController:callController animated:YES completion:nil];
+        [result presentViewController:callController animated:YES completion:nil];
     }else{
         if (type == EMChatCallTypeVoice) {
             [ShareWindow.rootViewController showHint:[EM_ChatResourcesUtils stringWithName:@"error.hint.vioce"]];
