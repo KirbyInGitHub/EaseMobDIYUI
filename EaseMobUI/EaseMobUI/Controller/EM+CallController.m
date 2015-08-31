@@ -486,10 +486,12 @@
     [_contentLabel sizeToFit];
     _contentLabel.center = CGPointMake(self.view.frame.size.width / 2,_avatarImageView.frame.origin.y + _avatarImageView.frame.size.height + 10 + _contentLabel.frame.size.height / 2);
     
-    _avatarImageView.hidden = YES;
-    _interruptButton.hidden = YES;
-    _silenceButton.hidden = YES;
-    _expandButton.hidden = YES;
+    if (self.callAction == EMChatCallTypeVideo) {
+        _avatarImageView.hidden = YES;
+        _interruptButton.hidden = YES;
+        _silenceButton.hidden = YES;
+        _expandButton.hidden = YES;
+    }
 }
 
 /**

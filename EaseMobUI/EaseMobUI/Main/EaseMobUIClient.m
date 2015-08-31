@@ -85,9 +85,7 @@ NSString * const kEMCallTypeVideo = @"kEMCallActionVideo";
 
 + (BOOL)canVideo{
     if([[[UIDevice currentDevice] systemVersion] compare:@"7.0"] != NSOrderedAscending){
-        if(!([AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo] == AVAuthorizationStatusAuthorized)){\
-            return NO;
-        }
+        return [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo] == AVAuthorizationStatusAuthorized;
     }
     return YES;
 }

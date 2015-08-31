@@ -88,5 +88,5 @@ Pod::Spec.new do |s|
   s.dependency "MBProgressHUD", "0.9.1"
   s.dependency "TTTAttributedLabel", "1.13.4"
   s.dependency "SWTableViewCell", "0.3.7"
-
+  s.dependency "FXBlurView","1.6.3"
 end
