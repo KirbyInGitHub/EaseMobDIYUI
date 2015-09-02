@@ -47,32 +47,32 @@ Pod::Spec.new do |s|
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   s.subspec 'Main' do |main|
-      main.source_files = 'EaseMobUI/EaseMobUI/Main/**/*'
+      main.source_files = 'EaseMobUI/EaseMobUI/Main/**/*.{h,m}'
       main.public_header_files = 'EaseMobUI/EaseMobUI/Main/**/*.h'
   end
 
   s.subspec 'Controller' do |controller|
-      controller.source_files = 'EaseMobUI/EaseMobUI/Controller/**/*'
+      controller.source_files = 'EaseMobUI/EaseMobUI/Controller/**/*.{h,m}'
       controller.public_header_files = 'EaseMobUI/EaseMobUI/Controller/**/*.h'
   end
 
   s.subspec 'View' do |view|
-      view.source_files = 'EaseMobUI/EaseMobUI/View/**/*'
+      view.source_files = 'EaseMobUI/EaseMobUI/View/**/*.{h,m}'
       view.public_header_files = 'EaseMobUI/EaseMobUI/View/**/*.h'
   end
 
   s.subspec 'Model' do |model|
-      model.source_files = 'EaseMobUI/EaseMobUI/Model/**/*'
+      model.source_files = 'EaseMobUI/EaseMobUI/Model/**/*.{h,m}'
       model.public_header_files = 'EaseMobUI/EaseMobUI/Model/**/*.h'
   end
 
   s.subspec 'Common' do |common|
-      common.source_files = 'EaseMobUI/EaseMobUI/Common/**/*'
+      common.source_files = 'EaseMobUI/EaseMobUI/Common/**/*.{h,m}'
       common.public_header_files = 'EaseMobUI/EaseMobUI/Common/*.h'
   end
 
   # ――― Resources ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-  s.resources = ["EaseMobUI/Resource/EM_Resource.bundle","EaseMobUI/Resource/EM_ChatStrings.strings","EaseMobUI/Resource/EM_Web.bundle","EaseMobUI/Resource/EM_ChatModel.xcdatamodeld"]
+  s.resources = ["EaseMobUI/Resource/EM_Resource.bundle","EaseMobUI/Resource/EM_ChatStrings.strings","EaseMobUI/Resource/EM_Web.bundle","EaseMobUI/Resource/EM_ChatModel.xcdatamodeld","EaseMobUI/EaseMobUI/Common/Rdparty/GPUImage/framework/Resources/**/*"]
 
 
   # ――― Project Linking ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #

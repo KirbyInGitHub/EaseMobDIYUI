@@ -38,6 +38,11 @@
 
 @optional
 
+/**
+ *  配置
+ *
+ *  @return
+ */
 - (EM_ChatUIConfig *)configForChat;
 
 /**

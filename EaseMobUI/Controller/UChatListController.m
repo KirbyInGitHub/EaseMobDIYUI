@@ -15,6 +15,14 @@
 
 @implementation UChatListController
 
+- (instancetype)init{
+    self = [super init];
+    if (self) {
+        self.delegate = self;
+    }
+    return self;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 }

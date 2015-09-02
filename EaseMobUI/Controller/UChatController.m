@@ -33,14 +33,6 @@
 }
 
 #define mark - EM_ChatControllerDelegate
-- (NSString *)nickNameWithChatter:(NSString *)chatter{
-    return chatter;
-}
-
-- (NSString *)avatarWithChatter:(NSString *)chatter{
-    return nil;
-}
-
 - (EM_ChatMessageExtend *)extendForMessage:(id)body messageType:(MessageBodyType)type{
     EM_ChatMessageExtend *extend = [[UserCustomExtend alloc]init];
     extend.showBody = YES;
