@@ -31,6 +31,9 @@ common.revocation = "撤回";
 common.delete = "删除";
 common.close = "关闭";
 
+common.message = "消息";
+common.contact = "联系人";
+
 common.monday = "星期一";
 common.tuesday = "星期二";
 common.wednesday = "星期三";
@@ -39,7 +42,17 @@ common.friday = "星期五";
 common.saturday = "星期六";
 common.sunday = "星期日";
 common.yesterday = "昨天";
-common.thDeayBeforeYesterday = "前天";
+common.theDayBeforeYesterday = "前天";
+
+common.message_type_text = "[文字]";
+common.message_type_image = "[图片]";
+common.message_type_video = "[视频]";
+common.message_type_voice = "[语音]";
+common.message_type_file = "[文件]";
+common.message_type_location = "[位置]";
+common.message_type_call_voice = "[语音电话]";
+common.message_type_call_video = "视频电话";
+common.message_type_diy = "[自定义消息]";
 
 common.hint.delete.failure = "删除失败";
 common.hint.collect.failure = "收藏失败";
@@ -95,4 +108,4 @@ error.record.failure = "录音失败";
 
 error.hint.function_null = "功能未实现";
 error.hint.vioce = "无法开始实时语音";
-error.hint.video = "无法喀什实时视频";
+error.hint.video = "无法开始实时视频";

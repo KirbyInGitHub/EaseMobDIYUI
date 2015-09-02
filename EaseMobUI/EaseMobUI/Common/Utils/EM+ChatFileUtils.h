@@ -61,6 +61,12 @@ extern NSString * const kFileName;
 extern NSString * const kFilePath;
 extern NSString * const kFileType;
 extern NSString * const kFileAttributes;
+extern NSString * const kFileState;
+extern NSString * const kFileSize;
+
+extern NSString * const kFileUploadStart;
+extern NSString * const kFileUploadProcess;
+extern NSString * const kFileUploadComplete;
 
 @interface EM_ChatFileUtils : NSObject
 
@@ -69,8 +75,6 @@ extern NSString * const kFileAttributes;
 + (BOOL)createFolderWithPath:(NSString *)path;
 
 + (NSArray *)folderArray;
-
-+ (NSArray *)fileTypeArray;
 
 + (NSArray *)filesInfoAtPath:(NSString *)path;
 

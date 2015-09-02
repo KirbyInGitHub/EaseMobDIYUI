@@ -195,6 +195,9 @@
 
 - (CGSize)bodySizeFormMaxWidth:(CGFloat)maxWidth config:(EM_ChatMessageUIConfig *)config{
     if (CGSizeEqualToSize(self.bodySize, CGSizeZero)) {
+        
+        CGSize size;
+        
         id<IEMMessageBody> messageBody = self.messageBody;
         switch (messageBody.messageBodyType) {
             case eMessageBodyType_Text:{
@@ -208,43 +211,56 @@
                 NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
                 [paragraphStyle setLineSpacing:config.bubbleTextLineSpacing];
                 
-                self.bodySize = [textBody.text boundingRectWithSize:CGSizeMake(maxWidth, 1000) options:NSStringDrawingUsesLineFragmentOrigin
+                size = [textBody.text boundingRectWithSize:CGSizeMake(maxWidth, 1000) options:NSStringDrawingUsesLineFragmentOrigin
                                                 attributes:@{
                                                              NSFontAttributeName:[UIFont systemFontOfSize:config.bubbleTextFont + 1],
                                                              NSParagraphStyleAttributeName:paragraphStyle
                                                              }
                                                    context:nil].size;
+                size.height += config.bodyTextPadding * 2;
+                size.width += config.bodyTextPadding * 2;
             }
                 break;
             case eMessageBodyType_Image:{
                 EMImageMessageBody *imageBody = (EMImageMessageBody *)messageBody;
-                self.bodySize = imageBody.thumbnailSize;
+                size = imageBody.thumbnailSize;
+                size.height += config.bodyImagePadding * 2;
+                size.width += config.bodyImagePadding * 2;
             }
                 break;
             case eMessageBodyType_Video:{
-                CGFloat width = maxWidth / 5 * 4;
-                self.bodySize = CGSizeMake(width, width / 2);
+                EMVideoMessageBody *videoBody = (EMVideoMessageBody *)messageBody;
+                size = videoBody.size;
+                size.height += config.bodyVideoPadding * 2;
+                size.width += config.bodyVideoPadding * 2;
             }
                 break;
             case eMessageBodyType_Location:{
-                self.bodySize = CGSizeMake(150, 150);
+                size = CGSizeMake(150, 150);
+                size.height += config.bodyLocationPadding * 2;
+                size.width += config.bodyLocationPadding * 2;
             }
                 break;
             case eMessageBodyType_Voice:{
                 EMVoiceMessageBody *voiceBody = (EMVoiceMessageBody *)messageBody;
-                self.bodySize = CGSizeMake(voiceBody.duration * 4 + 44, 25);
+                size = CGSizeMake(voiceBody.duration * 4 + 44, 20);
+                size.height += config.bodyVoicePadding * 2;
+                size.width += config.bodyVoicePadding * 2;
             }
                 break;
             case eMessageBodyType_File:{
                 CGFloat width = maxWidth / 5 * 4;
-                self.bodySize = CGSizeMake(width, width / 2);
+                size = CGSizeMake(width, width / 2);
+                size.height += config.bodyFilePadding * 2;
+                size.width += config.bodyFilePadding * 2;
             }
                 break;
             case eMessageBodyType_Command:{
-                self.bodySize = CGSizeZero;
+                size = CGSizeZero;
             }
                 break;
         }
+        self.bodySize = size;
     }
     
     if (self.extend && !self.extend.showBody) {

@@ -41,7 +41,7 @@
         oldContentSize = CGSizeZero;
         
         //录音按钮
-        recordButton = [[UIButton alloc]init];
+        recordButton = [UIButton buttonWithType:UIButtonTypeCustom];
         recordButton.layer.masksToBounds = YES;
         recordButton.hidden = _config.hiddenOfRecord;
         recordButton.contentEdgeInsets = UIEdgeInsetsMake(PADDING, PADDING, PADDING, PADDING);
@@ -52,7 +52,7 @@
         [self setButton:recordButton attribute:recordDictionary];
         
         //表情按钮
-        emojiButton = [[UIButton alloc]init];
+        emojiButton = [UIButton buttonWithType:UIButtonTypeCustom];
         emojiButton.layer.masksToBounds = YES;
         emojiButton.hidden = _config.hiddenOfEmoji;
         emojiButton.contentEdgeInsets = UIEdgeInsetsMake(PADDING, PADDING, PADDING, PADDING);
@@ -63,7 +63,7 @@
         [self setButton:emojiButton attribute:emojiDictionary];
         
         //动作按钮
-        actionButton = [[UIButton alloc]init];
+        actionButton = [UIButton buttonWithType:UIButtonTypeCustom];
         actionButton.layer.masksToBounds = YES;
         actionButton.hidden = _config.actionDictionary.count == 0;
         actionButton.contentEdgeInsets = UIEdgeInsetsMake(PADDING, PADDING, PADDING, PADDING);
@@ -79,7 +79,7 @@
         
         contentInsets = inputView.contentInset;
         
-        moreStateButton = [[UIButton alloc]init];
+        moreStateButton = [UIButton buttonWithType:UIButtonTypeCustom];
         moreStateButton.hidden = YES;
         moreStateButton.backgroundColor = [UIColor colorWithHexRGB:0xF8F8F8];
         moreStateButton.layer.cornerRadius = 6;

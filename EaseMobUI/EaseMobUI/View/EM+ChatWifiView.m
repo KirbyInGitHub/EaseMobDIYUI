@@ -8,6 +8,7 @@
 
 #import "EM+ChatWifiView.h"
 #import "EM+ChatResourcesUtils.h"
+#import "UIColor+Hex.h"
 
 #define TOP_PADDING (20)
 
@@ -27,6 +28,8 @@
 - (instancetype)initWithIPAdress:(NSString *)ipAdress{
     self = [super init];
     if (self) {
+        self.needTap = NO;
+        
         titleLabel = [[UILabel alloc]init];
         titleLabel.text = [EM_ChatResourcesUtils stringWithName:@"wifi.server_title"];
         titleLabel.textColor = [UIColor blackColor];
@@ -55,9 +58,11 @@
         
         closeButton = [[UIButton alloc]init];
         [closeButton setTitle:[EM_ChatResourcesUtils stringWithName:@"common.close"] forState:UIControlStateNormal];
-        [closeButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+        [closeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         [closeButton addTarget:self action:@selector(close:) forControlEvents:UIControlEventTouchUpInside];
         [closeButton sizeToFit];
+        closeButton.backgroundColor = [UIColor redColor];
+        closeButton.layer.cornerRadius = 3;
         [self addSubview:closeButton];
         
         serveAddressLabel.text = ipAdress;
@@ -77,7 +82,8 @@
     actionHintLabel.center = CGPointMake(size.width / 2, iconLabel.frame.origin.y + iconLabel.frame.size.height + actionHintLabel.frame.size.height / 2);
     serveAddressLabel.center = CGPointMake(size.width / 2, actionHintLabel.frame.origin.y + actionHintLabel.frame.size.height + serveAddressLabel.frame.size.height / 2);
     
-    closeButton.center = CGPointMake(size.width / 2, serveAddressLabel.frame.origin.y + serveAddressLabel.frame.size.height + closeButton.frame.size.height / 2);
+    closeButton.bounds = CGRectMake(0, 0, size.width - 30, closeButton.frame.size.height);
+    closeButton.center = CGPointMake(size.width / 2, TOP_PADDING + serveAddressLabel.frame.origin.y + serveAddressLabel.frame.size.height + closeButton.frame.size.height / 2);
 }
 
 - (CGFloat)contentHeight{

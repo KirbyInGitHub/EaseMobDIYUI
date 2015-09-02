@@ -11,6 +11,7 @@
 #import "EM+ChatMessageModel.h"
 #import "EM+ChatResourcesUtils.h"
 #import "EM+ChatFileUtils.h"
+#import "EM+ChatMessageUIConfig.h"
 
 #define CELL_VIDEO_PADDING (1)
 
@@ -47,8 +48,8 @@
     [super layoutSubviews];
     
     CGSize size = self.frame.size;
-    imageView.frame = CGRectMake(0, 0, size.height, size.height);
-    nameLabel.frame = CGRectMake(imageView.frame.size.width + 10, 0, size.width - imageView.frame.size.width - 10 , size.height / 3 * 2);
+    imageView.frame = CGRectMake(self.config.bodyVideoPadding, self.config.bodyVideoPadding, size.height - self.config.bodyVideoPadding * 2, size.height - self.config.bodyVideoPadding * 2);
+    nameLabel.frame = CGRectMake(imageView.frame.size.width + 10, self.config.bodyVideoPadding, size.width - imageView.frame.size.width - 10 , size.height / 3 * 2);
     sizeLabel.frame = CGRectMake(imageView.frame.size.width + 10, nameLabel.frame.size.height, (size.width - imageView.frame.size.width - 10) / 2 , size.height / 3);
 }
 

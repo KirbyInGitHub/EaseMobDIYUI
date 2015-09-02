@@ -9,6 +9,7 @@
 #import "EM+ChatMessageImageBody.h"
 #import "UIImageView+WebCache.h"
 #import "EM+ChatMessageModel.h"
+#import "EM+ChatMessageUIConfig.h"
 
 #define CELL_IMAGE_PADDING (1)
 
@@ -30,7 +31,7 @@
     [super layoutSubviews];
     
     CGSize size = self.frame.size;
-    imageView.bounds = self.bounds;
+    imageView.bounds = CGRectMake(0, 0, size.width - self.config.bodyImagePadding * 2, size.height - self.config.bodyImagePadding * 2);
     imageView.center = CGPointMake(size.width / 2, size.height / 2);
 }
 

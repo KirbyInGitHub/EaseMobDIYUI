@@ -25,7 +25,7 @@
 * [期望](#3)
   
 <h2 id = "1">简介</h2>
-集成环信的即时通讯功能，pod集成，方便管理。简单继承，轻松定制自己的UI界面。当前最新版本```0.2.0```,主要由会话列表(```EM_ConversationListController```)、好友列表(```EM_FriendsController```)和聊天界面(```EM_ChatController```)组成。很多功能和界面都在开发中，聊天界面的UI也没有开发完善，所以现在显示很挫。在```1.0.0```版本之前会完成所有可以使用环信SDK实现的功能，并且加入其它实用的功能，在此之前也不适合使用。当然你也可以参考环信的[Demo](http://www.easemob.com/downloads)。
+集成环信的即时通讯功能，pod集成，方便管理。简单继承，轻松定制自己的UI界面。当前最新版本```0.2.1```,主要由会话列表(```EM_ConversationListController```)、好友列表(```EM_FriendsController```)和聊天界面(```EM_ChatController```)组成。很多功能和界面都在开发中，聊天界面的UI也没有开发完善，所以现在显示很挫。在```1.0.0```版本之前会完成所有可以使用环信SDK实现的功能，并且加入其它实用的功能，在此之前也不适合使用。当然你也可以参考环信的[Demo](http://www.easemob.com/downloads)。
 
 <h3 id = "1.1">环信SDK</h3>
 使用pod集成的[EaseMobSDKFull](https://github.com/dujiepeng/EaseMobSDKFull)，集成版本```2.1.7```。因为pod集成[EaseMobSDK](https://github.com/easemob/sdk-ios-cocoapods)是没有语音和视频通讯功能的。
@@ -62,6 +62,7 @@ pod 'VoiceConvert',:git => "https://github.com/AwakenDragon/VoiceConvert.git"
 - ```"MWPhotoBrowser", "2.1.1"``` 图片浏览，同时也支持视频播放 [MWPhotoBrowser](https://github.com/mwaterfall/MWPhotoBrowser)
 - ```"MBProgressHUD", "0.9.1"``` 主要还是toast功能 [MBProgressHUD](https://github.com/jdg/MBProgressHUD)
 - ```"TTTAttributedLabel", "1.13.4"``` 富文本显示 [TTTAttributedLabel](https://github.com/TTTAttributedLabel/TTTAttributedLabel)
+- ```"FXBlurView","1.6.3"``` 毛玻璃效果  [FXBlurView](https://github.com/nicklockwood/FXBlurView)
 
 所以你不需要再额外pod这些了。
 
@@ -96,6 +97,7 @@ pod 'VoiceConvert',:git => "https://github.com/AwakenDragon/VoiceConvert.git"
 
     //初始化，并设置用户代理
     [EaseMobUIClient sharedInstance].userDelegate = self;
+    [EaseMobUIClient sharedInstance].oppositeDelegate = self;
 
     //初始化环信
     [[EaseMob sharedInstance] registerSDKWithAppKey:EaseMob_AppKey apnsCertName:EaseMob_APNSCertName];
@@ -128,15 +130,73 @@ pod 'VoiceConvert',:git => "https://github.com/AwakenDragon/VoiceConvert.git"
 }
 
 #pragma mark - EM_ChatUserDelegate
-- (NSString *)nickNameWithChatter:(NSString *)chatter{
-    //根据chatter返回用户昵称
-    return nil;
+- (EM_ChatUser *)userForEMChat{
+    EM_ChatUser *user = [[EM_ChatUser alloc]init];
+    user.uid = @"唯一标示";
+    user.avatar = @"头像地址";
+    user.displayName = @"要显示的名字";
+    user.intro = @"一些简介";
+    return user;
 }
 
-- (NSString *)avatarWithChatter:(NSString *)chatter{
-    //根据chatter返回用户头像地址
-    return nil;
+#pragma mark - EM_ChatOppositeDelegate
+/**
+ *  根据chatter返回好友信息
+ *
+ *  @param chatter
+ *
+ *  @return
+ */
+- (EM_ChatBuddy *)buddyInfoWithChatter:(NSString *)chatter{
+    
 }
+
+/**
+ *  根据chatter返回群信息
+ *
+ *  @param chatter
+ *
+ *  @return
+ */
+- (EM_ChatGroup *)groupInfoWithChatter:(NSString *)chatter{
+    
+}
+
+/**
+ *  根据chatter返回群中好友信息
+ *
+ *  @param chatter
+ *  @param group
+ *
+ *  @return
+ */
+- (EM_ChatBuddy *)buddyInfoWithChatter:(NSString *)chatter inGroup:(EM_ChatGroup *)group{
+    
+}
+
+/**
+ *  根据chatter返回讨论组信息
+ *
+ *  @param chatter
+ *
+ *  @return
+ */
+- (EM_ChatRoom *)roomInfoWithChatter:(NSString *)chatter{
+    
+}
+
+/**
+ *  根据chatter返回讨论组成员信息
+ *
+ *  @param chatter
+ *  @param room
+ *
+ *  @return 
+ */
+- (EM_ChatBuddy *)buddyInfoWithChatter:(NSString *)chatter inRoom:(EM_ChatRoom *)room{
+    
+}
+
 
 @end
 ```
@@ -152,9 +212,493 @@ pod 'VoiceConvert',:git => "https://github.com/AwakenDragon/VoiceConvert.git"
 - **使用蜂窝移动数据**
 
 <h3 id = "2.5">会话列表</h3>
-直接继承使用即可，暂时没有完成
+```
+EM_ChatListController
+```
+会话列表
+```
+#import "EM+ChatBaseController.h"
+@class EMConversation;
+
+@protocol EM_ChatListControllerDelegate;
+
+@interface EM_ChatListController : EM_ChatBaseController
+
+@property (nonatomic, weak) id<EM_ChatListControllerDelegate> delegate;
+
+/**
+ *  重新加载会话
+ */
+- (void)reloadData;
+
+/**
+ *  开始下拉刷新
+ */
+- (void)startRefresh;
+
+/**
+ *  结束下拉刷新
+ */
+- (void)endRefresh;
+
+@end
+
+@protocol EM_ChatListControllerDelegate <NSObject>
+
+@required
+
+@optional
+
+/**
+ *  选中某一会话
+ *
+ *  @param conversation
+ */
+- (void)didSelectedWithConversation:(EMConversation *)conversation;
+
+/**
+ *  开始下拉刷新
+ */
+- (void)didStartRefresh;
+
+/**
+ *  结束下拉刷新
+ */
+- (void)didEndRefresh;
+
+@end
+```
+继承
+```
+#import "EM+ChatListController.h"
+
+@interface CustomChatListController : EM_ChatListController
+
+@end
+```
+```
+#import "CustomChatListController.h"
+#import "CustomChatController.h"
+
+@interface CustomChatListController ()<EM_ChatListControllerDelegate>
+
+@end
+
+@implementation CustomChatListController
+
+- (instancetype)init{
+    self = [super init];
+    if (self) {
+        self.delegate = self;
+    }
+    return self;
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+}
+
+#pragma mark - EM_ChatListControllerDelegate
+- (void)didSelectedWithConversation:(EMConversation *)conversation{
+    UChatController *chatController = [[UChatController alloc]initWithConversation:conversation];
+    [self.navigationController pushViewController:chatController animated:YES];
+}
+
+@end
+```
+![enter image description here](https://github.com/AwakenDragon/ImageRepository/blob/master/EaseMobDIYUI/chat_list.png?raw=true)
+
 <h3 id = "2.6">好友列表</h3>
-直接继承使用即可，暂时没有完成
+```
+EM_BuddyListController
+```
+好友列表
+```
+#import "EM+ChatBaseController.h"
+@class EM_ChatOpposite;
+
+@protocol EM_ChatBuddyListControllerDataSource;
+@protocol EM_ChatBuddyListControllerDelegate;
+
+@interface EM_BuddyListController : EM_ChatBaseController
+
+@property (nonatomic, weak) id<EM_ChatBuddyListControllerDataSource> dataSource;
+@property (nonatomic, weak) id<EM_ChatBuddyListControllerDelegate> delegate;
+
+- (void)reloadTagBar;
+
+- (void)reloadOppositeList;
+
+- (void)startRefresh;
+
+- (void)endRefresh;
+
+@end
+
+@protocol EM_ChatBuddyListControllerDataSource <NSObject>
+
+@required
+
+/**
+ *  是否显示搜索
+ *
+ *  @return 默认NO
+ */
+- (BOOL)shouldShowSearchBar;
+
+/**
+ *  是否显示Tag
+ *
+ *  @return 默认NO
+ */
+- (BOOL)shouldShowTagBar;
+
+/**
+ *  每个分组有多少个好友，群或者讨论组
+ *
+ *  @param groupIndex 组索引
+ *
+ *  @return 默认0
+ */
+- (NSInteger)numberOfRowsAtGroupIndex:(NSInteger)groupIndex;
+
+/**
+ *  好友，群或者讨论组数据
+ *
+ *  @param rowIndex
+ *  @param groupIndex 组索引
+ *
+ *  @return 默认nil
+ */
+- (EM_ChatOpposite *)dataForRow:(NSInteger)rowIndex groupIndex:(NSInteger)groupIndex;
+
+@optional
+
+/**
+ *  搜索结果数量
+ *
+ *  @return 默认0
+ */
+- (NSInteger)numberOfRowsForSearch;
+
+/**
+ *  搜索数据
+ *
+ *  @param index
+ *
+ *  @return
+ */
+- (EM_ChatOpposite *)dataForSearchRowAtIndex:(NSInteger)index;
+
+/**
+ *  tag数据量
+ *
+ *  @return 默认0
+ */
+- (NSInteger)numberOfTags;
+
+/**
+ *  tag标题
+ *
+ *  @param index tag索引
+ *
+ *  @return 默认nil
+ */
+- (NSString *)titleForTagAtIndex:(NSInteger)index;
+
+/**
+ *  tag字体
+ *
+ *  @param index
+ *
+ *  @return
+ */
+- (UIFont *)fontForTagAtIndex:(NSInteger)index;
+
+/**
+ *  tag图标
+ *
+ *  @param index
+ *
+ *  @return
+ */
+- (NSString *)iconForTagAtIndex:(NSInteger)index;
+
+/**
+ *  好友分组数量
+ *
+ *  @return 默认1
+ */
+- (NSInteger)numberOfGroups;
+
+/**
+ *  分组标题
+ *
+ *  @param index
+ *
+ *  @return 默认 "我的好友"
+ */
+- (NSString *)titleForGroupAtIndex:(NSInteger)index;
+
+@end
+
+@protocol EM_ChatBuddyListControllerDelegate <NSObject>
+
+@required
+
+@optional
+
+/**
+ *  搜索
+ *
+ *  @param searchString
+ *
+ *  @return 是否加载搜索结果
+ */
+- (BOOL)shouldReloadSearchForSearchString:(NSString *)searchString;
+
+/**
+ *  搜索结果被点击
+ *
+ *  @param index
+ */
+- (void)didSelectedForSearchRowAtIndex:(NSInteger)index;
+
+/**
+ *  tag被点击
+ *
+ *  @param index
+ */
+- (void)didSelectedForTagAtIndex:(NSInteger)index;
+
+/**
+ *  分组被点击
+ *
+ *  @param groupIndex
+ */
+- (void)didSelectedForGroupAtIndex:(NSInteger)groupIndex;
+
+/**
+ *  好友，群或者讨论组被点击
+ *
+ *  @param rowIndex
+ *  @param groupIndex
+ */
+- (void)didSelectedForRowAtIndex:(NSInteger)rowIndex groupIndex:(NSInteger)groupIndex;
+
+/**
+ *  已经开始开始下拉刷新
+ */
+- (void)didStartRefresh;
+
+/**
+ *  已经结束下拉刷新
+ */
+- (void)didEndRefresh;
+
+@end
+```
+继承
+```
+#import "EM+BuddyListController.h"
+
+@interface CustomBuddyListController : EM_BuddyListController
+
+@end
+```
+```
+#import "CustomBuddyListController.h"
+#import "CustomChatController.h"
+#import "EaseMob.h"
+
+#import "EM+ChatOppositeTag.h"
+#import "EM+ChatBuddy.h"
+
+@interface CustomBuddyListController ()<EM_ChatBuddyListControllerDataSource,EM_ChatBuddyListControllerDelegate,EMChatManagerDelegate>
+
+@property (nonatomic, assign) BOOL needReload;
+
+@end
+
+@implementation CustomBuddyListController{
+    NSArray *tags;
+    NSMutableArray *buddyArray;
+    NSMutableArray *searchArray;
+}
+
+- (instancetype)init{
+    self = [super init];
+    if (self) {
+        tags = @[@"新朋友",@"特别关心",@"群组",@"黑名单"];
+        
+        buddyArray = [[NSMutableArray alloc]init];
+        for (int i = 0; i < 2; i++) {
+            [buddyArray addObject:[[NSMutableDictionary alloc]initWithDictionary:@{@"groupName":[NSString stringWithFormat:@"我的好友%d",i + 1],
+                                                                                   @"groupExpand":@(NO),
+                                                                                   @"buddys":[[NSMutableArray alloc]init]}]];
+        }
+        searchArray = [[NSMutableArray alloc]init];
+        self.dataSource = self;
+        self.delegate = self;
+    }
+    return self;
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    [[EaseMob sharedInstance].chatManager removeDelegate:self];
+    [[EaseMob sharedInstance].chatManager addDelegate:self delegateQueue:nil];
+    [[EaseMob sharedInstance].chatManager asyncFetchBuddyList];
+}
+
+- (void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    if (self.needReload) {
+        [self reloadOppositeList];
+        self.needReload = NO;
+    }
+}
+
+#pragma mark - EM_ChatBuddyListControllerDataSource
+- (BOOL)shouldShowSearchBar{
+    return YES;
+}
+
+- (BOOL)shouldShowTagBar{
+    return YES;
+}
+
+//search
+- (NSInteger)numberOfRowsForSearch{
+    return searchArray.count;
+}
+
+- (EM_ChatOpposite *)dataForSearchRowAtIndex:(NSInteger)index{
+    return searchArray[index];
+}
+
+- (NSInteger)numberOfTags{
+    return tags.count;
+}
+
+- (NSString *)titleForTagAtIndex:(NSInteger)index{
+    return tags[index];
+}
+
+//opposite
+- (NSInteger)numberOfGroups{
+    return buddyArray.count;
+}
+
+- (NSString *)titleForGroupAtIndex:(NSInteger)index{
+    NSDictionary *info = buddyArray[index];
+    return info[@"groupName"];
+}
+
+- (NSInteger)numberOfRowsAtGroupIndex:(NSInteger)groupIndex{
+    NSDictionary *info = buddyArray[groupIndex];
+    BOOL expand = [info[@"groupExpand"] boolValue];
+    if (expand) {
+        return [info[@"buddys"] count];
+    }else{
+        return 0;
+    }
+}
+
+- (EM_ChatOpposite *)dataForRow:(NSInteger)rowIndex groupIndex:(NSInteger)groupIndex{
+    NSMutableDictionary *info = buddyArray[groupIndex];
+    NSArray *buddys = info[@"buddys"];
+    return buddys[rowIndex];
+}
+
+#pragma mark - EM_ChatBuddyListControllerDelegate
+- (BOOL)shouldReloadSearchForSearchString:(NSString *)searchString{
+    if (searchString) {
+        [searchArray removeAllObjects];
+        
+        for (int i = 0; i < buddyArray.count; i++) {
+            NSDictionary *info = buddyArray[i];
+            NSArray *buddys = info[@"buddys"];
+            for (EM_ChatBuddy *buddy in buddys) {
+                if ([buddy.displayName containsString:searchString]) {
+                    [searchArray addObject:buddy];
+                    continue;
+                }
+                if ([buddy.remarkName containsString:searchString]){
+                    [searchArray addObject:buddy];
+                    continue;
+                }
+                if ([buddy.uid containsString:searchString]){
+                    [searchArray addObject:buddy];
+                    continue;
+                }
+            }
+        }
+    }
+    return YES;
+}
+
+- (void)didSelectedForSearchRowAtIndex:(NSInteger)index{
+    EM_ChatBuddy *buddy = searchArray[index];
+    CustomChatController *chatController = [[CustomChatController alloc]initWithOpposite:buddy];
+    [self.navigationController pushViewController:chatController animated:YES];
+}
+
+//opposite
+- (void)didSelectedForGroupAtIndex:(NSInteger)groupIndex{
+    NSDictionary *info = buddyArray[groupIndex];
+    BOOL expand = [info[@"groupExpand"] boolValue];
+    [info setValue:@(!expand) forKey:@"groupExpand"];
+    [self reloadOppositeList];
+}
+
+- (void)didSelectedForRowAtIndex:(NSInteger)rowIndex groupIndex:(NSInteger)groupIndex{
+    NSMutableDictionary *info = buddyArray[groupIndex];
+    NSArray *buddys = info[@"buddys"];
+    EM_ChatBuddy *buddy = buddys[rowIndex];
+    UChatController *chatController = [[UChatController alloc]initWithOpposite:buddy];
+    [self.navigationController pushViewController:chatController animated:YES];
+}
+
+#pragma mark - EMChatManagerBuddyDelegate
+- (void)didFetchedBuddyList:(NSArray *)buddyList error:(EMError *)error{
+    for (int i = 0;i < buddyList.count;i++) {
+        EMBuddy *emBuddy = buddyList[i];
+        EM_ChatBuddy *buddy = [[EM_ChatBuddy alloc]init];
+        buddy.uid = emBuddy.username;
+        buddy.nickName = emBuddy.username;
+        buddy.remarkName = emBuddy.username;
+        buddy.displayName = buddy.remarkName;
+        buddy.intro = @"[在线]最新动态";
+        
+        
+        NSDictionary *info = buddyArray[i % 2];
+        NSMutableArray *buddys = info[@"buddys"];
+        
+        if (![buddys containsObject:buddy]) {
+            [buddys addObject:buddy];
+        }
+    }
+    
+    if (self.isShow) {
+        [self reloadOppositeList];
+    }else{
+        self.needReload = YES;
+    }
+}
+
+- (void)didUpdateBuddyList:(NSArray *)buddyList changedBuddies:(NSArray *)changedBuddies isAdd:(BOOL)isAdd{
+    
+}
+
+- (void)didRemovedByBuddy:(NSString *)username{
+    
+}
+
+@end
+```
+![enter image description here](https://github.com/AwakenDragon/ImageRepository/blob/master/EaseMobDIYUI/buddy_list.png?raw=true)
+
 <h3 id = "2.7">聊天界面</h3>
 直接继承使用即可，有很多功能和UI还在完善中。
 <h4 id = "2.7.1">配置文件</h4>
@@ -345,9 +889,21 @@ typedef NS_ENUM(NSInteger, EM_AVATAR_STYLE) {
 @property (nonatomic, assign) float bubbleTextLineSpacing;
 
 /**
- *  文字边距
+ *  气泡圆角大小
  */
-@property (nonatomic, assign) float bubbleTextPadding;
+@property (nonatomic, assign) float bubbleCornerRadius;
+
+@property (nonatomic, assign) float bodyTextPadding;
+
+@property (nonatomic, assign) float bodyImagePadding;
+
+@property (nonatomic, assign) float bodyVideoPadding;
+
+@property (nonatomic, assign) float bodyVoicePadding;
+
+@property (nonatomic, assign) float bodyLocationPadding;
+
+@property (nonatomic, assign) float bodyFilePadding;
 
 + (instancetype)defaultConfig;
 
@@ -388,6 +944,13 @@ EM_ChatController
 @required
 
 @optional
+
+/**
+ *  配置
+ *
+ *  @return
+ */
+- (EM_ChatUIConfig *)configForChat;
 
 /**
  *  为要发送的消息添加扩展
@@ -461,8 +1024,8 @@ EM_ChatController
 
 @implementation CustomChatController
 
-- (instancetype)initWithChatter:(NSString *)chatter conversationType:(EMConversationType)conversationType config:(EM_ChatUIConfig *)config{
-    self = [super initWithChatter:chatter conversationType:conversationType config:config];
+- (instancetype)initWithChatter:(NSString *)chatter conversationType:(EMConversationType)conversationType{
+    self = [super initWithChatter:chatter conversationType:conversationType];
     if (self) {
         self.delegate = self;
     }
@@ -478,12 +1041,8 @@ EM_ChatController
 }
 
 #define mark - EM_ChatControllerDelegate
-- (NSString *)nickNameWithChatter:(NSString *)chatter{
-    return @"昵称";
-}
-
-- (NSString *)avatarWithChatter:(NSString *)chatter{
-    return @"http://you.server.com/avatar.png";
+- (EM_ChatUIConfig *)configForChat{
+    return [EM_ChatUIConfig defaultConfig];
 }
 
 - (EM_ChatMessageExtend *)extendForMessage:(id)body messageType:(MessageBodyType)type{
@@ -825,23 +1384,23 @@ extern NSString * const MENU_ACTION_FORWARD;//转发
 
 <h3 id = "2.9">UI</h3>
 
-![enter image description here](https://github.com/AwakenDragon/ImageRepository/blob/master/EaseMobDIYUI/01.PNG?raw=true)
+![enter image description here](https://github.com/AwakenDragon/ImageRepository/blob/master/EaseMobDIYUI/action_view.png?raw=true)
 
-![enter image description here](https://github.com/AwakenDragon/ImageRepository/blob/master/EaseMobDIYUI/02.PNG?raw=true)
+![enter image description here](https://github.com/AwakenDragon/ImageRepository/blob/master/EaseMobDIYUI/emoji_view.png?raw=true)
 
-![enter image description here](https://github.com/AwakenDragon/ImageRepository/blob/master/EaseMobDIYUI/03.PNG?raw=true)
+![enter image description here](https://github.com/AwakenDragon/ImageRepository/blob/master/EaseMobDIYUI/voice_input.png?raw=true)
 
-![enter image description here](https://github.com/AwakenDragon/ImageRepository/blob/master/EaseMobDIYUI/04.PNG?raw=true)
+![enter image description here](https://github.com/AwakenDragon/ImageRepository/blob/master/EaseMobDIYUI/voice_play.png?raw=true)
 
-![enter image description here](https://github.com/AwakenDragon/ImageRepository/blob/master/EaseMobDIYUI/05.png?raw=true)
+![enter image description here](https://github.com/AwakenDragon/ImageRepository/blob/master/EaseMobDIYUI/call_in.png?raw=true)
 
-![enter image description here](https://github.com/AwakenDragon/ImageRepository/blob/master/EaseMobDIYUI/06.png?raw=true)
+![enter image description here](https://github.com/AwakenDragon/ImageRepository/blob/master/EaseMobDIYUI/call_voice.png?raw=true)
 
-![enter image description here](https://github.com/AwakenDragon/ImageRepository/blob/master/EaseMobDIYUI/07.png?raw=true)
+![enter image description here](https://github.com/AwakenDragon/ImageRepository/blob/master/EaseMobDIYUI/call_video.png?raw=true)
 
-![enter image description here](https://github.com/AwakenDragon/ImageRepository/blob/master/EaseMobDIYUI/08.png?raw=true)
+![enter image description here](https://github.com/AwakenDragon/ImageRepository/blob/master/EaseMobDIYUI/wifi_upload.png?raw=true)
 
-![enter image description here](https://github.com/AwakenDragon/ImageRepository/blob/master/EaseMobDIYUI/09.png?raw=true)
+![enter image description here](https://github.com/AwakenDragon/ImageRepository/blob/master/EaseMobDIYUI/web_wifi_upload.png?raw=true)
 
 <h2 id = "3">期望</h2>
 - **合作：**如果你 也是环信的使用者，可以一起和我开发这个项目，让更多的环信开发者方便使用

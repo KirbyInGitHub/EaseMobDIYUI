@@ -40,7 +40,7 @@
     [super layoutSubviews];
     CGSize size = self.frame.size;
     
-    textLabel.bounds = self.bounds;
+    textLabel.bounds = CGRectMake(0, 0, size.width - self.config.bodyTextPadding * 2, size.height - self.config.bodyTextPadding * 2);
     textLabel.center = CGPointMake(size.width / 2, size.height / 2);
 }
 
@@ -59,7 +59,6 @@
     [super setMessage:message];
     EMTextMessageBody *textBody = (EMTextMessageBody *)message.messageBody;
     textLabel.text = textBody.text;
-    
     self.needTap = self.message.extend.isCallMessage;
 }
 

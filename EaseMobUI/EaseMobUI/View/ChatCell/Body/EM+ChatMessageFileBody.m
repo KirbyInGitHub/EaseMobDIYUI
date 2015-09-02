@@ -9,6 +9,7 @@
 #import "EM+ChatMessageFileBody.h"
 #import "EM+ChatMessageModel.h"
 #import "EM+ChatFileUtils.h"
+#import "EM+ChatMessageUIConfig.h"
 
 @implementation EM_ChatMessageFileBody{
     UIImageView *fileView;
@@ -43,8 +44,8 @@
     [super layoutSubviews];
     
     CGSize size = self.frame.size;
-    fileView.frame = CGRectMake(0, 0, size.height, size.height);
-    nameLabel.frame = CGRectMake(fileView.frame.size.width + 10, 0, size.width - fileView.frame.size.width - 10 , size.height / 3 * 2);
+    fileView.frame = CGRectMake(self.config.bodyFilePadding, self.config.bodyFilePadding, size.height - self.config.bodyFilePadding * 2, size.height - self.config.bodyFilePadding * 2);
+    nameLabel.frame = CGRectMake(fileView.frame.size.width + 10, self.config.bodyFilePadding, size.width - fileView.frame.size.width - 10 , size.height / 3 * 2);
     sizeLabel.frame = CGRectMake(fileView.frame.size.width + 10, nameLabel.frame.size.height, (size.width - fileView.frame.size.width - 10) / 2 , size.height / 3);
 }
 

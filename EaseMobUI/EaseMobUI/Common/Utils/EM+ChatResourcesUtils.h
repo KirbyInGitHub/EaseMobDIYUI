@@ -32,13 +32,24 @@ extern NSString * const kEMChatIconMoreTrash;
 extern NSString * const KEMChatIconMorePlay;
 extern NSString * const kEMChatIconMoreStop;
 
+extern NSString * const kEMChatIconBubbleTailLeft;
+extern NSString * const kEMChatIconBubbleTailRight;
+
+extern NSString * const kEMChatIconCallHangup;
+extern NSString * const kEMChatIconCallConnect;
+extern NSString * const kEMChatIconCallSilence;
+extern NSString * const kEMChatIconCallExpand;
+
 
 @interface EM_ChatResourcesUtils : NSObject
 
 + (NSString *)stringWithName:(NSString *)name;
 + (NSString *)stringWithName:(NSString *)name table:(NSString *)table;
++ (UIImage *)defaultAvatarImage;
++ (NSURL *)defaultAvatarURL;
 + (UIImage *)cellImageWithName:(NSString *)name;
 + (UIImage *)callImageWithName:(NSString *)name;
++ (UIImage *)fileImageWithName:(NSString *)name;
 + (UIFont *)iconFontWithSize:(float)size;
 
 @end

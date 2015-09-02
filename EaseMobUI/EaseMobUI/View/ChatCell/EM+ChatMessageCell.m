@@ -16,15 +16,16 @@
 #import "EM+ChatMessageModel.h"
 
 #import "UIColor+Hex.h"
+#import "EM+Common.h"
 
 @interface EM_ChatMessageCell()<EM_ChatMessageContentDelegate>
 
 @property (nonatomic,strong) UILabel *nameLabel;
 @property (nonatomic,strong) UIButton *avatarView;
 @property (nonatomic,strong) UILabel *timeLabel;
+@property (nonatomic, strong) UILabel *tailView;
 @property (nonatomic,strong) UIActivityIndicatorView *indicatorView;
 @property (nonatomic,strong) UIButton *retryButton;
-@property (nonatomic,strong) UILabel *stateLabel;
 
 @end
 
@@ -62,17 +63,24 @@
         
         _avatarView = [[UIButton alloc]init];
         _avatarView.layer.masksToBounds = YES;
-        [_avatarView setImage:[EM_ChatResourcesUtils cellImageWithName:@"avatar_default"] forState:UIControlStateNormal];
+        [_avatarView setImage:[EM_ChatResourcesUtils defaultAvatarImage] forState:UIControlStateNormal];
         [_avatarView addTarget:self action:@selector(avatarClicked:) forControlEvents:UIControlEventTouchUpInside];
         [self.contentView addSubview:_avatarView];
         
         _timeLabel = [[UILabel alloc]init];
         _timeLabel.textAlignment = NSTextAlignmentCenter;
-        _timeLabel.textColor = [UIColor blackColor];
+        _timeLabel.textColor = [UIColor whiteColor];
+        _timeLabel.font = [UIFont systemFontOfSize:10];
+        _timeLabel.backgroundColor = [UIColor colorWithHEX:LINE_COLOR alpha:1.0];
+        _timeLabel.layer.masksToBounds = YES;
         [self.contentView addSubview:_timeLabel];
         
+        _tailView = [[UILabel alloc]init];
+        _tailView.font = [EM_ChatResourcesUtils iconFontWithSize:12];
+        [self.contentView addSubview:_tailView];
+        
         _bubbleView = [[EM_ChatMessageBubble alloc]initWithBodyClass:bodyClass withExtendClass:extendClass];
-        _bubbleView.layer.cornerRadius = 6;
+        _bubbleView.layer.cornerRadius = 4;
         _bubbleView.layer.masksToBounds = YES;
         _bubbleView.bodyView.delegate = self;
         _bubbleView.extendView.delegate = self;
@@ -89,12 +97,6 @@
         [_retryButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
         [_retryButton addTarget:self action:@selector(retryClicked:) forControlEvents:UIControlEventTouchUpInside];
         [self.contentView addSubview:_retryButton];
-        
-        _stateLabel = [[UILabel alloc]init];
-        _stateLabel.hidden = YES;
-        _stateLabel.textColor = [UIColor blackColor];
-        _stateLabel.font = [UIFont systemFontOfSize:10];
-        [self.contentView addSubview:_stateLabel];
     }
     return self;
 }
@@ -106,10 +108,16 @@
     if (_timeLabel.hidden) {
         _timeLabel.frame = CGRectMake(size.width / 4, self.config.messageTopPadding, size.width / 2, 0);
     }else{
-        _timeLabel.frame = CGRectMake(size.width / 4, self.config.messageTopPadding, size.width / 2, self.config.messageTimeLabelHeight);
+        [_timeLabel sizeToFit];
+        CGRect timeBound = _timeLabel.bounds;
+        timeBound.size.width += 4;
+        timeBound.size.height += 4;
+        _timeLabel.bounds = timeBound;
+        _timeLabel.layer.cornerRadius = _timeLabel.frame.size.height / 2;
+        _timeLabel.center = CGPointMake(size.width / 2, self.config.messageTopPadding + _timeLabel.frame.size.height / 2);
     }
     
-    CGFloat _originY = _timeLabel.frame.origin.y + _timeLabel.frame.size.height;
+    CGFloat _originY = _timeLabel.frame.origin.y + (_timeLabel.hidden ? 0 : self.config.messageTimeLabelHeight);
     
     CGFloat _nameLabelOriginX = self.config.messageAvatarSize + self.config.messageTopPadding;
     if (_nameLabel.hidden) {
@@ -129,19 +137,17 @@
     if(_message.sender){
         _avatarView.frame = CGRectMake(size.width - self.config.messageAvatarSize - self.config.messagePadding, _originY, self.config.messageAvatarSize, self.config.messageAvatarSize);
         _bubbleView.frame = CGRectMake(_avatarView.frame.origin.x - bubbleSize.width - self.config.messageTailWithd, _bubbleViewOriginY, bubbleSize.width, bubbleSize.height);
-        
+        _tailView.center = CGPointMake(_bubbleView.frame.origin.x + _bubbleView.frame.size.width,_bubbleView.frame.origin.y + _config.bubbleCornerRadius + _tailView.frame.size.height / 2);
         centerX = _bubbleView.frame.origin.x - self.config.messageIndicatorSize / 2 * 3;
     }else{
         _avatarView.frame = CGRectMake(self.config.messagePadding, _originY, self.config.messageAvatarSize, self.config.messageAvatarSize);
         _bubbleView.frame = CGRectMake(_avatarView.frame.origin.x + _avatarView.frame.size.width + self.config.messageTailWithd, _bubbleViewOriginY, bubbleSize.width, bubbleSize.height);
+        _tailView.center = CGPointMake(_bubbleView.frame.origin.x,_bubbleView.frame.origin.y + _config.bubbleCornerRadius + _tailView.frame.size.height / 2);
         centerX = _bubbleView.frame.origin.x + _bubbleView.frame.size.width + self.config.messageIndicatorSize / 2 * 3;
     }
     
     _indicatorView.center = CGPointMake(centerX, _bubbleView.frame.origin.y + _bubbleView.frame.size.height / 2);
     _retryButton.frame =_indicatorView.frame;
-    
-    _stateLabel.center = _indicatorView.center;
-    [_stateLabel sizeToFit];
 }
 
 - (void)avatarClicked:(id)sender{
@@ -159,6 +165,7 @@
 - (void)setConfig:(EM_ChatMessageUIConfig *)config{
     _config = config;
     _bubbleView.config = _config;
+    _bubbleView.layer.cornerRadius = _config.bubbleCornerRadius;
     if (config.avatarStyle == EM_AVATAR_STYLE_CIRCULAR) {
         _avatarView.layer.cornerRadius = self.config.messageAvatarSize / 2;
     }else{
@@ -170,20 +177,25 @@
 - (void)setMessage:(EM_ChatMessageModel *)message{
     _message = message;
 
-    _nameLabel.text = message.nickName;
+    _nameLabel.text = message.displayName;
     _nameLabel.hidden = message.message.messageType == eMessageTypeChat;
     
     if (_message.avatar) {
-        [_avatarView sd_setImageWithURL:[[NSURL alloc] initWithString:_message.avatar] forState:UIControlStateNormal];
+        [_avatarView sd_setImageWithURL:_message.avatar forState:UIControlStateNormal];
     }
     
     if (_message.sender) {
         _nameLabel.textAlignment = NSTextAlignmentRight;
         _bubbleView.backgroundView.backgroundColor = [UIColor colorWithHEX:@"#EED2EE" alpha:1.0];
+        _tailView.text = kEMChatIconBubbleTailRight;
     }else{
         _nameLabel.textAlignment = NSTextAlignmentLeft;
         _bubbleView.backgroundView.backgroundColor = [UIColor colorWithHEX:@"#B5B5B5" alpha:1.0];
+        _tailView.text = kEMChatIconBubbleTailLeft;
     }
+    [_tailView sizeToFit];
+    _tailView.textColor = _bubbleView.backgroundView.backgroundColor;
+    _tailView.hidden = self.message.messageBody.messageBodyType == eMessageBodyType_Image;
     _bubbleView.message = _message;
     
     _timeLabel.text = [EM_ChatDateUtils stringFormatterMessageDateFromTimeInterval:message.message.timestamp / 1000];
@@ -196,14 +208,6 @@
         }
         _indicatorView.hidden = YES;
         _retryButton.hidden = _message.message.deliveryState == eMessageDeliveryState_Delivered;
-        //_stateLabel.hidden = !(_message.message.deliveryState == eMessageDeliveryState_Delivered && _message.sender);
-        if (_message.message.deliveryState == eMessageDeliveryState_Delivered && _message.sender) {
-            if (_message.message.isReadAcked) {
-                _stateLabel.text = @"已读";
-            }else{
-                _stateLabel.text = @"已送达";
-            }
-        }
     }else{
         if (!_indicatorView.isAnimating) {
             [_indicatorView startAnimating];

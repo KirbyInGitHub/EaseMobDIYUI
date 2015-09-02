@@ -17,14 +17,17 @@
 - (instancetype)init{
     self = [super init];
     if (self) {
-        self.hidesBottomBarWhenPushed = YES;
-        self.navigationController.interactivePopGestureRecognizer.enabled = YES;
+        
     }
     return self;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+}
+
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
 }
 
 - (void)viewDidAppear:(BOOL)animated{

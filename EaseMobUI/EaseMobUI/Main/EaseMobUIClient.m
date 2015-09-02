@@ -38,7 +38,7 @@ static EaseMobUIClient *sharedClient;
 /**
  *  EMDeviceManagerNetworkDelegate
  */
-@interface EaseMobUIClient()<EMChatManagerDelegate,EMCallManagerDelegate,EMDeviceManagerDelegate,IEMChatProgressDelegate>
+@interface EaseMobUIClient()<EMChatManagerDelegate,EMCallManagerDelegate,EMDeviceManagerDelegate>
 
 @property (nonatomic, assign) BOOL callShow;
 
@@ -54,7 +54,7 @@ NSString * const kEMNotificationCallDismiss = @"kEMNotificationCallDismiss";
 NSString * const kEMCallChatter = @"kEMCallChatter";
 NSString * const kEMCallType = @"kEMCallType";
 
-NSString * const kEMCallTypeVoice = @"kEMCallAction";
+NSString * const kEMCallTypeVoice = @"kEMCallActionVoice";
 NSString * const kEMCallTypeVideo = @"kEMCallActionVideo";
 
 + (instancetype)sharedInstance{
@@ -85,9 +85,7 @@ NSString * const kEMCallTypeVideo = @"kEMCallActionVideo";
 
 + (BOOL)canVideo{
     if([[[UIDevice currentDevice] systemVersion] compare:@"7.0"] != NSOrderedAscending){
-        if(!([AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo] == AVAuthorizationStatusAuthorized)){\
-            return NO;
-        }
+        return [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo] == AVAuthorizationStatusAuthorized;
     }
     return YES;
 }
@@ -166,9 +164,30 @@ NSString * const kEMCallTypeVideo = @"kEMCallActionVideo";
     }
     
     if (callSession && !error) {
+        UIViewController *result = nil;
+        
+        UIWindow * window = ShareWindow;
+        if (window.windowLevel != UIWindowLevelNormal){
+            NSArray *windows = [[UIApplication sharedApplication] windows];
+            for(UIWindow * tmpWin in windows){
+                if (tmpWin.windowLevel == UIWindowLevelNormal){
+                    window = tmpWin;
+                    break;
+                }
+            }
+        }
+        
+        UIView *frontView = [[window subviews] objectAtIndex:0];
+        id nextResponder = [frontView nextResponder];
+        
+        if ([nextResponder isKindOfClass:[UIViewController class]]){
+            result = nextResponder;
+        }else{
+            result = window.rootViewController;
+        }
         EM_CallController *callController = [[EM_CallController alloc]initWithSession:callSession type:type action:EMChatCallActionOut];
         callController.modalPresentationStyle = UIModalPresentationOverFullScreen;
-        [ShareWindow.rootViewController presentViewController:callController animated:YES completion:nil];
+        [result presentViewController:callController animated:YES completion:nil];
     }else{
         if (type == EMChatCallTypeVoice) {
             [ShareWindow.rootViewController showHint:[EM_ChatResourcesUtils stringWithName:@"error.hint.vioce"]];

@@ -43,9 +43,6 @@ NSString * const kEMNotificationFileUpload = @"kEMNotificationFileUpload";
 NSString * const kEMNotificationFileDelete = @"kEMNotificationFileDelete";
 NSString * const kEMNotificationFileDownload = @"kEMNotificationFileDownload";
 
-NSString * const kEMFileUploadState = @"kEMFileUploadState";
-NSString * const kEMFIleUploadProgress = @"kEMFIleUploadProgress";
-
 - (NSMutableDictionary *)responseDic{
     if (!_responseDic) {
         _responseDic = [[NSMutableDictionary alloc]init];
@@ -117,21 +114,22 @@ NSString * const kEMFIleUploadProgress = @"kEMFIleUploadProgress";
             NSMutableDictionary *replaceData = [[NSMutableDictionary alloc]init];
             [replaceData setObject:[NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"wifi.server_web_title"],appName] forKey:@"title"];
             
-            for (NSString *fileType in [EM_ChatFileUtils fileTypeArray]) {
-                
+            NSArray *folderArray = [EM_ChatFileUtils folderArray];
+            for (NSDictionary *folderDic in folderArray) {
+                NSString *folderName = folderDic[kFolderName];
                 NSMutableString *replaceHtml = [[NSMutableString alloc]init];
-                NSArray *files = [EM_ChatFileUtils filesInfoWithType:fileType];
+                NSArray *files = [EM_ChatFileUtils filesInfoWithType:folderName];
                 
                 for (NSDictionary *fileInfo in files) {
                     NSString *fileName = [fileInfo objectForKey:kFileName];
                     NSDictionary *fileAttributes = [fileInfo objectForKey:kFileAttributes];
                     long long fileSize = [fileAttributes fileSize];
                     
-                    NSString *html = [NSString stringWithFormat:@"<tr><td>%@</td><td>%@</td><td><a href=\"%@\" download><i class=\"fa fa-cloud-download\"></i></a><a href=\"javascript:;\"><i class=\"fa fa-trash-o\" data=\"%@\"></i></a></td></tr>",fileName,[EM_ChatFileUtils stringFileSize:fileSize],[NSString stringWithFormat:@"files/%@/%@",fileType,fileName],fileName];
+                    NSString *html = [NSString stringWithFormat:@"<tr><td>%@</td><td>%@</td><td><a href=\"%@\" download><i class=\"fa fa-cloud-download\"></i></a><a href=\"javascript:;\"><i class=\"fa fa-trash-o\" data=\"%@\"></i></a></td></tr>",fileName,[EM_ChatFileUtils stringFileSize:fileSize],[NSString stringWithFormat:@"files/%@/%@",folderName,fileName],fileName];
                     [replaceHtml appendString:html];
                 }
                 
-                [replaceData setObject:replaceHtml forKey:fileType];
+                [replaceData setObject:replaceHtml forKey:folderName];
             }
             
             NSString* indexPagePath = [[config documentRoot] stringByAppendingPathComponent:@"index.html"];
@@ -161,9 +159,15 @@ NSString * const kEMFIleUploadProgress = @"kEMFIleUploadProgress";
         if([path hasPrefix:@"/files"]){
 
             NSString *filePath = [[path substringFromIndex:7] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            NSString *fileName = [filePath lastPathComponent];
+            NSRange nameRange = [filePath rangeOfString:fileName];
+            NSString *fileType = [filePath substringToIndex:nameRange.location - 1];
             NSError *error;
             BOOL delete = [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@/%@",kChatFileFolderPath,filePath] error:&error];
             if (delete && !error) {
+                NSDictionary *userInfo = @{kFileName:fileName,kFileType:fileType};
+                [[NSNotificationCenter defaultCenter] postNotificationName:kEMNotificationFileDelete object:nil userInfo:userInfo];
+                
                 return [[EM_ChatHttpErrorResponse alloc]initWithErrorCode:200 errorMessage:[EM_ChatResourcesUtils stringWithName:@"wifi.server_file_delete_success"]];
             }else{
                 return [[EM_ChatHttpErrorResponse alloc]initWithErrorCode:500 errorMessage:[NSString stringWithFormat:[EM_ChatResourcesUtils stringWithName:@"wifi.server_file_delete_failure"],error]];
@@ -221,13 +225,7 @@ NSString * const kEMFIleUploadProgress = @"kEMFIleUploadProgress";
         
         if([[NSFileManager defaultManager] createFileAtPath:filePath contents:nil attributes:nil]) {
             storeFile = [NSFileHandle fileHandleForWritingAtPath:filePath];
-            NSDictionary *userInfo = @{
-                                       kFileName:fileName,
-                                       kFileType:fileType,
-                                       kFilePath:filePath,
-                                       kEMFileUploadState:@(WiFiFileUploadStateStart),
-                                       kEMFIleUploadProgress:@(0)};
-            [[NSNotificationCenter defaultCenter] postNotificationName:kEMNotificationFileUpload object:nil userInfo:userInfo];
+            [self postNotificationUpload:fileName state:kFileUploadStart];
         }else{
             HTTPLogError(@"Could not create file at path: %@", filePath);
             [self.responseDic setObject:[[EM_ChatHttpErrorResponse alloc]initWithErrorCode:500 errorMessage:[EM_ChatResourcesUtils stringWithName:@"wifi.server_file_upload_failure"]] forKey:fileName];
@@ -238,38 +236,19 @@ NSString * const kEMFIleUploadProgress = @"kEMFIleUploadProgress";
 - (void)processContent:(NSData *)data WithHeader:(MultipartMessageHeader *)header{
     if(storeFile) {
         [storeFile writeData:data];
-        NSDictionary *headers = [request allHeaderFields];
         MultipartMessageHeaderField* disposition = [header.fields objectForKey:@"Content-Disposition"];
         NSString *fileName = [[disposition.params objectForKey:@"filename"] lastPathComponent];
-        NSString *fileType = [headers objectForKey:@"filetype"];
-        
-        NSDictionary *userInfo = @{
-                                   kFileName:fileName,
-                                   kFileType:fileType,
-                                   kFilePath:[NSString stringWithFormat:@"%@/%@",kChatFileFolderPath,fileType],
-                                   kEMFileUploadState:@(WiFiFileUploadStateProcess),
-                                   kEMFIleUploadProgress:@(data.length)};
-        [[NSNotificationCenter defaultCenter] postNotificationName:kEMNotificationFileUpload object:nil userInfo:userInfo];
+        [self postNotificationUpload:fileName state:kFileUploadProcess];
     }
 }
 
 - (void)processEndOfPartWithHeader:(MultipartMessageHeader *)header{
     if (storeFile) {
         [storeFile closeFile];
-        NSDictionary *headers = [request allHeaderFields];
         MultipartMessageHeaderField* disposition = [header.fields objectForKey:@"Content-Disposition"];
         NSString *fileName = [[disposition.params objectForKey:@"filename"] lastPathComponent];
-        NSString *fileType = [headers objectForKey:@"filetype"];
-        
+        [self postNotificationUpload:fileName state:kFileUploadComplete];
         [self.responseDic setObject:[[EM_ChatHttpErrorResponse alloc]initWithErrorCode:200 errorMessage:[EM_ChatResourcesUtils stringWithName:@"wifi.server_file_upload_success"]] forKey:fileName];
-        
-        NSDictionary *userInfo = @{
-                                   kFileName:fileName,
-                                   kFileType:fileType,
-                                   kFilePath:[NSString stringWithFormat:@"%@/%@",kChatFileFolderPath,fileType],
-                                   kEMFileUploadState:@(WiFiFileUploadStateEnd),
-                                   kEMFIleUploadProgress:@(0)};
-        [[NSNotificationCenter defaultCenter] postNotificationName:kEMNotificationFileUpload object:nil userInfo:userInfo];
         
     }
     storeFile = nil;
@@ -281,6 +260,22 @@ NSString * const kEMFIleUploadProgress = @"kEMFIleUploadProgress";
 
 - (void)processEpilogueData:(NSData *)data{
     
+}
+
+- (void)postNotificationUpload:(NSString *)fileName state:(NSString *)state{
+    NSDictionary *headers = [request allHeaderFields];
+    NSString *fileType = [headers objectForKey:@"filetype"];
+    NSString *filePath = [NSString stringWithFormat:@"%@/%@/%@",kChatFileFolderPath,fileType,fileName];
+    long long fileSize = [[headers objectForKey:@"Content-Length"] longLongValue];
+    
+    NSDictionary *userInfo = @{
+                               kFileName:fileName,
+                               kFileType:fileType,
+                               kFilePath:filePath,
+                               kFileAttributes:[[NSFileManager defaultManager]attributesOfItemAtPath:filePath error:nil],
+                               kFileState:state,
+                               kFileSize:@(fileSize)};
+    [[NSNotificationCenter defaultCenter] postNotificationName:kEMNotificationFileUpload object:nil userInfo:userInfo];
 }
 
 @end

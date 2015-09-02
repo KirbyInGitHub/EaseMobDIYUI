@@ -27,6 +27,7 @@ typedef NS_ENUM(NSUInteger, UAlertPosition) {
 @property (nonatomic,assign,readonly) BOOL isShow;
 @property (nonatomic, assign) BOOL tapDismiss;
 @property (nonatomic,assign) CGFloat leftPadding;
+@property (nonatomic, assign) BOOL needTap;
 
 - (void)completion;
 

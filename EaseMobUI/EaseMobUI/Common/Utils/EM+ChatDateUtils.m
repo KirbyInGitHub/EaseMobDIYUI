@@ -35,22 +35,20 @@
             dateString = [self dateConvertToString:date formatter:@"MM-dd HH:mm"];
         }else{
             //currentComponents.month 必然等于 dateComponents.month
-            if (currentComponents.weekOfMonth > dateComponents.weekOfMonth) {
-                dateString = [self dateConvertToString:date formatter:@"MM-dd HH:mm"];
-            }else{
-                //currentComponents.weekOfMonth 必然等于 dateComponents.weekOfMonth
-                if (currentComponents.day > dateComponents.day) {
-                    if (currentComponents.day - dateComponents.day == 1) {
-                        dateString = [NSString stringWithFormat:@"%@ %@",[EM_ChatResourcesUtils stringWithName:@"common.yesterday"],[self dateConvertToString:date formatter:@"HH:mm"]];
-                    }else if(currentComponents.day - dateComponents.day == 2){
-                        dateString = [NSString stringWithFormat:@"%@ %@",[EM_ChatResourcesUtils stringWithName:@"common.thDeayBeforeYesterday"],[self dateConvertToString:date formatter:@"HH:mm"]];
-                    }else{
-                        dateString = [NSString stringWithFormat:@"%@ %@",[self weekStringForDayFromDate:date],[self dateConvertToString:date formatter:@"HH:mm"]];
-                    }
-                }else{
-                    //currentComponents.day 必然等于 dateComponents.day
+            NSInteger currentDay = currentComponents.day;
+            NSInteger day = dateComponents.day;
+            if(currentDay - day <= 7){
+                if (currentDay - day == 0) {
                     dateString = [self dateConvertToString:date formatter:@"HH:mm"];
+                }else if (currentDay - day == 1) {
+                    dateString = [NSString stringWithFormat:@"%@ %@",[EM_ChatResourcesUtils stringWithName:@"common.yesterday"],[self dateConvertToString:date formatter:@"HH:mm"]];
+                }else if(currentDay - day == 2){
+                    dateString = [NSString stringWithFormat:@"%@ %@",[EM_ChatResourcesUtils stringWithName:@"common.theDayBeforeYesterday"],[self dateConvertToString:date formatter:@"HH:mm"]];
+                }else{
+                    dateString = [NSString stringWithFormat:@"%@ %@",[self weekStringForDayFromDate:date],[self dateConvertToString:date formatter:@"HH:mm"]];
                 }
+            }else{
+                dateString = [self dateConvertToString:date formatter:@"MM-dd HH:mm"];
             }
         }
     }
@@ -83,7 +81,7 @@
 
 + (NSDateComponents *)dateComponentsFromDate:(NSDate *)date{
     NSCalendar *calendar = [NSCalendar currentCalendar];
-    NSUInteger unitFlags = NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit | NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit;
+    NSUInteger unitFlags = NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit | NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit | NSWeekdayCalendarUnit | NSWeekOfMonthCalendarUnit | NSWeekOfYearCalendarUnit;
     return [calendar components:unitFlags fromDate:date];
 }
 

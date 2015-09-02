@@ -10,6 +10,9 @@
 #import <UIKit/UIKit.h>
 #import <CoreText/CoreText.h>
 
+static UIImage *avatarImage;
+static NSURL *avatarURL;
+
 @implementation EM_ChatResourcesUtils
 
 NSString * const kEMChatIconFontName = @"em_chat_icon";
@@ -34,6 +37,14 @@ NSString * const kEMChatIconMoreTrash = @"\ue60e";
 NSString * const KEMChatIconMorePlay = @"\ue60f";
 NSString * const kEMChatIconMoreStop = @"\ue610";
 
+NSString * const kEMChatIconBubbleTailLeft = @"\ue611";
+NSString * const kEMChatIconBubbleTailRight = @"\ue612";
+
+NSString * const kEMChatIconCallHangup = @"\ue613";
+NSString * const kEMChatIconCallConnect = @"\ue614";
+NSString * const kEMChatIconCallSilence = @"\ue615";
+NSString * const kEMChatIconCallExpand = @"\ue616";
+
 + (NSString *)stringWithName:(NSString *)name{
     return [self stringWithName:name table:@"EM_ChatStrings"];
 }
@@ -46,6 +57,22 @@ NSString * const kEMChatIconMoreStop = @"\ue610";
     return [UIImage imageNamed:name];
 }
 
++ (UIImage *)defaultAvatarImage{
+    static dispatch_once_t pred;
+    dispatch_once(&pred, ^{
+        avatarImage = [self imageWithName:@"EM_Resource.bundle/images/avatar_default"];
+    });
+    return avatarImage;
+}
+
++ (NSURL *)defaultAvatarURL{
+    static dispatch_once_t pred;
+    dispatch_once(&pred, ^{
+        avatarURL = [NSURL fileURLWithPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"EM_Resource.bundle/images/avatar_default.png"]];;
+    });
+    return avatarURL;
+}
+
 + (UIImage *)cellImageWithName:(NSString *)name{
     return [self imageWithName:[NSString stringWithFormat:@"EM_Resource.bundle/images/cell/%@",name]];
 }
@@ -54,8 +81,11 @@ NSString * const kEMChatIconMoreStop = @"\ue610";
     return [self imageWithName:[NSString stringWithFormat:@"EM_Resource.bundle/images/call/%@",name]];
 }
 
-+ (UIFont *)iconFontWithSize:(float)size
-{
++ (UIImage *)fileImageWithName:(NSString *)name{
+    return [self imageWithName:[NSString stringWithFormat:@"EM_Resource.bundle/images/file/%@",name]];
+}
+
++ (UIFont *)iconFontWithSize:(float)size{
 #ifndef DISABLE_FONTAWESOME_AUTO_REGISTRATION
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
