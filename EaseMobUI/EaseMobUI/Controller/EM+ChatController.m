@@ -132,18 +132,7 @@ EMDeviceManagerDelegate>
 - (void)initializeWithConversation:(EMConversation *)conversation{
     self.hidesBottomBarWhenPushed = YES;
     self.navigationController.interactivePopGestureRecognizer.enabled = YES;
-    
-    if (self.delegate && [self.delegate respondsToSelector:@selector(configForChat)]) {
-        _config = [self.delegate configForChat];
-    }
-    if (!_config) {
-        _config = [EM_ChatUIConfig defaultConfig];
-    }
-    
-    if (conversation.conversationType != eConversationTypeChat) {
-        [_config removeActionWithName:kActionNameVoice];
-        [_config removeActionWithName:kActionNameVideo];
-    }
+
     _conversation = conversation;
     [_conversation markAllMessagesAsRead:YES];
     
@@ -190,6 +179,18 @@ EMDeviceManagerDelegate>
 
 - (void)viewDidLoad{
     [super viewDidLoad];
+    
+    if (self.delegate && [self.delegate respondsToSelector:@selector(configForChat)]) {
+        self.config = [self.delegate configForChat];
+    }
+    if (!self.config) {
+        self.config = [EM_ChatUIConfig defaultConfig];
+    }
+    
+    if (self.conversation.conversationType != eConversationTypeChat) {
+        [self.config removeActionWithName:kActionNameVoice];
+        [self.config removeActionWithName:kActionNameVideo];
+    }
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didEndCall:) name:kEMNotificationCallDismiss object:nil];
     
