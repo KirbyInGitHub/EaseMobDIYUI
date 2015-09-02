@@ -298,9 +298,9 @@ UICollectionViewDelegateFlowLayout>
     }
     if (opposite) {
         cell.name = opposite.displayName;
-        cell.details = @"[在线] 最新动态";
+        cell.details = opposite.intro;
         if (opposite.avatar) {
-            
+            cell.avatarURL = opposite.avatar;
         }else{
             cell.avatarImage = [EM_ChatResourcesUtils defaultAvatarImage];
         }
