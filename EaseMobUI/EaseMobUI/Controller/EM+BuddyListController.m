@@ -299,10 +299,9 @@ UICollectionViewDelegateFlowLayout>
     if (opposite) {
         cell.name = opposite.displayName;
         cell.details = opposite.intro;
+        cell.avatarImage = [EM_ChatResourcesUtils defaultAvatarImage];
         if (opposite.avatar) {
             cell.avatarURL = opposite.avatar;
-        }else{
-            cell.avatarImage = [EM_ChatResourcesUtils defaultAvatarImage];
         }
     }
     return cell;
