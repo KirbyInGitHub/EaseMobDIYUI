@@ -257,7 +257,7 @@
     if (self.delegate && [self.delegate respondsToSelector:@selector(didSelectedWithConversation:)]) {
         [self.delegate didSelectedWithConversation:conversation];
     }else{
-        EM_ChatController *chatController = [[EM_ChatController alloc]initWithConversation:conversation config:nil];
+        EM_ChatController *chatController = [[EM_ChatController alloc]initWithConversation:conversation];
         [self.navigationController pushViewController:chatController animated:YES];
     }
 }

@@ -15,8 +15,8 @@
 
 @implementation UChatController
 
-- (instancetype)initWithChatter:(NSString *)chatter conversationType:(EMConversationType)conversationType config:(EM_ChatUIConfig *)config{
-    self = [super initWithChatter:chatter conversationType:conversationType config:config];
+- (instancetype)initWithChatter:(NSString *)chatter conversationType:(EMConversationType)conversationType{
+    self = [super initWithChatter:chatter conversationType:conversationType];
     if (self) {
         self.delegate = self;
     }

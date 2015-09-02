@@ -21,7 +21,7 @@
 
 #pragma mark - EM_ChatListControllerDelegate
 - (void)didSelectedWithConversation:(EMConversation *)conversation{
-    UChatController *chatController = [[UChatController alloc]initWithConversation:conversation config:nil];
+    UChatController *chatController = [[UChatController alloc]initWithConversation:conversation];
     [self.navigationController pushViewController:chatController animated:YES];
 }
 

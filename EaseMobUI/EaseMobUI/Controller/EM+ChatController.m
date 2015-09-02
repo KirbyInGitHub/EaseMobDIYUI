@@ -93,7 +93,7 @@ EMDeviceManagerDelegate>
     dispatch_queue_t _messageQueue;
 }
 
-- (instancetype)initWithOpposite:(EM_ChatOpposite *)opposite config:(EM_ChatUIConfig *)config{
+- (instancetype)initWithOpposite:(EM_ChatOpposite *)opposite{
     self = [super init];
     if (self) {
         _opposite = opposite;
@@ -107,37 +107,39 @@ EMDeviceManagerDelegate>
             conversationType = eConversationTypeChat;
         }
         EMConversation *conversation = [[EaseMob sharedInstance].chatManager conversationForChatter:_opposite.uid conversationType:conversationType];
-        [self initializeWithConversation:conversation config:config];
+        [self initializeWithConversation:conversation];
     }
     return self;
 }
 
-- (instancetype)initWithChatter:(NSString *)chatter conversationType:(EMConversationType)conversationType config:(EM_ChatUIConfig *)config{
+- (instancetype)initWithChatter:(NSString *)chatter conversationType:(EMConversationType)conversationType{
     self = [super init];
     if (self) {
         EMConversation *conversation = [[EaseMob sharedInstance].chatManager conversationForChatter:chatter conversationType:conversationType];
-        [self initializeWithConversation:conversation config:config];
+        [self initializeWithConversation:conversation];
     }
     return self;
 }
 
-- (instancetype)initWithConversation:(EMConversation *)conversation config:(EM_ChatUIConfig *)config{
+- (instancetype)initWithConversation:(EMConversation *)conversation{
     self = [super init];
     if (self) {
-        [self initializeWithConversation:conversation config:config];
+        [self initializeWithConversation:conversation];
     }
     return self;
 }
 
-- (void)initializeWithConversation:(EMConversation *)conversation config:(EM_ChatUIConfig *)config{
+- (void)initializeWithConversation:(EMConversation *)conversation{
     self.hidesBottomBarWhenPushed = YES;
     self.navigationController.interactivePopGestureRecognizer.enabled = YES;
     
-    if (!config) {
-        _config = [EM_ChatUIConfig defaultConfig];
-    }else{
-        _config = config;
+    if (self.delegate && [self.delegate respondsToSelector:@selector(configForChat)]) {
+        _config = [self.delegate configForChat];
     }
+    if (!_config) {
+        _config = [EM_ChatUIConfig defaultConfig];
+    }
+    
     if (conversation.conversationType != eConversationTypeChat) {
         [_config removeActionWithName:kActionNameVoice];
         [_config removeActionWithName:kActionNameVideo];

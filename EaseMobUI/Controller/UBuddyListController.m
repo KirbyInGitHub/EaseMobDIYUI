@@ -139,7 +139,7 @@
 
 - (void)didSelectedForSearchRowAtIndex:(NSInteger)index{
     EM_ChatBuddy *buddy = searchArray[index];
-    UChatController *chatController = [[UChatController alloc]initWithOpposite:buddy config:nil];
+    UChatController *chatController = [[UChatController alloc]initWithOpposite:buddy];
     [self.navigationController pushViewController:chatController animated:YES];
 }
 
@@ -155,7 +155,7 @@
     NSMutableDictionary *info = buddyArray[groupIndex];
     NSArray *buddys = info[@"buddys"];
     EM_ChatBuddy *buddy = buddys[rowIndex];
-    UChatController *chatController = [[UChatController alloc]initWithOpposite:buddy config:nil];
+    UChatController *chatController = [[UChatController alloc]initWithOpposite:buddy];
     [self.navigationController pushViewController:chatController animated:YES];
 }
 

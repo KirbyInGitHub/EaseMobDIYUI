@@ -22,11 +22,11 @@
 
 @property (nonatomic,weak) id<EM_ChatControllerDelegate> delegate;
 
-- (instancetype)initWithOpposite:(EM_ChatOpposite *)opposite config:(EM_ChatUIConfig *)config;
+- (instancetype)initWithOpposite:(EM_ChatOpposite *)opposite;
 
-- (instancetype)initWithChatter:(NSString *)chatter conversationType:(EMConversationType)conversationType config:(EM_ChatUIConfig *)config;
+- (instancetype)initWithChatter:(NSString *)chatter conversationType:(EMConversationType)conversationType;
 
-- (instancetype)initWithConversation:(EMConversation *)conversation config:(EM_ChatUIConfig *)config;
+- (instancetype)initWithConversation:(EMConversation *)conversation;
 
 - (void)sendMessage:(EM_ChatMessageModel *)message;
 
@@ -37,6 +37,8 @@
 @required
 
 @optional
+
+- (EM_ChatUIConfig *)configForChat;
 
 /**
  *  为要发送的消息添加扩展
