@@ -298,11 +298,10 @@ UICollectionViewDelegateFlowLayout>
     }
     if (opposite) {
         cell.name = opposite.displayName;
-        cell.details = @"[在线] 最新动态";
+        cell.details = opposite.intro;
+        cell.avatarImage = [EM_ChatResourcesUtils defaultAvatarImage];
         if (opposite.avatar) {
-            
-        }else{
-            cell.avatarImage = [EM_ChatResourcesUtils defaultAvatarImage];
+            cell.avatarURL = opposite.avatar;
         }
     }
     return cell;

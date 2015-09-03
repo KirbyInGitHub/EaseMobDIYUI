@@ -431,7 +431,7 @@
                 EMMessage *message = [[EMMessage alloc] initWithReceiver:_callSession.sessionChatter bodies:@[textBody]];
                 message.isRead = YES;
                 message.deliveryState = eMessageDeliveryState_Delivered;
-                message.ext = [extend getContentValues];
+                message.ext = [extend toDictionary];
                 
                 [[EaseMob sharedInstance].chatManager insertMessagesToDB:@[message] forChatter:_callSession.sessionChatter append2Chat:YES];
                 sleep(3);

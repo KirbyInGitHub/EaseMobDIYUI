@@ -6,9 +6,9 @@
 //  Copyright (c) 2015年 周玉震. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import <JSONModel/JSONModel.h>
 
-@interface EM_ChatConversationObject : NSObject
+@interface EM_ChatConversationObject : JSONModel
 
 /**
  *  唯一标示

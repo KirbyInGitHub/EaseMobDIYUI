@@ -8,8 +8,15 @@
 
 #import "EM+ChatMessageExtend.h"
 
+//key
+#define kExtendAttributeKeyExtend           (kExtendAttributeNameExtend)
+
+
+//name
+#define kExtendAttributeNameExtend          (@"extendProperty")
+
 @interface UserCustomExtend : EM_ChatMessageExtend
 
-@property (nonatomic, copy) NSString *extendStr;
+@property (nonatomic, copy) NSString *extendProperty;
 
 @end

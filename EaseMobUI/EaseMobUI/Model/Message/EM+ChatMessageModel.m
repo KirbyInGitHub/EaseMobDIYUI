@@ -30,10 +30,9 @@
     EM_ChatMessageModel *model = [[EM_ChatMessageModel alloc]init];
     model.message = message;
     
-    NSString *className = message.ext[kClassName];
+    NSString *className = message.ext[kExtendAttributeKeyClassName];
     if (className && className.length > 0) {
-        model.extend = [[NSClassFromString(className) alloc]init];
-        [model.extend getFrom:model.message.ext];
+        model.extend = [[NSClassFromString(className) alloc]initWithDictionary:model.message.ext error:nil];
     }else{
         model.extend = [[EM_ChatMessageExtend alloc]init];
     }
@@ -105,7 +104,7 @@
     }
     model.extend.message = model;
     
-    model.message.ext = [model.extend getContentValues];
+    model.message.ext = [model.extend toDictionary];
     return model;
 }
 
@@ -134,6 +133,7 @@
 - (BOOL)updateExt{
     BOOL update = YES;
     if (self.extend) {
+        self.message.ext = [self.extend toDictionary];
         update = [self.message updateMessageExtToDB];
     }
     return update;

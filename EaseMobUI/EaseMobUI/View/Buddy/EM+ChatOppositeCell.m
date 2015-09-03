@@ -10,6 +10,8 @@
 #import "EM+Common.h"
 #import "UIColor+Hex.h"
 
+#import <SDWebImage/UIImageView+WebCache.h>
+
 @implementation EM_ChatOppositeCell{
     UIView *_topLineView;
     UIView *_bottomLineView;
@@ -72,6 +74,7 @@
 
 - (void)setAvatarURL:(NSURL *)avatarURL{
     _avatarURL = avatarURL;
+    [self.imageView sd_setImageWithURL:_avatarURL placeholderImage:_avatarImage completed:nil];
 }
 
 - (void)setHiddenTopLine:(BOOL)hiddenTopLine{
