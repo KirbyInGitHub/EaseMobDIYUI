@@ -16,8 +16,7 @@
 #import "EM+CallController.h"
 #import "UIViewController+HUD.h"
 
-#import "EaseMob.h"
-
+#import <EaseMobSDKFull/EaseMob.h>
 #import <AVFoundation/AVFoundation.h>
 
 static EaseMobUIClient *sharedClient;

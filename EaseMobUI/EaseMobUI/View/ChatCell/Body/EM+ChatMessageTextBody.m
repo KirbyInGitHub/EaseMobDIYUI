@@ -7,9 +7,10 @@
 //
 
 #import "EM+ChatMessageTextBody.h"
-#import "TTTAttributedLabel.h"
 #import "EM+ChatMessageModel.h"
 #import "EM+ChatMessageUIConfig.h"
+
+#import <TTTAttributedLabel/TTTAttributedLabel.h>
 
 @interface EM_ChatMessageTextBody()<TTTAttributedLabelDelegate>
 

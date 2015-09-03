@@ -7,9 +7,10 @@
 //
 
 #import "EM+ChatMessageImageBody.h"
-#import "UIImageView+WebCache.h"
 #import "EM+ChatMessageModel.h"
 #import "EM+ChatMessageUIConfig.h"
+
+#import <SDWebImage/UIImageView+WebCache.h>
 
 #define CELL_IMAGE_PADDING (1)
 

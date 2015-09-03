@@ -9,17 +9,17 @@
 #import "EM+ChatListController.h"
 #import "EM+ChatController.h"
 
-#import "EaseMobUIClient.h"
-#import "EaseMob.h"
-
-#import "MJRefresh.h"
 #import "EM+ChatTableView.h"
 #import "EM+ConversationCell.h"
 
 #import "EM+ChatMessageModel.h"
+
+#import "EaseMobUIClient.h"
 #import "EM+Common.h"
 #import "EM+ChatResourcesUtils.h"
 #import "EM+ChatDateUtils.h"
+
+#import <MJRefresh/MJRefresh.h>
 
 @interface EM_ChatListController ()<UITableViewDataSource,UITableViewDelegate,UISearchDisplayDelegate,EMChatManagerDelegate,EM_ChatTableViewTapDelegate,SWTableViewCellDelegate>
 

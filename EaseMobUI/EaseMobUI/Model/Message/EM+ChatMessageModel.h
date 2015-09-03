@@ -7,7 +7,7 @@
 //
 
 #import "EM+ChatMessageExtend.h"
-#import "EaseMob.h"
+#import <EaseMobSDKFull/EaseMob.h>
 @class EM_ChatMessageUIConfig;
 
 @interface EM_ChatMessageModel : NSObject

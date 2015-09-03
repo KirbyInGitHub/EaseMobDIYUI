@@ -16,23 +16,22 @@
 #import "EM+ChatToolBar.h"
 #import "EM+ChatInputTool.h"
 
-#import "EM+ChatMessageModel.h"
 #import "EM+ChatBuddy.h"
 #import "EM+ChatGroup.h"
 #import "EM+ChatRoom.h"
+
 #import "EM+ChatMessageManager.h"
 #import "EaseMobUIClient.h"
-
 #import "EM+Common.h"
 #import "EM+ChatResourcesUtils.h"
 #import "EM+ChatDBUtils.h"
 #import "EM_ChatConversation.h"
 
-#import "MJRefresh.h"
-#import "MBProgressHUD.h"
 #import "UIColor+Hex.h"
 #import "DDLog.h"
 
+#import <MJRefresh/MJRefresh.h>
+#import <MBProgressHUD/MBProgressHUD.h>
 #import <MediaPlayer/MediaPlayer.h>
 #import <MobileCoreServices/MobileCoreServices.h>
 #import <AVFoundation/AVFoundation.h>
@@ -581,7 +580,7 @@ EMDeviceManagerDelegate>
         }else if ([handleAction isEqualToString:HANDLE_ACTION_VIDEO]){
             [[EM_ChatMessageManager defaultManager] showBrowserWithVideoMessage:messageModel];
         }else if ([handleAction isEqualToString:HANDLE_ACTION_LOCATION]){
-            EMLocationMessageBody *locationBody = messageModel.messageBody;
+            EMLocationMessageBody *locationBody = (EMLocationMessageBody *)messageModel.messageBody;
             EM_LocationController *locationController = [[EM_LocationController alloc]initWithLatitude:locationBody.latitude longitude:locationBody.longitude];
             [self.navigationController pushViewController:locationController animated:YES];
         }else if ([handleAction isEqualToString:HANDLE_ACTION_FILE]){

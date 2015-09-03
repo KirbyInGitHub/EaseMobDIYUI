@@ -9,7 +9,6 @@
 #import "EM+BuddyListController.h"
 #import "EM+ChatController.h"
 
-#import "MJRefresh.h"
 #import "EM+ChatOppositeTagBar.h"
 #import "EM+ChatOppositeTag.h"
 #import "EM+ChatTableView.h"
@@ -17,9 +16,10 @@
 #import "EM+ChatOppositeCell.h"
 
 #import "EaseMobUIClient.h"
-
 #import "EM+Common.h"
 #import "EM+ChatResourcesUtils.h"
+
+#import <MJRefresh/MJRefresh.h>
 
 @interface EM_BuddyListController ()
 <UITableViewDataSource,

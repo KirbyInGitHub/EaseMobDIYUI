@@ -7,11 +7,12 @@
 //
 
 #import "EM+ChatMessageVideoBody.h"
-#import "UIImageView+WebCache.h"
 #import "EM+ChatMessageModel.h"
 #import "EM+ChatResourcesUtils.h"
 #import "EM+ChatFileUtils.h"
 #import "EM+ChatMessageUIConfig.h"
+
+#import <SDWebImage/UIImageView+WebCache.h>
 
 #define CELL_VIDEO_PADDING (1)
 

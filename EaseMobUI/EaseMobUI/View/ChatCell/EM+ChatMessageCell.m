@@ -7,7 +7,6 @@
 //
 
 #import "EM+ChatMessageCell.h"
-#import "UIButton+WebCache.h"
 #import "EM+ChatMessageBubble.h"
 #import "EM+ChatMessageUIConfig.h"
 #import "EM+ChatDateUtils.h"
@@ -17,6 +16,8 @@
 
 #import "UIColor+Hex.h"
 #import "EM+Common.h"
+
+#import <SDWebImage/UIButton+WebCache.h>
 
 @interface EM_ChatMessageCell()<EM_ChatMessageContentDelegate>
 

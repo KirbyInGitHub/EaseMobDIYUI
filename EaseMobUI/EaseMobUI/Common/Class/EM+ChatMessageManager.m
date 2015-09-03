@@ -7,9 +7,10 @@
 //
 
 #import "EM+ChatMessageManager.h"
-#import "MWPhotoBrowser.h"
 #import "EM+ChatMessageModel.h"
 #import "EMCDDeviceManager.h"
+
+#import <MWPhotoBrowser/MWPhotoBrowser.h>
 
 static EM_ChatMessageManager *detailInstance = nil;
 

@@ -12,8 +12,9 @@
 #import "DDLog.h"
 #import "DDTTYLogger.h"
 
-#import "EaseMob.h"
 #import "MainController.h"
+
+#import <EaseMobSDKFull/EaseMob.h>
 
 
 #define EaseMob_AppKey (@"zhou-yuzhen#easemobchatui")

@@ -7,7 +7,6 @@
 //
 
 #import "EM+ChatOpposite.h"
-#import "commonDefs.h"
 
 @interface EM_ChatBuddy : EM_ChatOpposite
 

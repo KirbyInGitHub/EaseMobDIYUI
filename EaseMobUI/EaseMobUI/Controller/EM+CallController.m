@@ -8,13 +8,13 @@
 
 #import "EM+CallController.h"
 #import "EaseMobUIClient.h"
-#import "EaseMob.h"
-#import "UIImageView+WebCache.h"
 #import "EM+Common.h"
 #import "EM+ChatResourcesUtils.h"
 #import "EM+ChatMessageExtend.h"
-#import "FXBlurView.h"
 
+#import <SDWebImage/UIImageView+WebCache.h>
+#import <EaseMobSDKFull/EaseMob.h>
+#import <FXBlurView/FXBlurView.h>
 #import <CoreTelephony/CTCallCenter.h>
 #import <CoreTelephony/CTCall.h>
 #import <AVFoundation/AVFoundation.h>
