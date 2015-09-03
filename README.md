@@ -56,13 +56,15 @@ pod 'VoiceConvert',:git => "https://github.com/AwakenDragon/VoiceConvert.git"
 
 <h3 id = "2.3">依赖</h3>
 在pod [EaseMobDIYUI](https://github.com/AwakenDragon/EaseMobDIYUI)的时候，EaseMobSDKFull已经添加了以下依赖：
-- ```"EaseMobSDKFull", "2.1.7"``` 不解释 [EaseMobSDKFull](https://github.com/dujiepeng/EaseMobSDKFull)
-- ```"SDWebImage", "3.7.3"``` 用来加载图片的 [SDWebImage](https://github.com/rs/SDWebImage)
-- ```"MJRefresh", "2.0.4"``` 上拉下拉，相信你也会用到 [MJRefresh](https://github.com/CoderMJLee/MJRefresh)
-- ```"MWPhotoBrowser", "2.1.1"``` 图片浏览，同时也支持视频播放 [MWPhotoBrowser](https://github.com/mwaterfall/MWPhotoBrowser)
-- ```"MBProgressHUD", "0.9.1"``` 主要还是toast功能 [MBProgressHUD](https://github.com/jdg/MBProgressHUD)
-- ```"TTTAttributedLabel", "1.13.4"``` 富文本显示 [TTTAttributedLabel](https://github.com/TTTAttributedLabel/TTTAttributedLabel)
-- ```"FXBlurView","1.6.3"``` 毛玻璃效果  [FXBlurView](https://github.com/nicklockwood/FXBlurView)
+- ```'EaseMobSDKFull', '2.1.7'``` 不解释 [EaseMobSDKFull](https://github.com/dujiepeng/EaseMobSDKFull)
+- ```'SDWebImage', '3.7.3'``` 用来加载图片的 [SDWebImage](https://github.com/rs/SDWebImage)
+- ```'MJRefresh', '2.4.7'``` 上拉下拉，相信你也会用到 [MJRefresh](https://github.com/CoderMJLee/MJRefresh)
+- ```'MWPhotoBrowser', '2.1.1'``` 图片浏览，同时也支持视频播放 [MWPhotoBrowser](https://github.com/mwaterfall/MWPhotoBrowser)
+- ```'MBProgressHUD', '0.9.1'``` 主要还是toast功能 [MBProgressHUD](https://github.com/jdg/MBProgressHUD)
+- ```'TTTAttributedLabel', '1.13.4'``` 富文本显示 [TTTAttributedLabel](https://github.com/TTTAttributedLabel/TTTAttributedLabel)
+- ```'SWTableViewCell','0.3.7'```   Cell左滑显示自定按钮 [SWTableViewCell](https://github.com/CEWendel/SWTableViewCell)
+- ```'FXBlurView','1.6.3'``` 毛玻璃效果  [FXBlurView](https://github.com/nicklockwood/FXBlurView)
+- ```'JSONModel','1.1.0'    JSON数据解析 [JSONModel](https://github.com/icanzilb/JSONModel)
 
 所以你不需要再额外pod这些了。
 
@@ -1048,7 +1050,7 @@ EM_ChatController
 - (EM_ChatMessageExtend *)extendForMessage:(id)body messageType:(MessageBodyType)type{
     CustomExtend *extend = [[CustomExtend alloc]init];
     extend.showBody = YES;
-    extend.showExtend = NO;
+    extend.showExtend = YES;
     return extend;
 }
 
@@ -1080,16 +1082,77 @@ EM_ChatMessageExtend
 ```
 这里有我自己的一些扩展属性，大家只需要继承就可以了。
 ```
-
-#import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import <JSONModel/JSONModel.h>
 @class EM_ChatMessageModel;
 
-extern NSString * const kClassName;
 
-@interface EM_ChatMessageExtend : NSObject
+//key
+#define kExtendAttributeKeyClassName           (kExtendAttributeNameClassName)
+#define kExtendAttributeKeyIsCallMessage       (kExtendAttributeNameIsCallMessage)
+#define kExtendAttributeKeyFileType            (kExtendAttributeNameFileType)
 
-@property (nonatomic, strong) EM_ChatMessageModel *message;
+#define kExtendAttributeKeyMessage             (kExtendAttributeNameMessage)
+#define kExtendAttributeKeyShowBody            (kExtendAttributeNameShowBody)
+#define kExtendAttributeKeyShowExtend          (kExtendAttributeNameShowExtend)
+#define kExtendAttributeKeyShowTime            (kExtendAttributeNameShowTime)
+#define kExtendAttributeKeyDetails             (kExtendAttributeNameDetails)
+#define kExtendAttributeKeyChecking            (kExtendAttributeNameChecking)
+#define kExtendAttributeKeyCollected           (kExtendAttributeNameCollected)
+#define kExtendAttributeKeyAttributes          (kExtendAttributeNameAttributes)
+
+#define kExtendAttributeKeyViewClassName       (kExtendAttributeNameViewClassName)
+
+
+//name
+#define kExtendAttributeNameClassName           (@"className")
+#define kExtendAttributeNameIsCallMessage       (@"isCallMessage")
+#define kExtendAttributeNameFileType            (@"fileType")
+
+#define kExtendAttributeNameMessage             (@"message")
+#define kExtendAttributeNameShowBody            (@"showBody")
+#define kExtendAttributeNameShowExtend          (@"showExtend")
+#define kExtendAttributeNameShowTime            (@"showTime")
+#define kExtendAttributeNameDetails             (@"details")
+#define kExtendAttributeNameChecking            (@"checking")
+#define kExtendAttributeNameCollected           (@"collected")
+#define kExtendAttributeNameAttributes          (@"attributes")
+
+#define kExtendAttributeNameViewClassName       (@"viewClassName")
+
+
+@interface EM_ChatMessageExtend : JSONModel
+
+/****************************************************/
+
+/**
+ *  不要修改
+ *  扩展所在的消息
+ */
+@property (nonatomic, strong) EM_ChatMessageModel<Ignore> *message;
+
+/**
+ *  不要修改
+ *  当前类的类名
+ */
+@property (nonatomic, copy) NSString *className;
+
+/**
+ *  不要修改
+ *  标记是否是即时语音、即时视频消息,该标记只针对文字消息有效,
+ */
+@property (nonatomic, assign) BOOL isCallMessage;
+
+/**
+ *  不要修改
+ *  文件类型,只针对文件消息有效,
+ */
+@property (nonatomic, copy) NSString<Optional> *fileType;
+
+
+
+
+/****************************************************/
 
 /**
  *  是否显示消息内容,默认YES
@@ -1122,50 +1185,38 @@ extern NSString * const kClassName;
 @property (nonatomic, assign) BOOL collected;
 
 /**
- *  标记是否是即时语音、即时视频消息,该标记只针对文字消息有效,请不要随意修改
+ *  自定义扩展属性,不用来显示
  */
-@property (nonatomic, assign) BOOL isCallMessage;
+@property (nonatomic, strong) NSDictionary<Optional> *attributes;
+
+
+
+
+/*****************************************************/
 
 /**
- *  文件类型,只针对文件消息有效,请不要随意修改
- */
-@property (nonatomic, copy) NSString *fileType;
-
-//overwrite
-/**
- *  返回扩展内容绑定View的Class,showExtend为YES时子类必须重写
  *
- *  @return class
+ *  显示View的类名,showExtend为YES的时候必须设置
  */
-- (Class)classForExtendView;
+@property (nonatomic, copy) NSString *viewClassName;
 
 /**
- *  将扩展序列化成字典,子类必须重写,且必须通过super获取
- *
+ *  overwrite
+ *  key 和 属性名的对应
+ *  请使用super
  *  @return
  */
-- (NSMutableDictionary *)getContentValues;
++ (NSMutableDictionary *)keyMapping;
 
 /**
- *  从字典解析扩展
- *
- *  @param extend 来自EMMessage 的 ext
- */
-- (void)getFrom:(NSDictionary *)extend;
-
-/**
- *  返回扩展展示的大小,showExtend为YES时子类必须重写,否则默认返回CGSizeZero
+ *  overwrite
+ *  显示View的大小,showExtend为YES时子类必须重写,否则默认返回CGSizeZero
  *
  *  @param maxWidth 扩展最大的宽度,返回大小的宽度必须小于等于maxWidth
  *
  *  @return size
  */
 - (CGSize)extendSizeFromMaxWidth:(CGFloat)maxWidth;
-
-//private,你可能仅仅扩展自己基本类型的字段,且不需要显示,这里会满足你
-- (void)setAttribute:(id)attribute forKey:(NSString *)key;
-- (void)removeAttributeForKey:(NSString *)key;
-- (id)attributeForkey:(NSString *)key;
 
 @end
 ```
@@ -1176,43 +1227,42 @@ extern NSString * const kClassName;
 ```
 #import "EM+ChatMessageExtend.h"
 
-@interface CustomExtend : EM_ChatMessageExtend
+//key
+#define kExtendAttributeKeyExtend           (kExtendAttributeNameExtend)
 
-@property (nonatomic, copy) NSString *custom;
+
+//name
+#define kExtendAttributeNameExtend          (@"extendProperty")
+
+@interface UserCustomExtend : EM_ChatMessageExtend
+
+@property (nonatomic, copy) NSString *extendProperty;
 
 @end
 ```
 ```
-#import "CustomExtend.h"
-#import "CustomExtendView.h"
+#import "UserCustomExtend.h"
+#import "UserCustomExtendView.h"
 
-@implementation CustomExtend
+@implementation UserCustomExtend
 
 - (instancetype)init{
     self = [super init];
     if(self){
-
+        self.extendProperty = @"这是扩展属性";
+        self.viewClassName = NSStringFromClass([UserCustomExtendView class]);
     }
     return self;
 }
 
-- (Class)classForExtendView{
-    return [CustomExtendView class];
++ (NSMutableDictionary *)keyMapping{
+    NSMutableDictionary *mapping = [super keyMapping];
+    [mapping setObject:kExtendAttributeNameExtend forKey:kExtendAttributeKeyExtend];
+    return mapping;
 }
 
-- (NSMutableDictionary *)getContentValues{
-    NSMutableDictionary *values = [super getContentValues];
-    //放入自定义属性,请避免让key和父类中的重复
-    if(self.custom){
-        [values setObject:self.custom forKey:@"key"];
-    }
-    
-    return values;
-}
-- (void)getFrom:(NSDictionary *)extend{
-    [super getFrom:extend];
-    //取出自己的属性,一定要记得super
-    self.custom = extend[@"key"];
+- (CGSize)extendSizeFromMaxWidth:(CGFloat)maxWidth{
+    return [self.extendProperty sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}];
 }
 
 @end
@@ -1353,7 +1403,20 @@ extern NSString * const MENU_ACTION_FORWARD;//转发
 ```
 #import "CustomExtendView.h"
 
-@implementation CustomExtendView
+@implementation CustomExtendView{
+    UILabel *label;
+}
+
+- (void)layoutSubviews{
+    [super layoutSubviews];
+    label.frame = self.bounds;
+}
+
+- (void)setMessage:(EM_ChatMessageModel *)message{
+    [super setMessage:message];
+    UserCustomExtend *extend = (UserCustomExtend *)message.extend;
+    label.text = extend.extendProperty;
+}
 
 - (NSMutableArray *)menuItems{
     NSMutableArray *items = [super menuItems];

@@ -6,15 +6,77 @@
 //  Copyright (c) 2015年 周玉震. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import <JSONModel/JSONModel.h>
 @class EM_ChatMessageModel;
 
-extern NSString * const kClassName;
 
-@interface EM_ChatMessageExtend : NSObject
+//key
+#define kExtendAttributeKeyClassName           (kExtendAttributeNameClassName)
+#define kExtendAttributeKeyIsCallMessage       (kExtendAttributeNameIsCallMessage)
+#define kExtendAttributeKeyFileType            (kExtendAttributeNameFileType)
 
-@property (nonatomic, strong) EM_ChatMessageModel *message;
+#define kExtendAttributeKeyMessage             (kExtendAttributeNameMessage)
+#define kExtendAttributeKeyShowBody            (kExtendAttributeNameShowBody)
+#define kExtendAttributeKeyShowExtend          (kExtendAttributeNameShowExtend)
+#define kExtendAttributeKeyShowTime            (kExtendAttributeNameShowTime)
+#define kExtendAttributeKeyDetails             (kExtendAttributeNameDetails)
+#define kExtendAttributeKeyChecking            (kExtendAttributeNameChecking)
+#define kExtendAttributeKeyCollected           (kExtendAttributeNameCollected)
+#define kExtendAttributeKeyAttributes          (kExtendAttributeNameAttributes)
+
+#define kExtendAttributeKeyViewClassName       (kExtendAttributeNameViewClassName)
+
+
+//name
+#define kExtendAttributeNameClassName           (@"className")
+#define kExtendAttributeNameIsCallMessage       (@"isCallMessage")
+#define kExtendAttributeNameFileType            (@"fileType")
+
+#define kExtendAttributeNameMessage             (@"message")
+#define kExtendAttributeNameShowBody            (@"showBody")
+#define kExtendAttributeNameShowExtend          (@"showExtend")
+#define kExtendAttributeNameShowTime            (@"showTime")
+#define kExtendAttributeNameDetails             (@"details")
+#define kExtendAttributeNameChecking            (@"checking")
+#define kExtendAttributeNameCollected           (@"collected")
+#define kExtendAttributeNameAttributes          (@"attributes")
+
+#define kExtendAttributeNameViewClassName       (@"viewClassName")
+
+
+@interface EM_ChatMessageExtend : JSONModel
+
+/****************************************************/
+
+/**
+ *  不要修改
+ *  扩展所在的消息
+ */
+@property (nonatomic, strong) EM_ChatMessageModel<Ignore> *message;
+
+/**
+ *  不要修改
+ *  当前类的类名
+ */
+@property (nonatomic, copy) NSString *className;
+
+/**
+ *  不要修改
+ *  标记是否是即时语音、即时视频消息,该标记只针对文字消息有效,
+ */
+@property (nonatomic, assign) BOOL isCallMessage;
+
+/**
+ *  不要修改
+ *  文件类型,只针对文件消息有效,
+ */
+@property (nonatomic, copy) NSString<Optional> *fileType;
+
+
+
+
+/****************************************************/
 
 /**
  *  是否显示消息内容,默认YES
@@ -47,49 +109,37 @@ extern NSString * const kClassName;
 @property (nonatomic, assign) BOOL collected;
 
 /**
- *  标记是否是即时语音、即时视频消息,该标记只针对文字消息有效,请不要随意修改
+ *  自定义扩展属性,不用来显示
  */
-@property (nonatomic, assign) BOOL isCallMessage;
+@property (nonatomic, strong) NSDictionary<Optional> *attributes;
+
+
+
+
+/*****************************************************/
 
 /**
- *  文件类型,只针对文件消息有效,请不要随意修改
- */
-@property (nonatomic, copy) NSString *fileType;
-
-//overwrite
-/**
- *  返回扩展内容绑定View的Class,showExtend为YES的时候子类必须重写
  *
- *  @return class
+ *  显示View的类名,showExtend为YES的时候必须设置
  */
-- (Class)classForExtendView;
+@property (nonatomic, copy) NSString *viewClassName;
 
 /**
- *  将扩展序列化成字典,子类必须重写,且必须通过super获取
- *
+ *  overwrite
+ *  key 和 属性名的对应
+ *  请使用super
  *  @return
  */
-- (NSMutableDictionary *)getContentValues;
++ (NSMutableDictionary *)keyMapping;
 
 /**
- *  从字典解析扩展
- *
- *  @param extend 来自EMMessage 的 ext
- */
-- (void)getFrom:(NSDictionary *)extend;
-
-/**
- *  返回扩展展示的大小,showExtend为YES时子类必须重写,否则默认返回CGSizeZero
+ *  overwrite
+ *  显示View的大小,showExtend为YES时子类必须重写,否则默认返回CGSizeZero
  *
  *  @param maxWidth 扩展最大的宽度,返回大小的宽度必须小于等于maxWidth
  *
  *  @return size
  */
 - (CGSize)extendSizeFromMaxWidth:(CGFloat)maxWidth;
-
-//private,你可能仅仅扩展自己基本类型的字段,且不需要显示,这里会满足你
-- (void)setAttribute:(id)attribute forKey:(NSString *)key;
-- (void)removeAttributeForKey:(NSString *)key;
-- (id)attributeForkey:(NSString *)key;
 
 @end

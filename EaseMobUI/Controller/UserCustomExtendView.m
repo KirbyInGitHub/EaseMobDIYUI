@@ -32,7 +32,7 @@
 - (void)setMessage:(EM_ChatMessageModel *)message{
     [super setMessage:message];
     UserCustomExtend *extend = (UserCustomExtend *)message.extend;
-    label.text = extend.extendStr;
+    label.text = extend.extendProperty;
 }
 
 @end

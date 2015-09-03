@@ -14,28 +14,20 @@
 - (instancetype)init{
     self = [super init];
     if(self){
-        self.extendStr = @"customExtendStr";
+        self.extendProperty = @"这是扩展属性";
+        self.viewClassName = NSStringFromClass([UserCustomExtendView class]);
     }
     return self;
 }
 
-- (Class)classForExtendView{
-    return [UserCustomExtendView class];
-}
-
-- (void)getFrom:(NSDictionary *)extend{
-    [super getFrom:extend];
-    self.extendStr = [extend objectForKey:@"customExtendStr"];
-}
-
-- (NSMutableDictionary *)getContentValues{
-    NSMutableDictionary *values = [super getContentValues];
-    [values setObject:self.extendStr forKey:@"customExtendStr"];
-    return values;
++ (NSMutableDictionary *)keyMapping{
+    NSMutableDictionary *mapping = [super keyMapping];
+    [mapping setObject:kExtendAttributeNameExtend forKey:kExtendAttributeKeyExtend];
+    return mapping;
 }
 
 - (CGSize)extendSizeFromMaxWidth:(CGFloat)maxWidth{
-    return CGSizeMake(50, 30);
+    return [self.extendProperty sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:17]}];
 }
 
 @end

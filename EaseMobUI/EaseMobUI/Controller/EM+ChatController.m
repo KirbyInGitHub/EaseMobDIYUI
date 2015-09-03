@@ -899,7 +899,7 @@ EMDeviceManagerDelegate>
     
     EM_ChatMessageCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];
     if (!cell) {
-        cell = [[EM_ChatMessageCell alloc]initWithBodyClass:[message classForBuildView] extendClass:[message.extend classForExtendView] reuseIdentifier:cellId];
+        cell = [[EM_ChatMessageCell alloc]initWithBodyClass:[message classForBuildView] extendClass:NSClassFromString(message.extend.viewClassName) reuseIdentifier:cellId];
         cell.backgroundColor = [UIColor clearColor];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.config = self.config.messageConfig;

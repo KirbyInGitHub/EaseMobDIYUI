@@ -6,7 +6,6 @@
 //  Copyright (c) 2015年 周玉震. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import "EM+ChatMessageExtend.h"
 #import "EaseMob.h"
 @class EM_ChatMessageUIConfig;

@@ -8,7 +8,7 @@ pod 'EaseMobSDKFull','2.1.7'
 pod 'SDWebImage','3.7.3'
 
 #下拉上拉
-pod 'MJRefresh','2.0.4'
+pod 'MJRefresh','2.4.7'
 
 #图片浏览
 pod 'MWPhotoBrowser','2.1.1'
@@ -32,3 +32,6 @@ pod 'MLSelectPhoto','1.2.1'
 
 #毛玻璃
 pod 'FXBlurView','1.6.3'
+
+#JSONModel
+pod 'JSONModel','1.1.0'

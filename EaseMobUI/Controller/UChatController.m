@@ -15,10 +15,24 @@
 
 @implementation UChatController
 
-- (instancetype)initWithChatter:(NSString *)chatter conversationType:(EMConversationType)conversationType{
-    self = [super initWithChatter:chatter conversationType:conversationType];
+- (instancetype)initWithConversation:(EMConversation *)conversation{
+    self = [super initWithConversation:conversation];
     if (self) {
         self.delegate = self;
+        EM_ChatMessageExtend *extend = [[UserCustomExtend alloc]init];
+        extend.showBody = YES;
+        extend.showExtend = NO;
+    }
+    return self;
+}
+
+- (instancetype)initWithOpposite:(EM_ChatOpposite *)opposite{
+    self = [super initWithOpposite:opposite];
+    if (self) {
+        self.delegate = self;
+        EM_ChatMessageExtend *extend = [[UserCustomExtend alloc]init];
+        extend.showBody = YES;
+        extend.showExtend = NO;
     }
     return self;
 }
@@ -36,7 +50,7 @@
 - (EM_ChatMessageExtend *)extendForMessage:(id)body messageType:(MessageBodyType)type{
     EM_ChatMessageExtend *extend = [[UserCustomExtend alloc]init];
     extend.showBody = YES;
-    extend.showExtend = NO;
+    extend.showExtend = YES;
     return extend;
 }
 
