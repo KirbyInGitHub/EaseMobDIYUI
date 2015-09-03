@@ -99,7 +99,7 @@ NSString * const MENU_ACTION_FORWARD    = @"MENU_ACTION_FORWARD";
     }else if(gestureRecognizer == longPress){
         return self.needLongPress;
     }else{
-        return NO;
+        return YES;
     }
 }
 
