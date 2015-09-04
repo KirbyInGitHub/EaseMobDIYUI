@@ -264,7 +264,7 @@
         cell.nameLabel.text = conversation.chatter;
     }
     
-    NSInteger unreadCount = 5;//conversation.unreadMessagesCount;
+    NSInteger unreadCount = conversation.unreadMessagesCount;
     cell.unreadView.hidden = unreadCount == 0;
     cell.unreadLabel.hidden = unreadCount == 0;
     cell.unreadLabel.text = [NSString stringWithFormat:@"[%ld%@]",unreadCount,[EM_ChatResourcesUtils stringWithName:@"common.message_unit"]];
