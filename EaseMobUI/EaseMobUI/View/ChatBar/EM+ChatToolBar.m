@@ -190,8 +190,15 @@
     _inputToolView.stateAction = NO;
     _inputToolView.stateEmoji = NO;
     _inputToolView.stateMore = YES;
-    [self dismissMoreTool];
-    [_inputToolView dismissKeyboard];
+    if (self.moreToolVisble) {
+        [self dismissMoreTool];
+    }
+    if (self.keyboardVisible) {
+        [_inputToolView dismissKeyboard];
+    }
+    if ([UIMenuController sharedMenuController].menuVisible) {
+        [[UIMenuController sharedMenuController] setMenuVisible:NO animated:YES];
+    }
 }
 
 #pragma mark - EM_ChatInputToolDelegate

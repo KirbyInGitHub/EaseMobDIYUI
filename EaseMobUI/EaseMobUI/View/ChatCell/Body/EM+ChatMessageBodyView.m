@@ -27,7 +27,7 @@
 - (NSMutableArray *)menuItems{
     NSMutableArray *menuItems = [super menuItems];
     id<IEMMessageBody> messageBody = self.message.messageBody;
-    if (!self.message.extend.isCallMessage) {
+    if (!self.message.extend.callType) {
         if (messageBody.messageBodyType == eMessageBodyType_Text) {
             //复制
             UIMenuItem *copyItem = [[UIMenuItem alloc]initWithTitle:[EM_ChatResourcesUtils stringWithName:@"common.copy"] action:@selector(copyEMMessage:)];

@@ -14,9 +14,13 @@
  */
 typedef NS_ENUM(NSInteger, EMChatCallType){
     /**
+     *  
+     */
+    EMChatCallTypeNone = 0,
+    /**
      *  语音
      */
-    EMChatCallTypeVoice = 0,
+    EMChatCallTypeVoice,
     /**
      *  视频
      */

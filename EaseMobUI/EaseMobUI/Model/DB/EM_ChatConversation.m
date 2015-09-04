@@ -13,6 +13,7 @@
 @dynamic chatter;
 @dynamic editor;
 @dynamic type;
+@dynamic modify;
 
 + (NSString *)entityForName{
     return @"EM_ChatConversation";

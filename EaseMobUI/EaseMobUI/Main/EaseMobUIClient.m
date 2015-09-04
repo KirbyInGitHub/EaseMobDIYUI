@@ -50,6 +50,8 @@ NSString * const kEMNotificationCallActionOut = @"kEMNotificationCallActionOut";
 NSString * const kEMNotificationCallShow = @"kEMNotificationCallShow";
 NSString * const kEMNotificationCallDismiss = @"kEMNotificationCallDismiss";
 
+NSString * const kEMNotificationEditorChanged = @"kEMNotificationEditorChanged";
+
 NSString * const kEMCallChatter = @"kEMCallChatter";
 NSString * const kEMCallType = @"kEMCallType";
 

@@ -145,6 +145,10 @@
 }
 
 //opposite
+- (void)didSelectedForGroupManageAtIndex:(NSInteger)groupIndex{
+    NSLog(@"分组管理%ld",groupIndex);
+}
+
 - (void)didSelectedForGroupAtIndex:(NSInteger)groupIndex{
     NSDictionary *info = buddyArray[groupIndex];
     BOOL expand = [info[@"groupExpand"] boolValue];

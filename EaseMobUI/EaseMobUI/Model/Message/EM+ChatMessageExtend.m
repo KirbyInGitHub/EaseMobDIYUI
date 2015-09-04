@@ -38,7 +38,7 @@
 + (NSMutableDictionary *)keyMapping{
     NSMutableDictionary *mapping = [[NSMutableDictionary alloc]init];
     [mapping setObject:kExtendAttributeNameClassName forKey:kExtendAttributeKeyClassName];
-    [mapping setObject:kExtendAttributeNameIsCallMessage forKey:kExtendAttributeKeyIsCallMessage];
+    [mapping setObject:kExtendAttributeNameCallType forKey:kExtendAttributeKeyCallType];
     [mapping setObject:kExtendAttributeNameFileType forKey:kExtendAttributeKeyFileType];
     
     [mapping setObject:kExtendAttributeNameShowBody forKey:kExtendAttributeKeyShowBody];

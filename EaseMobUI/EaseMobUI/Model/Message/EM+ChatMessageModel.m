@@ -27,18 +27,20 @@
 @implementation EM_ChatMessageModel
 
 + (instancetype)fromEMMessage:(EMMessage *)message{
-    EM_ChatMessageModel *model = [[EM_ChatMessageModel alloc]init];
-    model.message = message;
-    
-    NSString *className = message.ext[kExtendAttributeKeyClassName];
-    if (className && className.length > 0) {
-        model.extend = [[NSClassFromString(className) alloc]initWithDictionary:model.message.ext error:nil];
-    }else{
-        model.extend = [[EM_ChatMessageExtend alloc]init];
+    if (message) {
+        EM_ChatMessageModel *model = [[EM_ChatMessageModel alloc]init];
+        model.message = message;
+        
+        NSString *className = message.ext[kExtendAttributeKeyClassName];
+        if (className && className.length > 0) {
+            model.extend = [[NSClassFromString(className) alloc]initWithDictionary:model.message.ext error:nil];
+        }else{
+            model.extend = [[EM_ChatMessageExtend alloc]init];
+        }
+        model.extend.message = model;
+        return model;
     }
-    model.extend.message = model;
-    
-    return model;
+    return nil;
 }
 
 + (instancetype)fromText:(NSString *)text conversation:(EMConversation *)conversation extend:(EM_ChatMessageExtend *)extend{

@@ -60,7 +60,7 @@
     [super setMessage:message];
     EMTextMessageBody *textBody = (EMTextMessageBody *)message.messageBody;
     textLabel.text = textBody.text;
-    self.needTap = self.message.extend.isCallMessage;
+    self.needTap = self.message.extend.callType;
 }
 
 #pragma mark - TTTAttributedLabelDelegate

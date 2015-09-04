@@ -55,7 +55,6 @@ typedef NS_ENUM(NSInteger, ALERT_ACTION) {
     ALERT_ACTION_PRESS_VIDEO,
     ALERT_ACTION_PRESS_LOCATION,
     ALERT_ACTION_PRESS_FILE,
-    ALERT_ACTION_CALL
 };
 
 @interface EM_ChatController()<UITableViewDataSource,
@@ -178,7 +177,6 @@ EMDeviceManagerDelegate>
 
 - (void)viewDidLoad{
     [super viewDidLoad];
-    
     if (self.delegate && [self.delegate respondsToSelector:@selector(configForChat)]) {
         self.config = [self.delegate configForChat];
     }
@@ -198,6 +196,7 @@ EMDeviceManagerDelegate>
     _chatTableView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     _chatTableView.dataSource = self;
     _chatTableView.delegate = self;
+    _chatTableView.contentInset = UIEdgeInsetsMake(self.offestY > 0 ? self.offestY : 0, 0, 0, 0);
     [self.view addSubview:_chatTableView];
     
     MJRefreshGifHeader *header = [MJRefreshGifHeader headerWithRefreshingTarget:self refreshingAction:@selector(loadMoreMessage:animated:)];
@@ -238,6 +237,14 @@ EMDeviceManagerDelegate>
 
 - (void)dealloc{
     [self saveEditor];
+    //NSString *editorText = _chatToolBarView.inputToolView.editor;
+    //如果当前会话没有消息，则删除该会话
+    //self.conversation.ext
+    //这个属性说不定可以用来存储编辑状态
+    //但是conversation没有保存ext的方法
+//    if ((!editorText || editorText.length == 0) && ![self.conversation latestMessage]) {
+//        //移除会话
+//    }
 }
 
 - (UIImagePickerController *)imagePicker{
@@ -257,12 +264,14 @@ EMDeviceManagerDelegate>
             editor = [[EM_ChatDBUtils shared] insertNewConversation];
             editor.chatter = self.conversation.chatter;
             editor.type = @(self.conversation.conversationType);
+            editor.modify = [NSDate date];
         }
         editor.editor = editorText;
     }else{
         [[EM_ChatDBUtils shared] deleteConversationWithChatter:editor];
     }
     [[EM_ChatDBUtils shared] saveChat];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kEMNotificationEditorChanged object:nil];
 }
 
 - (void)queryEditor{
@@ -551,10 +560,8 @@ EMDeviceManagerDelegate>
             sheet.tag = ALERT_ACTION_TAP_PHONE;
             [sheet showInView:self.view];
         }else if ([handleAction isEqualToString:HANDLE_ACTION_TEXT]){
-            if (messageModel.extend.isCallMessage) {
-                UIActionSheet *sheet = [[UIActionSheet alloc]initWithTitle:nil delegate:self cancelButtonTitle:[EM_ChatResourcesUtils stringWithName:@"common.cancel"] destructiveButtonTitle:nil otherButtonTitles:[EM_ChatResourcesUtils stringWithName:@"common.voice"],[EM_ChatResourcesUtils stringWithName:@"common.video"], nil];
-                sheet.tag = ALERT_ACTION_CALL;
-                [sheet showInView:self.view];
+            if (messageModel.extend.callType) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:kEMNotificationCallActionOut object:nil userInfo:@{kEMCallChatter:self.conversation.chatter,kEMCallType:messageModel.extend.callType}];
             }
         }else if ([handleAction isEqualToString:HANDLE_ACTION_IMAGE]){
             NSInteger index = [_imageDataArray indexOfObject:messageModel];
@@ -770,14 +777,6 @@ EMDeviceManagerDelegate>
                 pasteboard.string = url;
             }
         }
-        case ALERT_ACTION_CALL:{
-            if (buttonIndex == 0) {
-                [[NSNotificationCenter defaultCenter] postNotificationName:kEMNotificationCallActionOut object:nil userInfo:@{kEMCallChatter:self.conversation.chatter,kEMCallType:kEMCallTypeVoice}];
-            }else if (buttonIndex == 1){
-                [[NSNotificationCenter defaultCenter] postNotificationName:kEMNotificationCallActionOut object:nil userInfo:@{kEMCallChatter:self.conversation.chatter,kEMCallType:kEMCallTypeVideo}];
-            }
-        }
-            break;
         default:
             break;
     }

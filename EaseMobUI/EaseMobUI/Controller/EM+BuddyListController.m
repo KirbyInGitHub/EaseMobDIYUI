@@ -52,12 +52,13 @@ UICollectionViewDelegateFlowLayout>
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
     _tableView = [[EM_ChatTableView alloc]initWithFrame:self.view.frame];
     _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     _tableView.dataSource = self;
     _tableView.delegate = self;
     _tableView.rowHeight = 60;
+    _tableView.sectionHeaderHeight = 40;
+    _tableView.contentInset = UIEdgeInsetsMake(self.offestY > 0 ? self.offestY : 0, 0, 0, 0);
     _tableView.tapDelegate = self;
     
     MJRefreshGifHeader *header = [MJRefreshGifHeader headerWithRefreshingTarget:self refreshingAction:@selector(pulldownLoad)];
@@ -309,31 +310,40 @@ UICollectionViewDelegateFlowLayout>
 }
 
 #pragma mark - UITableViewDelegate
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
-    if (tableView == _tableView) {
-        return 30;
-    }else{
-        return 0;
-    }
-}
-
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     if (tableView == _tableView) {
         static NSString *headerIdentifier = @"headerIdentifier";
         EM_ChatOppositeHeader *header = [tableView dequeueReusableHeaderFooterViewWithIdentifier:headerIdentifier];
         if (!header) {
             header = [[EM_ChatOppositeHeader alloc]initWithReuseIdentifier:headerIdentifier];
-            [header setChatOppositeHeaderBlock:^(NSInteger s) {
+            
+            NSInteger rowCount = 0;
+            if (self.dataSource && [self.dataSource respondsToSelector:@selector(numberOfRowsAtGroupIndex:)]) {
+                rowCount = [self.dataSource numberOfRowsAtGroupIndex:section];
+            }
+            header.buddyCount = rowCount;
+            
+            [header setChatOppositeHeaderClickedBlock:^(NSInteger s) {
                 if (self.delegate && [self.delegate respondsToSelector:@selector(didSelectedForGroupAtIndex:)]) {
                     [self.delegate didSelectedForGroupAtIndex:s];
                 }
             }];
+            
+            [header setChatOppositeHeaderManageBlock:^(NSInteger section) {
+                if (self.delegate && [self.delegate respondsToSelector:@selector(didSelectedForGroupManageAtIndex:)]) {
+                    [self.delegate didSelectedForGroupManageAtIndex:section];
+                }
+            }];
+            
+            if (self.dataSource && [self.dataSource respondsToSelector:@selector(shouldShowGroupManage)]) {
+                header.needManage = [self.dataSource shouldShowGroupManage];
+            }
         }
         NSString *title;
         if (self.dataSource && [self.dataSource respondsToSelector:@selector(titleForGroupAtIndex:)]) {
             title = [self.dataSource titleForGroupAtIndex:section];
         }else{
-            title = [NSString stringWithFormat:@"我的好友%ld",section + 1];
+            title = [NSString stringWithFormat:@"%@%ld",[EM_ChatResourcesUtils stringWithName:@"common.group_name"],section + 1];
         }
         header.title = title;
         header.section = section;
