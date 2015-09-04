@@ -21,6 +21,8 @@
 - (instancetype)initWithBodyClass:(Class)bodyClass withExtendClass:(Class)extendClass{
     self = [super init];
     if (self) {
+        self.userInteractionEnabled = YES;
+        
         self.layer.masksToBounds = YES;
         _backgroundView = [[UIImageView alloc]init];
         [self addSubview:_backgroundView];

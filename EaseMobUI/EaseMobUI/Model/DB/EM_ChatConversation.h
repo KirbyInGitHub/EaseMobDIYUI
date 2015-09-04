@@ -18,6 +18,7 @@
 @property (nonatomic, retain) NSString * chatter;
 @property (nonatomic, retain) NSString * editor;
 @property (nonatomic, retain) NSNumber * type;
+@property (nonatomic, retain) NSDate   * modify;
 
 + (NSString *)entityForName;
 

@@ -8,13 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
-typedef void (^EM_ChatOppositeHeaderBlock)(NSInteger section);
+typedef void (^EM_ChatOppositeHeaderClickedBlock)(NSInteger section);
+typedef void (^EM_ChatOppositeHeaderManageBlock)(NSInteger section);
 
 @interface EM_ChatOppositeHeader : UITableViewHeaderFooterView
 
 @property (nonatomic, copy) NSString *title;
 @property (nonatomic, assign) NSInteger section;
+@property (nonatomic, assign) NSInteger buddyCount;
+@property (nonatomic, assign) BOOL needManage;
 
-- (void)setChatOppositeHeaderBlock:(EM_ChatOppositeHeaderBlock)block;
-
+- (void)setChatOppositeHeaderClickedBlock:(EM_ChatOppositeHeaderClickedBlock)block;
+- (void)setChatOppositeHeaderManageBlock:(EM_ChatOppositeHeaderManageBlock)block;
 @end

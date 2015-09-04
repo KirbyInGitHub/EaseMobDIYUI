@@ -13,7 +13,7 @@
 
 //key
 #define kExtendAttributeKeyClassName           (kExtendAttributeNameClassName)
-#define kExtendAttributeKeyIsCallMessage       (kExtendAttributeNameIsCallMessage)
+#define kExtendAttributeKeyCallType            (kExtendAttributeNameCallType)
 #define kExtendAttributeKeyFileType            (kExtendAttributeNameFileType)
 
 #define kExtendAttributeKeyMessage             (kExtendAttributeNameMessage)
@@ -30,7 +30,7 @@
 
 //name
 #define kExtendAttributeNameClassName           (@"className")
-#define kExtendAttributeNameIsCallMessage       (@"isCallMessage")
+#define kExtendAttributeNameCallType            (@"callType")
 #define kExtendAttributeNameFileType            (@"fileType")
 
 #define kExtendAttributeNameMessage             (@"message")
@@ -65,7 +65,7 @@
  *  不要修改
  *  标记是否是即时语音、即时视频消息,该标记只针对文字消息有效,
  */
-@property (nonatomic, assign) BOOL isCallMessage;
+@property (nonatomic, copy) NSString<Optional> *callType;
 
 /**
  *  不要修改

@@ -139,6 +139,7 @@
             save = [self.chatManagedObjectContext save:&error];
         }];
     }
+    //这里save永远都是NO,因为save方法是异步
     return save && !error;
 }
 

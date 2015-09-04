@@ -14,5 +14,6 @@
  *  当前界面是否在显示
  */
 @property (nonatomic,assign,readonly) BOOL isShow;
+@property (nonatomic, assign) CGFloat offestY;
 
 @end

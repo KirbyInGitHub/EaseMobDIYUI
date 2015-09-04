@@ -10,9 +10,18 @@
 
 @interface EM_ConversationCell : SWTableViewCell
 
-@property (nonatomic, copy) NSString *time;
-@property (nonatomic, assign) BOOL hiddenTopLine;
-@property (nonatomic, assign) BOOL hiddenBottomLine;
 @property (nonatomic, strong) NSIndexPath *indexPath;
+@property (nonatomic, assign) CGFloat topPadding;
+@property (nonatomic, assign) CGFloat bottomPadding;
+
+@property (nonatomic, strong, readonly) UIView *topLineView;
+@property (nonatomic, strong, readonly) UIView *bottomLineView;
+
+@property (nonatomic, strong, readonly) UIButton *avatarView;
+@property (nonatomic, strong, readonly) UILabel *nameLabel;
+@property (nonatomic, strong, readonly) UILabel *introLabel;
+@property (nonatomic, strong, readonly) UILabel *timeLabel;
+@property (nonatomic, strong, readonly) UIView *unreadView;
+@property (nonatomic, strong, readonly) UILabel *unreadLabel;
 
 @end

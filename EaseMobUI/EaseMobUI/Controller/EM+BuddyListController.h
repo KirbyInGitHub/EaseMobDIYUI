@@ -117,6 +117,13 @@
 - (NSString *)iconForTagAtIndex:(NSInteger)index;
 
 /**
+ *  是否显示分组管理菜单
+ *
+ *  @return
+ */
+- (BOOL)shouldShowGroupManage;
+
+/**
  *  好友分组数量
  *
  *  @return 默认1
@@ -162,6 +169,13 @@
  *  @param index
  */
 - (void)didSelectedForTagAtIndex:(NSInteger)index;
+
+/**
+ *  分组管理被点击
+ *
+ *  @param groupIndex 
+ */
+- (void)didSelectedForGroupManageAtIndex:(NSInteger)groupIndex;
 
 /**
  *  分组被点击

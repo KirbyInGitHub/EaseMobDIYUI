@@ -21,6 +21,8 @@ extern NSString * const kEMNotificationCallActionOut;
 extern NSString * const kEMNotificationCallShow;
 extern NSString * const kEMNotificationCallDismiss;
 
+extern NSString * const kEMNotificationEditorChanged;
+
 extern NSString * const kEMCallChatter;
 extern NSString * const kEMCallType;
 

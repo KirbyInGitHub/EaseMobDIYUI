@@ -16,8 +16,7 @@
 #import "EM+CallController.h"
 #import "UIViewController+HUD.h"
 
-#import "EaseMob.h"
-
+#import <EaseMobSDKFull/EaseMob.h>
 #import <AVFoundation/AVFoundation.h>
 
 static EaseMobUIClient *sharedClient;
@@ -50,6 +49,8 @@ NSString * const kEMNotificationCallActionIn = @"kEMNotificationCallActionIn";
 NSString * const kEMNotificationCallActionOut = @"kEMNotificationCallActionOut";
 NSString * const kEMNotificationCallShow = @"kEMNotificationCallShow";
 NSString * const kEMNotificationCallDismiss = @"kEMNotificationCallDismiss";
+
+NSString * const kEMNotificationEditorChanged = @"kEMNotificationEditorChanged";
 
 NSString * const kEMCallChatter = @"kEMCallChatter";
 NSString * const kEMCallType = @"kEMCallType";

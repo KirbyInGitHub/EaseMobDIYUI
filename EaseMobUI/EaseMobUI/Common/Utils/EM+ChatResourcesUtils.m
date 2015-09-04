@@ -7,6 +7,7 @@
 //
 
 #import "EM+ChatResourcesUtils.h"
+
 #import <UIKit/UIKit.h>
 #import <CoreText/CoreText.h>
 

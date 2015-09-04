@@ -8,6 +8,9 @@
 
 #import "EM+ChatBaseController.h"
 @class EMConversation;
+@class EM_ChatMessageModel;
+@class EM_ChatOpposite;
+@class EM_ConversationCell;
 
 @protocol EM_ChatListControllerDelegate;
 
@@ -15,8 +18,13 @@
 
 @property (nonatomic, weak) id<EM_ChatListControllerDelegate> delegate;
 
+@property (nonatomic, strong, readonly) UISearchDisplayController *searchController;
+
+@property (nonatomic, strong, readonly) UISearchBar *searchBar;
+
+
 /**
- *  重新加载会话
+ *  刷新数据
  */
 - (void)reloadData;
 
@@ -26,7 +34,7 @@
 - (void)startRefresh;
 
 /**
- *  结束下拉刷新
+ *  结束下拉刷新，这里回自动调用reloadData方法
  */
 - (void)endRefresh;
 
@@ -37,6 +45,38 @@
 @required
 
 @optional
+
+/**
+ *  是否显示搜索
+ *  默认YES,如果返回NO,则searchController和searchBar未nil
+ *
+ *  @return 
+ */
+- (BOOL)shouldShowSearchBar;
+
+/**
+ *  会话列表的行高
+ *
+ *  @return 
+ */
+- (CGFloat)heightForConversationRow;
+
+/**
+ *  自定义Cell必须继承EM_ConversationCell
+ *
+ *  @return 不能返回nil
+ */
+- (EM_ConversationCell *)viewForConversationRowWithConversation:(EMConversation *)conversation reuseView:(EM_ConversationCell *)cell reuseIdentifier:(NSString *)reuseIdentifier;
+
+/**
+ *  会话显示的简短信息
+ *  如果是编辑状态则默认显示编辑内容，此时不会调用该代理;
+ *  如果是语音通讯或者视频通讯则默认显示通话结果，此时不会调用该代理;
+ *  如果返回nil或者未实现，则默认显示最新一条消息的内容
+ *  @param opposite 聊天对象，好友，群，聊天室
+ *  @param message  聊天的最新一条消息，有可能为空
+ */
+- (NSMutableAttributedString *)introForConversationWithOpposite:(EM_ChatOpposite *)opposite message:(EM_ChatMessageModel *)message;
 
 /**
  *  选中某一会话

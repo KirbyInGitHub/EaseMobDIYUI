@@ -8,13 +8,13 @@
 
 #import "EM+CallController.h"
 #import "EaseMobUIClient.h"
-#import "EaseMob.h"
-#import "UIImageView+WebCache.h"
 #import "EM+Common.h"
 #import "EM+ChatResourcesUtils.h"
 #import "EM+ChatMessageExtend.h"
-#import "FXBlurView.h"
 
+#import <SDWebImage/UIImageView+WebCache.h>
+#import <EaseMobSDKFull/EaseMob.h>
+#import <FXBlurView/FXBlurView.h>
 #import <CoreTelephony/CTCallCenter.h>
 #import <CoreTelephony/CTCall.h>
 #import <AVFoundation/AVFoundation.h>
@@ -421,24 +421,32 @@
             }
             _ringPlayer = nil;
             
-            BACK(^{
-            
+            BACK((^{
                 EM_ChatMessageExtend *extend = [[EM_ChatMessageExtend alloc]init];
-                extend.isCallMessage = YES;
-                
-                EMChatText *chatText = [[EMChatText alloc] initWithText:hintMessage];
-                EMTextMessageBody *textBody = [[EMTextMessageBody alloc] initWithChatObject:chatText];
-                EMMessage *message = [[EMMessage alloc] initWithReceiver:_callSession.sessionChatter bodies:@[textBody]];
-                message.isRead = YES;
-                message.deliveryState = eMessageDeliveryState_Delivered;
-                message.ext = [extend toDictionary];
-                
-                [[EaseMob sharedInstance].chatManager insertMessagesToDB:@[message] forChatter:_callSession.sessionChatter append2Chat:YES];
+                NSString *text = nil;
+                if (_callType == EMChatCallTypeVoice) {
+                    extend.callType = kEMCallTypeVoice;
+                    
+                    text = [NSString stringWithFormat:@"%@%@",[EM_ChatResourcesUtils stringWithName:@"common.message_type_call_voice"],hintMessage];
+                }else{
+                    extend.callType = kEMCallTypeVideo;
+                    text = [NSString stringWithFormat:@"%@%@",[EM_ChatResourcesUtils stringWithName:@"common.message_type_call_video"],hintMessage];
+                }
+                if (extend.callType) {
+                    EMChatText *chatText = [[EMChatText alloc] initWithText:text];
+                    EMTextMessageBody *textBody = [[EMTextMessageBody alloc] initWithChatObject:chatText];
+                    EMMessage *message = [[EMMessage alloc] initWithReceiver:_callSession.sessionChatter bodies:@[textBody]];
+                    message.isRead = YES;
+                    message.deliveryState = eMessageDeliveryState_Delivered;
+                    message.ext = [extend toDictionary];
+                    
+                    [[EaseMob sharedInstance].chatManager insertMessagesToDB:@[message] forChatter:_callSession.sessionChatter append2Chat:YES];
+                }
                 sleep(3);
                 MAIN(^{
                     [self dismissViewControllerAnimated:YES completion:nil];
                 });
-            });
+            }));
         }
             break;
     }

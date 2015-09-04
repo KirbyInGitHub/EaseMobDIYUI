@@ -7,9 +7,10 @@
 //
 
 #import "EM+ChatMessageTextBody.h"
-#import "TTTAttributedLabel.h"
 #import "EM+ChatMessageModel.h"
 #import "EM+ChatMessageUIConfig.h"
+
+#import <TTTAttributedLabel/TTTAttributedLabel.h>
 
 @interface EM_ChatMessageTextBody()<TTTAttributedLabelDelegate>
 
@@ -59,7 +60,7 @@
     [super setMessage:message];
     EMTextMessageBody *textBody = (EMTextMessageBody *)message.messageBody;
     textLabel.text = textBody.text;
-    self.needTap = self.message.extend.isCallMessage;
+    self.needTap = self.message.extend.callType;
 }
 
 #pragma mark - TTTAttributedLabelDelegate
